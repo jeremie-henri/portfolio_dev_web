@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Maison Provence Shop</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f0fdf4;--sidebar:#fff;--card:#fff;--accent:#16a34a;--accent2:#bbf7d0;--text:#14532d;--dark:#0f172a;--muted:#6b7280;--border:#e2e8f0;--red:#dc2626;--orange:#ea580c;--blue:#2563eb}
+body{background:var(--bg);color:var(--dark);font-family:'DM Sans',sans-serif;font-size:15px;display:flex;min-height:100vh}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#f0fdf4,#dcfce7);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:white;border:1px solid var(--border);border-radius:20px;padding:2.5rem;width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.08)}
+.login-logo{font-family:'Playfair Display',Georgia,serif;font-size:1.45rem;font-weight:800;color:var(--accent);margin-bottom:0.25rem}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:2rem}
+.login-input{width:100%;padding:11px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--dark);font-family:inherit;font-size:15px;outline:none;margin-bottom:10px}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.login-btn:hover{opacity:.9}
+.login-hint{font-size:12px;color:var(--muted);margin-top:12px}
+
+/* SIDEBAR */
+.sidebar{width:230px;background:var(--sidebar);border-right:1px solid var(--border);padding:1.5rem 1rem;display:flex;flex-direction:column;gap:4px;flex-shrink:0;height:100vh;position:sticky;top:0;overflow-y:auto;box-shadow:2px 0 8px rgba(0,0,0,0.04)}
+.sidebar-logo{font-family:'Playfair Display',Georgia,serif;font-size:1.1rem;font-weight:800;color:var(--accent);padding:0.5rem 0.75rem;margin-bottom:1rem}
+.nav-section{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.75rem .75rem .4rem;margin-top:.5rem}
+.nav-item{display:flex;align-items:center;gap:9px;padding:.6rem .75rem;border-radius:10px;cursor:pointer;color:var(--muted);font-size:14px;transition:all .2s;border:none;background:none;font-family:inherit;width:100%;text-align:left}
+.nav-item:hover{background:var(--accent2);color:var(--accent)}
+.nav-item.active{background:var(--accent2);color:var(--accent);font-weight:600}
+.nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px}
+.sidebar-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:1rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:white}
+.topbar-title{font-family:'Playfair Display',Georgia,serif;font-weight:800;font-size:1.2rem;color:var(--dark)}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.content{flex:1;overflow-y:auto;padding:1.5rem 2rem}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-bottom:1.5rem}
+.kpi{background:white;border:1px solid var(--border);border-radius:14px;padding:1.1rem;box-shadow:0 1px 6px rgba(0,0,0,0.04)}
+.kpi-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.kpi-value{font-family:'Playfair Display',Georgia,serif;font-size:1.9rem;font-weight:800;color:var(--dark)}
+.kpi-change{font-size:13px;margin-top:3px}
+.kpi-change.up{color:var(--accent)}
+.kpi-change.down{color:var(--red)}
+
+/* CHART */
+.chart-card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem}
+.chart-title{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.05rem;margin-bottom:1.25rem;color:var(--dark)}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:120px}
+.bar-w{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+.bar-fill{border-radius:6px 6px 0 0;width:100%;transition:height .5s;background:linear-gradient(to top,#16a34a,#4ade80)}
+.bar-label{font-size:11px;color:var(--muted)}
+.bar-val{font-size:11px;font-weight:600;color:var(--dark)}
+
+/* TABLE */
+.table-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;box-shadow:0 1px 6px rgba(0,0,0,0.04)}
+.table-header{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.table-title{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.05rem;color:var(--dark)}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 1.1rem;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;background:rgba(0,0,0,0.02)}
+td{padding:11px 1.1rem;border-top:1px solid var(--border);font-size:14px;vertical-align:middle}
+tr:hover td{background:rgba(22,163,74,0.03)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:12px;font-weight:600}
+.badge-green{background:rgba(22,163,74,.1);color:#16a34a}
+.badge-yellow{background:rgba(234,179,8,.1);color:#b45309}
+.badge-red{background:rgba(220,38,38,.1);color:#dc2626}
+.badge-blue{background:rgba(37,99,235,.1);color:#2563eb}
+.badge-orange{background:rgba(234,88,12,.1);color:#ea580c}
+
+/* STOCK BAR */
+.stock-bar{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;width:80px;display:inline-block;vertical-align:middle}
+.stock-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal{background:white;border-radius:20px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-family:'Playfair Display',Georgia,serif;font-weight:800;color:var(--dark)}
+.modal-body{padding:1.5rem;display:flex;flex-direction:column;gap:12px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fi{padding:10px 13px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--dark);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s;width:100%}
+.fi:focus{border-color:var(--accent);background:white}
+.fi::placeholder{color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent);color:white;box-shadow:0 2px 8px rgba(22,163,74,.25)}
+.btn-primary:hover{opacity:.9}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--dark)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:rgba(220,38,38,.08);color:#dc2626;border:1px solid rgba(220,38,38,.15)}
+.btn-danger:hover{background:rgba(220,38,38,.15)}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:7px}
+
+/* SEARCH */
+.search-input{padding:8px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--dark);font-family:inherit;font-size:14px;outline:none;width:200px}
+.search-input:focus{border-color:var(--accent)}
+
+/* TOGGLE */
+.toggle{display:flex;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px}
+.toggle button{padding:5px 14px;border-radius:8px;font-size:13px;font-family:inherit;border:none;cursor:pointer;transition:all .2s;color:var(--muted);background:none;font-weight:500}
+.toggle button.active{background:var(--accent);color:white;font-weight:700}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:600;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-success{background:#16a34a;color:white}
+.toast-error{background:#dc2626;color:white}
+.toast-info{background:#2563eb;color:white}
+
+@media(max-width:768px){
+  body{flex-direction:column}
+  .sidebar{width:100%;height:auto;position:sticky;top:0;z-index:400;flex-direction:row;align-items:center;gap:6px;padding:.6rem .75rem;overflow-x:auto;overflow-y:hidden;border-right:none;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+  .sidebar-logo{display:none}
+  .nav-section{display:none}
+  .nav-item{flex-shrink:0;width:auto;font-size:12px;padding:.45rem .6rem;white-space:nowrap}
+  .sidebar-footer{margin-top:0;padding-top:0;border-top:none;display:flex;gap:6px;flex-shrink:0}
+  .content{padding:1rem}
+  .topbar{padding:.75rem 1rem}
+  .topbar-actions{gap:4px}
+  .table-card{overflow-x:auto}
+  table{min-width:500px}
+  .form-row{grid-template-columns:1fr}
+  .kpi-value{font-size:1.3rem}
+  .chart-card{overflow-x:auto}
+  .bar-chart{min-width:400px}
+}
+select{background:white!important;color:var(--dark)!important;color-scheme:light;border:1.5px solid var(--border)!important;border-radius:8px}
+select option{background:white!important;color:var(--dark)!important}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">🛒 Maison Provence</div>
+    <div class="login-sub">Panneau d'administration</div>
+    <input id="l-pass" type="password" class="login-input" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Accéder au tableau de bord</button>
+    <div class="login-hint">Mot de passe demo : <strong style="color:var(--accent)">admin123</strong></div>
+  </div>
+</div>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">🌿 Maison Provence</div>
+  <div class="nav-section">Boutique</div>
+  <button class="nav-item active" onclick="showPage('dashboard',this)"><span>📊</span> Tableau de bord</button>
+  <button class="nav-item" onclick="showPage('commandes',this)"><span>📦</span> Commandes <span class="nav-badge" id="cmd-badge">0</span></button>
+  <button class="nav-item" onclick="showPage('produits',this)"><span>🫒</span> Produits</button>
+  <button class="nav-item" onclick="showPage('stock',this)"><span>📋</span> Stock</button>
+  <button class="nav-item" onclick="showPage('finances',this)"><span>💰</span> Finances</button>
+  <div class="nav-section">Paramètres</div>
+  <button class="nav-item" onclick="showPage('promo',this)"><span>🏷️</span> Promotions</button>
+  <button class="nav-item" onclick="showPage('config',this)"><span>⚙️</span> Configuration</button>
+  <div class="sidebar-footer">
+    <button class="nav-item" onclick="logout()"><span>🚪</span> Déconnexion</button>
+    <a href="ecommerce.html" target="_blank" class="nav-item" style="text-decoration:none"><span>👁️</span> Voir la boutique</a>
+  </div>
+</aside>
+
+<div class="main" id="main-area" style="display:none">
+  <div class="topbar">
+    <span class="topbar-title" id="page-title">Tableau de bord</span>
+    <div class="topbar-actions">
+      <span id="date-display" style="font-size:12px;color:var(--muted)"></span>
+      <button class="btn btn-primary btn-sm" id="topbar-action" onclick="topbarAction()">+ Nouveau produit</button>
+    </div>
+  </div>
+  <div class="content" id="page-content"></div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="closeModalOut(event)">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-title">Titre</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'mp_admin_v3'
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(KEY))
+    // Migration : si moins de 11 produits, réinitialiser
+    if(d&&d.produits&&d.produits.length<11){localStorage.removeItem(KEY);return initData()}
+    return d||initData()
+  }catch{return initData()}
+}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+
+function initData(){
+  return {
+    loggedIn:false,
+    nextId:100,
+    produits:[
+      {id:1,nom:"Huile d'olive extra vierge",cat:'Huiles',prix:18.90,stock:47,seuil:10,actif:true,img:'../photos/huile%20olive%20vierge.webp'},
+      {id:2,nom:'Miel de lavande AOP',cat:'Miels',prix:12.50,stock:32,seuil:8,actif:true,img:'../photos/miel%20lavande%20aop.jpg'},
+      {id:3,nom:'Herbes de Provence',cat:'Épices',prix:7.90,stock:3,seuil:10,actif:true,img:'../photos/herbesprovence.jpg'},
+      {id:4,nom:'Coffret Saveurs du Sud',cat:'Coffrets',prix:48.00,stock:15,seuil:5,actif:true,img:'../photos/coffret%20herbes.jpg'},
+      {id:5,nom:'Miel de fleurs sauvages',cat:'Miels',prix:9.90,stock:0,seuil:8,actif:false,img:'../photos/Miel-fleurs-sauvage-.webp'},
+      {id:6,nom:"Huile d'olive pimentée",cat:'Huiles',prix:15.50,stock:28,seuil:10,actif:true,img:'../photos/huile%20piment.webp'},
+      {id:7,nom:"Piment d'Espelette AOP",cat:'Épices',prix:8.90,stock:35,seuil:8,actif:true,img:'../photos/poudre-piment-espelette.webp'},
+      {id:8,nom:'Coffret Noël Provence',cat:'Coffrets',prix:62.00,stock:8,seuil:3,actif:true,img:'../photos/photo-1512909006721-3d6018887383.jpg'},
+      {id:9,nom:'Tapenade olives noires',cat:'Condiments',prix:6.50,stock:19,seuil:5,actif:true,img:'../photos/tapenade.jpg'},
+      {id:10,nom:'Confiture figue et lavande',cat:'Condiments',prix:7.20,stock:41,seuil:10,actif:true,img:'../photos/confitures.webp'},
+      {id:11,nom:'Huile de noix artisanale',cat:'Huiles',prix:14.90,stock:26,seuil:8,actif:true,img:'../photos/huile-noix.jpg'},
+    ],
+    commandes:[
+      {id:'CMD-00001',client:'Marie L.',email:'marie@email.com',date:'2026-05-15',montant:48.00,statut:'livré',items:[{nom:'Coffret Saveurs du Sud',qty:1,prix:48}]},
+      {id:'CMD-00002',client:'Jean M.',email:'jean@email.com',date:'2026-05-17',montant:31.40,statut:'expédié',items:[{nom:"Huile d'olive",qty:1,prix:18.90},{nom:'Miel lavande',qty:1,prix:12.50}]},
+      {id:'CMD-00003',client:'Sophie P.',email:'sophie@email.com',date:'2026-05-18',montant:15.80,statut:'en préparation',items:[{nom:'Herbes de Provence',qty:2,prix:7.90}]},
+      {id:'CMD-00004',client:'Pierre D.',email:'pierre@email.com',date:'2026-05-19',montant:96.00,statut:'en attente',items:[{nom:'Coffret Saveurs',qty:2,prix:48}]},
+      {id:'CMD-00005',client:'Claire F.',email:'claire@email.com',date:'2026-05-20',montant:26.40,statut:'confirmé',items:[{nom:'Miel lavande',qty:2,prix:12.50},{nom:'Herbes',qty:1,prix:7.90}]},
+    ],
+    promos:[
+      {id:1,code:'PROVENCE10',reduction:10,type:'%',actif:true,utilisations:14},
+      {id:2,code:'BIENVENUE5',reduction:5,type:'€',actif:true,utilisations:3},
+    ],
+    config:{nom:'Maison Provence',email:'contact@maisonprovence.fr',fraisLivraison:5.90,livraisonGratuite:40}
+  }
+}
+
+let DB = load()
+let currentPage = 'dashboard'
+
+function doLogin(){
+  if(document.getElementById('l-pass').value==='admin123'){
+    DB.loggedIn=true;save(DB)
+    document.getElementById('login-screen').style.display='none'
+    document.getElementById('main-area').style.display='flex'
+    init()
+  }
+}
+function logout(){DB.loggedIn=false;save(DB);location.reload()}
+if(DB.loggedIn){document.getElementById('login-screen').style.display='none';document.getElementById('main-area').style.display='flex';init()}
+
+function init(){
+  renderPage('dashboard')
+  updateBadges()
+  document.getElementById('date-display').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})
+}
+
+function showPage(page,el){
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));el.classList.add('active')
+  currentPage=page;renderPage(page)
+}
+
+function updateBadges(){
+  const n=DB.commandes.filter(c=>c.statut==='en attente'||c.statut==='confirmé').length
+  document.getElementById('cmd-badge').textContent=n
+  document.getElementById('cmd-badge').style.display=n>0?'inline':'none'
+}
+
+function topbarAction(){
+  const a={dashboard:'',commandes:exportCmds,produits:openAddProduit,stock:'',finances:'',promo:openAddPromo,config:saveConfig}
+  if(a[currentPage])a[currentPage]()
+}
+
+function renderPage(page){
+  const titles={dashboard:'Tableau de bord',commandes:'Commandes',produits:'Catalogue produits',stock:'Gestion du stock',finances:'Finances & revenus',promo:'Codes promo',config:'Configuration'}
+  const actions={commandes:'Exporter CSV',produits:'+ Nouveau produit',promo:'+ Nouveau code',config:'Sauvegarder'}
+  document.getElementById('page-title').textContent=titles[page]||page
+  const btn=document.getElementById('topbar-action')
+  btn.textContent=actions[page]||''
+  btn.style.display=actions[page]?'inline-flex':'none'
+  const pages={dashboard:renderDashboard,commandes:renderCommandes,produits:renderProduits,stock:renderStock,finances:renderFinances,promo:renderPromo,config:renderConfig}
+  if(pages[page])pages[page]()
+}
+
+// ─── DASHBOARD ─────────────────────────────────────────────────
+function renderDashboard(){
+  const total=DB.commandes.reduce((a,c)=>a+c.montant,0)
+  const today=DB.commandes.filter(c=>c.date===new Date().toISOString().split('T')[0])
+  const critiques=DB.produits.filter(p=>p.stock<=p.seuil&&p.stock>0)
+  const ruptures=DB.produits.filter(p=>p.stock===0)
+  const chiffres=[0,0,0,0,0,280,320]
+  const max=Math.max(...chiffres)
+  document.getElementById('page-content').innerHTML=`
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Chiffre d'affaires</div><div class="kpi-value">${total.toFixed(0)} €</div><div class="kpi-change up">↑ Toutes commandes</div></div>
+      <div class="kpi"><div class="kpi-label">Commandes</div><div class="kpi-value">${DB.commandes.length}</div><div class="kpi-change up">↑ +${DB.commandes.filter(c=>c.statut==='en attente').length} en attente</div></div>
+      <div class="kpi"><div class="kpi-label">Produits actifs</div><div class="kpi-value">${DB.produits.filter(p=>p.actif).length}</div><div class="kpi-change${ruptures.length>0?' down':' up'}">${ruptures.length>0?'⚠️ '+ruptures.length+' en rupture':'Tout en stock'}</div></div>
+      <div class="kpi"><div class="kpi-label">Panier moyen</div><div class="kpi-value">${DB.commandes.length?( total/DB.commandes.length).toFixed(0):0} €</div><div class="kpi-change up">↑ Bonne tendance</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div class="chart-card">
+        <div class="chart-title">Chiffre d'affaires — 7 derniers jours</div>
+        <div class="bar-chart">
+          ${['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map((d,i)=>`
+            <div class="bar-w">
+              <span class="bar-val">${chiffres[i]||0}€</span>
+              <div class="bar-fill" style="height:${max>0?Math.round((chiffres[i]/max)*100):0}%"></div>
+              <span class="bar-label">${d}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">⚠️ Alertes stock</div>
+        ${critiques.length+ruptures.length===0?'<p style="color:var(--muted);font-size:13px">Aucune alerte 🎉</p>':''}
+        ${ruptures.map(p=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${p.nom}</span><span class="badge badge-red">Rupture</span></div>`).join('')}
+        ${critiques.map(p=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${p.nom}</span><span class="badge badge-yellow">${p.stock} restants</span></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Dernières commandes</span><a href="#" onclick="showPage('commandes',document.querySelector('.nav-item:nth-child(5)'))"><span style="font-size:12px;color:var(--accent)">Voir tout →</span></a></div>
+      <table><thead><tr><th>Réf.</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th></tr></thead>
+      <tbody>${DB.commandes.slice(-5).reverse().map(c=>`
+        <tr>
+          <td style="color:var(--accent);font-weight:700">${c.id}</td>
+          <td>${c.client}</td><td>${c.date}</td>
+          <td style="font-weight:700">${c.montant.toFixed(2)} €</td>
+          <td><span class="badge badge-${c.statut==='livré'?'green':c.statut==='en attente'?'red':c.statut==='expédié'?'blue':'yellow'}">${c.statut}</span></td>
+        </tr>`).join('')}</tbody></table>
+    </div>`
+}
+
+// ─── COMMANDES ─────────────────────────────────────────────────
+function renderCommandes(){
+  document.getElementById('page-content').innerHTML=`
+    <div class="toggle" style="margin-bottom:1rem" id="cmd-filter">
+      <button class="active" onclick="filterCmd('',this)">Toutes</button>
+      <button onclick="filterCmd('en attente',this)">En attente</button>
+      <button onclick="filterCmd('confirmé',this)">Confirmées</button>
+      <button onclick="filterCmd('expédié',this)">Expédiées</button>
+      <button onclick="filterCmd('livré',this)">Livrées</button>
+    </div>
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Commandes (${DB.commandes.length})</span>
+        <input class="search-input" placeholder="🔍 Rechercher..." oninput="filterCmdText(this.value)">
+      </div>
+      <table><thead><tr><th>Réf.</th><th>Client</th><th>Date</th><th>Articles</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody id="cmd-tbody">${renderCmdRows(DB.commandes)}</tbody></table>
+    </div>`
+}
+function renderCmdRows(list){
+  if(!list.length)return'<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--muted)">Aucune commande</td></tr>'
+  return list.map(c=>`
+    <tr>
+      <td style="color:var(--accent);font-weight:700;font-size:12px">${c.id}</td>
+      <td><strong>${c.client}</strong><br><span style="color:var(--muted);font-size:11px">${c.email}</span></td>
+      <td>${c.date}</td>
+      <td style="font-size:12px">${c.items.map(i=>`${i.nom} ×${i.qty}`).join(', ')}</td>
+      <td style="font-weight:700;color:var(--accent)">${c.montant.toFixed(2)} €</td>
+      <td>
+        <select onchange="updateCmdStatus('${c.id}',this.value)" style="background:var(--bg);border:1px solid var(--border);border-radius:7px;font-size:11px;padding:4px 8px;color:var(--dark);outline:none">
+          ${['en attente','confirmé','en préparation','expédié','livré','annulé'].map(s=>`<option ${c.statut===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-outline" onclick="viewCmd('${c.id}')">👁️</button>
+        <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="deleteCmd('${c.id}')">🗑️</button>
+      </td>
+    </tr>`).join('')
+}
+let cmdFilterStatut=''
+function filterCmd(statut,el){
+  cmdFilterStatut=statut
+  document.querySelectorAll('#cmd-filter button').forEach(b=>b.classList.remove('active'));el.classList.add('active')
+  applyFilters()
+}
+function filterCmdText(q){applyFilters(q)}
+function applyFilters(q=''){
+  let list=DB.commandes
+  if(cmdFilterStatut)list=list.filter(c=>c.statut===cmdFilterStatut)
+  if(q)list=list.filter(c=>c.client.toLowerCase().includes(q.toLowerCase())||c.id.toLowerCase().includes(q.toLowerCase()))
+  document.getElementById('cmd-tbody').innerHTML=renderCmdRows(list)
+}
+function updateCmdStatus(id,s){
+  const c=DB.commandes.find(c=>c.id===id);if(c){c.statut=s;save(DB);updateBadges();toast('Statut mis à jour ✅','success')}
+}
+function deleteCmd(id){
+  if(!confirm('Supprimer cette commande ?'))return
+  DB.commandes=DB.commandes.filter(c=>c.id!==id);save(DB);renderCommandes();toast('Commande supprimée','success')
+}
+function viewCmd(id){
+  const c=DB.commandes.find(c=>c.id===id);if(!c)return
+  document.getElementById('modal-title').textContent='Commande '+c.id
+  document.getElementById('modal-body').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${[['Client',c.client],['Email',c.email],['Date',c.date],['Statut',`<span class="badge badge-${c.statut==='livré'?'green':c.statut==='annulé'?'red':'blue'}">${c.statut}</span>`]].map(([l,v])=>`
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">${l}</span><span>${v}</span></div>`).join('')}
+      <div style="margin-top:8px"><strong>Articles :</strong>
+        ${c.items.map(i=>`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px"><span>${i.nom} ×${i.qty}</span><span style="color:var(--accent)">${(i.prix*i.qty).toFixed(2)} €</span></div>`).join('')}
+        <div style="display:flex;justify-content:space-between;padding:8px 0;font-weight:700;border-top:1px solid var(--border);font-size:14px"><span>Total</span><span style="color:var(--accent)">${c.montant.toFixed(2)} €</span></div>
+      </div>
+    </div>`
+  openModal()
+}
+function exportCmds(){
+  const rows=[['Réf','Client','Email','Date','Montant','Statut','Articles']]
+  DB.commandes.forEach(c=>rows.push([c.id,c.client,c.email,c.date,c.montant,c.statut,c.items.map(i=>i.nom+' x'+i.qty).join(' | ')]))
+  const csv=rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n')
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='commandes.csv';a.click()
+  toast('Export téléchargé ✅','success')
+}
+
+// ─── PRODUITS ──────────────────────────────────────────────────
+function renderProduits(){
+  document.getElementById('page-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
+      ${DB.produits.map(p=>`
+        <div style="background:white;border:1.5px solid ${p.stock===0?'rgba(220,38,38,.3)':p.stock<=p.seuil?'rgba(234,179,8,.3)':'var(--border)'};border-radius:16px;overflow:hidden">
+          <img src="${p.img}" style="width:100%;height:140px;object-fit:cover">
+          <div style="padding:1rem">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
+              <strong style="font-size:13px">${p.nom}</strong>
+              <span style="text-align:right">
+                ${(p.reduction||0)>0?`<span style="text-decoration:line-through;color:#aaa;font-size:11px;display:block">${p.prix.toFixed(2)} €</span><span style="font-weight:800;color:var(--accent);font-size:14px">${(p.prix*(1-p.reduction/100)).toFixed(2)} €</span><span style="background:var(--accent);color:white;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;display:block;text-align:center">-${p.reduction}%</span>`:`<span style="font-weight:800;color:var(--accent);font-size:14px">${p.prix.toFixed(2)} €</span>`}
+              </span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px;font-size:12px">
+              <span class="badge badge-blue">${p.cat}</span>
+              <span class="badge badge-${p.stock===0?'red':p.stock<=p.seuil?'yellow':'green'}">Stock: ${p.stock}</span>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-primary btn-sm" style="flex:1" onclick="openEditProduit(${p.id})">✏️ Modifier</button>
+              <button class="btn btn-sm" style="background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:var(--accent)" onclick="openRestock(${p.id})">📦 Stock</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteProduit(${p.id})" title="Supprimer">🗑️</button>
+            </div>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:8px;cursor:pointer">
+              <input type="checkbox" ${p.actif?'checked':''} onchange="toggleProduit(${p.id},this.checked)" style="accent-color:var(--accent)"> Visible en boutique
+            </label>
+          </div>
+        </div>`).join('')}
+    </div>`
+}
+function toggleProduit(id,v){const p=DB.produits.find(p=>p.id===id);if(p){p.actif=v;save(DB);toast('Visibilité mise à jour','success')}}
+function deleteProduit(id){
+  if(!confirm('Supprimer ce produit définitivement ?')) return
+  DB.produits=DB.produits.filter(p=>p.id!==id);save(DB);renderProduits();toast('Produit supprimé','success')
+}
+function openAddProduit(){openProduitModal(null)}
+function openEditProduit(id){openProduitModal(DB.produits.find(p=>p.id===id))}
+function openProduitModal(p){
+  document.getElementById('modal-title').textContent=p?'Modifier le produit':'Nouveau produit'
+  const red=p?.reduction||0
+  document.getElementById('modal-body').innerHTML=`
+    <div class="fg"><label class="fl">Nom *</label><input id="pnom" class="fi" value="${p?.nom||''}" placeholder="Nom du produit"></div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Prix de base (€) *</label><input id="pprix" class="fi" type="number" step="0.01" value="${p?.prix||''}"></div>
+      <div class="fg"><label class="fl">Catégorie</label>
+        <select id="pcat" class="fi"><option ${p?.cat==='Huiles'?'selected':''}>Huiles</option><option ${p?.cat==='Miels'?'selected':''}>Miels</option><option ${p?.cat==='Épices'?'selected':''}>Épices</option><option ${p?.cat==='Coffrets'?'selected':''}>Coffrets</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="fg">
+        <label class="fl">Réduction (%)</label>
+        <input id="pred" class="fi" type="number" min="0" max="99" step="1" value="${red}" placeholder="0 = pas de promo" oninput="previewReduction()">
+      </div>
+      <div class="fg" id="prix-preview-wrap" style="display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:2px">
+        <span id="prix-preview" style="font-size:13px;color:var(--muted)"></span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Stock initial</label><input id="pstock" class="fi" type="number" value="${p?.stock||0}"></div>
+      <div class="fg"><label class="fl">Seuil d'alerte</label><input id="pseuil" class="fi" type="number" value="${p?.seuil||10}"></div>
+    </div>
+    <div class="fg"><label class="fl">URL Image</label><input id="pimg" class="fi" value="${p?.img||''}" placeholder="https://..."></div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveProduit(${p?.id||'null'})">💾 Sauvegarder</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+  previewReduction()
+}
+function previewReduction(){
+  const prix=parseFloat(document.getElementById('pprix')?.value)||0
+  const red=parseInt(document.getElementById('pred')?.value)||0
+  const el=document.getElementById('prix-preview')
+  if(!el) return
+  if(red>0&&prix>0){
+    const newPrix=(prix*(1-red/100)).toFixed(2)
+    el.innerHTML=`<span style="text-decoration:line-through;color:#aaa">${prix.toFixed(2)} €</span> → <strong style="color:var(--accent)">${newPrix} €</strong>`
+  } else { el.innerHTML='' }
+}
+function saveProduit(id){
+  const nom=document.getElementById('pnom').value.trim()
+  if(!nom){toast('Nom requis','error');return}
+  const reductionRaw=parseInt(document.getElementById('pred').value)||0
+  if(reductionRaw>99){toast('La réduction ne peut pas dépasser 99%','error');return}
+  const reduction=Math.max(0,Math.min(99,reductionRaw))
+  const existing=id?DB.produits.find(p=>p.id===id):null
+  const data={nom,prix:parseFloat(document.getElementById('pprix').value)||0,cat:document.getElementById('pcat').value,stock:parseInt(document.getElementById('pstock').value)||0,seuil:parseInt(document.getElementById('pseuil').value)||10,img:document.getElementById('pimg').value,reduction,actif:existing?existing.actif:true}
+  if(id){Object.assign(existing,data)}else{DB.produits.push({id:++DB.nextId,...data})}
+  save(DB);closeModal();renderProduits();toast('Produit sauvegardé ✅','success')
+}
+function openRestock(id){
+  const p=DB.produits.find(p=>p.id===id)
+  document.getElementById('modal-title').textContent='Réapprovisionner : '+p.nom
+  document.getElementById('modal-body').innerHTML=`
+    <p style="color:var(--muted);font-size:13px">Stock actuel : <strong style="color:var(--dark)">${p.stock} unités</strong></p>
+    <div class="fg" style="margin-top:1rem"><label class="fl">Quantité à ajouter *</label><input id="rqty" class="fi" type="number" min="1" value="10"></div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn btn-primary" onclick="doRestock(${id})">📦 Ajouter au stock</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+}
+function doRestock(id){
+  const qty=parseInt(document.getElementById('rqty').value)||0
+  if(qty<=0){toast('Quantité invalide','error');return}
+  const p=DB.produits.find(p=>p.id===id);p.stock+=qty;save(DB);closeModal();renderPage(currentPage);toast(`+${qty} unités ajoutées ✅`,'success')
+}
+
+// ─── STOCK ─────────────────────────────────────────────────────
+function renderStock(){
+  document.getElementById('page-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:1.5rem">
+      <div class="kpi"><div class="kpi-label">Articles en stock</div><div class="kpi-value">${DB.produits.filter(p=>p.stock>0).length}/${DB.produits.length}</div></div>
+      <div class="kpi"><div class="kpi-label">Ruptures</div><div class="kpi-value" style="color:var(--red)">${DB.produits.filter(p=>p.stock===0).length}</div></div>
+      <div class="kpi"><div class="kpi-label">Alertes stock</div><div class="kpi-value" style="color:#b45309">${DB.produits.filter(p=>p.stock>0&&p.stock<=p.seuil).length}</div></div>
+      <div class="kpi"><div class="kpi-label">Valeur stock</div><div class="kpi-value" style="color:var(--accent)">${DB.produits.reduce((a,p)=>a+p.prix*p.stock,0).toFixed(0)} €</div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Inventaire complet</span></div>
+      <table><thead><tr><th>Produit</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Niveau</th><th>Valeur</th><th>Action</th></tr></thead>
+      <tbody>${DB.produits.map(p=>{
+        const pct=Math.min(100,Math.round(p.stock/(p.seuil*3)*100))
+        const col=p.stock===0?'#dc2626':p.stock<=p.seuil?'#ca8a04':'#16a34a'
+        return`<tr>
+          <td><strong>${p.nom}</strong></td>
+          <td><span class="badge badge-blue">${p.cat}</span></td>
+          <td>${p.prix} €</td>
+          <td><strong style="color:${col}">${p.stock}</strong> <span style="color:var(--muted);font-size:11px">(seuil: ${p.seuil})</span></td>
+          <td><div class="stock-bar"><div class="stock-fill" style="width:${pct}%;background:${col}"></div></div></td>
+          <td style="font-weight:600;color:var(--accent)">${(p.prix*p.stock).toFixed(2)} €</td>
+          <td><button class="btn btn-sm" style="background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);color:var(--accent)" onclick="openRestock(${p.id})">+ Réappro</button></td>
+        </tr>`}).join('')}
+      </tbody></table>
+    </div>`
+}
+
+// ─── FINANCES ──────────────────────────────────────────────────
+function renderFinances(){
+  const total=DB.commandes.reduce((a,c)=>a+c.montant,0)
+  const livrees=DB.commandes.filter(c=>c.statut==='livré').reduce((a,c)=>a+c.montant,0)
+  const encours=DB.commandes.filter(c=>c.statut!=='livré'&&c.statut!=='annulé').reduce((a,c)=>a+c.montant,0)
+  const annulees=DB.commandes.filter(c=>c.statut==='annulé').reduce((a,c)=>a+c.montant,0)
+  document.getElementById('page-content').innerHTML=`
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">CA Total</div><div class="kpi-value">${total.toFixed(2)} €</div><div class="kpi-change up">Toutes commandes</div></div>
+      <div class="kpi"><div class="kpi-label">Encaissé</div><div class="kpi-value" style="color:var(--accent)">${livrees.toFixed(2)} €</div><div class="kpi-change up">↑ Commandes livrées</div></div>
+      <div class="kpi"><div class="kpi-label">En cours</div><div class="kpi-value" style="color:#b45309">${encours.toFixed(2)} €</div><div class="kpi-change">Commandes actives</div></div>
+      <div class="kpi"><div class="kpi-label">Taux conversion</div><div class="kpi-value">${DB.commandes.length?Math.round((DB.commandes.filter(c=>c.statut==='livré').length/DB.commandes.length)*100):0}%</div><div class="kpi-change up">Livré/Total</div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Détail par commande</span><button class="btn btn-sm btn-primary" onclick="exportCmds()">📥 Export CSV</button></div>
+      <table><thead><tr><th>Réf.</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th><th>Impact CA</th></tr></thead>
+      <tbody>${DB.commandes.map(c=>`
+        <tr>
+          <td style="color:var(--accent);font-weight:700">${c.id}</td>
+          <td>${c.client}</td><td>${c.date}</td>
+          <td style="font-weight:700">${c.montant.toFixed(2)} €</td>
+          <td><span class="badge badge-${c.statut==='livré'?'green':c.statut==='annulé'?'red':'yellow'}">${c.statut}</span></td>
+          <td style="color:${c.statut==='annulé'?'var(--red)':'var(--accent)'};font-weight:600">${c.statut==='annulé'?'−':'+'}${c.montant.toFixed(2)} €</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`
+}
+
+// ─── PROMOS ────────────────────────────────────────────────────
+function renderPromo(){
+  document.getElementById('page-content').innerHTML=`
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Codes promotionnels (${DB.promos.length})</span></div>
+      <table><thead><tr><th>Code</th><th>Réduction</th><th>Utilisations</th><th>Actif</th><th>Actions</th></tr></thead>
+      <tbody>${DB.promos.map(p=>`
+        <tr>
+          <td><strong style="font-size:14px;letter-spacing:.05em;color:var(--accent)">${p.code}</strong></td>
+          <td><span class="badge badge-green">${p.reduction}${p.type}</span></td>
+          <td>${p.utilisations}</td>
+          <td><label style="cursor:pointer"><input type="checkbox" ${p.actif?'checked':''} onchange="togglePromo(${p.id},this.checked)" style="accent-color:var(--accent)"> Actif</label></td>
+          <td><button class="btn btn-sm btn-danger" onclick="deletePromo(${p.id})">🗑️</button></td>
+        </tr>`).join('')}</tbody>
+    </table></div>`
+}
+function togglePromo(id,v){const p=DB.promos.find(p=>p.id===id);if(p){p.actif=v;save(DB);toast('Mise à jour','success')}}
+function deletePromo(id){if(!confirm('Supprimer ce code ?'))return;DB.promos=DB.promos.filter(p=>p.id!==id);save(DB);renderPromo();toast('Code supprimé','success')}
+function openAddPromo(){
+  document.getElementById('modal-title').textContent='Nouveau code promo'
+  document.getElementById('modal-body').innerHTML=`
+    <div class="fg"><label class="fl">Code *</label><input id="pcode" class="fi" placeholder="PROVENCE10" style="text-transform:uppercase"></div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Réduction *</label><input id="pred" class="fi" type="number" min="1" placeholder="10"></div>
+      <div class="fg"><label class="fl">Type</label><select id="ptype" class="fi"><option>%</option><option>€</option></select></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" onclick="savePromo()">💾 Créer</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+}
+function savePromo(){
+  const code=document.getElementById('pcode').value.trim().toUpperCase()
+  if(!code){toast('Code requis','error');return}
+  DB.promos.push({id:++DB.nextId,code,reduction:parseInt(document.getElementById('pred').value)||10,type:document.getElementById('ptype').value,actif:true,utilisations:0})
+  save(DB);closeModal();renderPromo();toast('Code créé ✅','success')
+}
+
+// ─── CONFIG ────────────────────────────────────────────────────
+function renderConfig(){
+  const c=DB.config
+  document.getElementById('page-content').innerHTML=`
+    <div style="max-width:600px">
+      <div class="table-card"><div class="modal-body" style="padding:1.5rem">
+        <div class="fg"><label class="fl">Nom de la boutique</label><input id="cnom" class="fi" value="${c.nom}"></div>
+        <div class="fg"><label class="fl">Email de contact</label><input id="cemail" class="fi" value="${c.email}"></div>
+        <div class="form-row">
+          <div class="fg"><label class="fl">Frais de livraison (€)</label><input id="cfrais" class="fi" type="number" step="0.1" value="${c.fraisLivraison}"></div>
+          <div class="fg"><label class="fl">Livraison gratuite dès (€)</label><input id="cgratuite" class="fi" type="number" value="${c.livraisonGratuite}"></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveConfig()">💾 Sauvegarder la configuration</button>
+      </div></div>
+    </div>`
+}
+function saveConfig(){
+  DB.config={nom:document.getElementById('cnom')?.value||DB.config.nom,email:document.getElementById('cemail')?.value||DB.config.email,fraisLivraison:parseFloat(document.getElementById('cfrais')?.value)||DB.config.fraisLivraison,livraisonGratuite:parseInt(document.getElementById('cgratuite')?.value)||DB.config.livraisonGratuite}
+  save(DB);toast('Configuration sauvegardée ✅','success')
+}
+
+// ─── UTILS ─────────────────────────────────────────────────────
+function openModal(){document.getElementById('modal').style.display='flex'}
+function closeModal(){document.getElementById('modal').style.display='none'}
+function closeModalOut(e){if(e.target===document.getElementById('modal'))closeModal()}
+function toast(msg,type='success'){
+  const t=document.getElementById('toast')
+  t.textContent=msg;t.className=`toast toast-${type} show`
+  setTimeout(()=>t.classList.remove('show'),3000)
+}
+</script>
+</body>
+</html>

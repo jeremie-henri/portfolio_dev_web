@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Le Jardin Secret</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0907;--sidebar:#100e0b;--card:#1a1510;--gold:#c9a84c;--gold2:rgba(201,168,76,0.12);--text:#f4efe6;--muted:#8a7f6e;--border:rgba(201,168,76,0.1);--green:#16a34a;--red:#dc2626}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;display:flex;min-height:100vh}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:380px;text-align:center}
+.login-logo{font-family:'Syne',sans-serif;font-size:1.3rem;color:var(--gold);margin-bottom:0.25rem}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:2rem}
+.login-input{width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14px;outline:none;margin-bottom:10px}
+.login-btn{width:100%;padding:12px;background:var(--gold);color:#0a0907;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.login-hint{font-size:11px;color:var(--muted);margin-top:12px}
+.login-err{color:#ef4444;font-size:12px;margin-top:8px;display:none}
+
+/* LAYOUT */
+.sidebar{width:220px;background:var(--sidebar);border-right:1px solid var(--border);padding:1.5rem 1rem;display:flex;flex-direction:column;gap:4px;flex-shrink:0;height:100vh;position:sticky;top:0;overflow-y:auto}
+.sidebar-logo{font-family:'Syne',sans-serif;font-size:1rem;color:var(--gold);padding:0.5rem 0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.sidebar-logo span{font-size:18px}
+.nav-section{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);padding:0.75rem 0.75rem 0.4rem;margin-top:0.5rem}
+.nav-item{display:flex;align-items:center;gap:9px;padding:0.6rem 0.75rem;border-radius:8px;cursor:pointer;color:var(--muted);font-size:13px;transition:all .2s;border:none;background:none;font-family:inherit;width:100%;text-align:left}
+.nav-item:hover{background:rgba(201,168,76,0.06);color:var(--text)}
+.nav-item.active{background:var(--gold2);color:var(--gold);border:1px solid rgba(201,168,76,0.2)}
+.nav-item .icon{font-size:15px;width:18px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--gold);color:#0a0907;font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px}
+.sidebar-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:1rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(10,9,7,0.8);backdrop-filter:blur(8px)}
+.topbar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;color:var(--text)}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.content{flex:1;overflow-y:auto;padding:2rem}
+
+/* CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:1.5rem}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem}
+.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.kpi-value{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:700;color:var(--gold)}
+.kpi-change{font-size:12px;color:var(--green);margin-top:3px}
+
+/* TABLE */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem}
+.table-header{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.table-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--text)}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 1.1rem;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;background:rgba(255,255,255,0.02)}
+td{padding:11px 1.1rem;border-top:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:hover td{background:rgba(201,168,76,0.03)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600}
+.badge-green{background:rgba(22,163,74,0.12);color:#16a34a}
+.badge-yellow{background:rgba(234,179,8,0.12);color:#ca8a04}
+.badge-red{background:rgba(220,38,38,0.12);color:#dc2626}
+.badge-blue{background:rgba(59,130,246,0.12);color:#3b82f6}
+
+/* FORM / MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-family:'Syne',sans-serif;font-weight:700;color:var(--gold)}
+.modal-body{padding:1.5rem;display:flex;flex-direction:column;gap:12px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fi{padding:10px 13px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s;width:100%}
+.fi:focus{border-color:var(--gold)}
+.fi::placeholder{color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:opacity .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-gold{background:var(--gold);color:#0a0907}
+.btn-gold:hover{opacity:.85}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-danger{background:rgba(220,38,38,.12);color:#dc2626;border:1px solid rgba(220,38,38,.2)}
+.btn-danger:hover{background:rgba(220,38,38,.2)}
+.btn-sm{padding:5px 11px;font-size:11px;border-radius:6px}
+
+/* TOGGLE */
+.toggle{display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:3px}
+.toggle button{padding:5px 14px;border-radius:6px;font-size:12px;font-family:inherit;border:none;cursor:pointer;transition:all .2s;color:var(--muted);background:none}
+.toggle button.active{background:var(--gold);color:#0a0907;font-weight:700}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-success{background:#16a34a;color:white}
+.toast-error{background:#dc2626;color:white}
+
+/* HORAIRES */
+.horaires-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.horaire-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem}
+.horaire-day{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:8px;font-weight:600}
+.horaire-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+
+/* SEARCH */
+.search-input{padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;outline:none;width:200px}
+.search-input::placeholder{color:var(--muted)}
+
+/* CALENDRIER */
+.cal-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:10px;flex-wrap:wrap}
+.cal-month{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;color:var(--text);min-width:170px;text-align:center;text-transform:capitalize}
+.cal-arrow{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;font-size:15px;display:inline-flex;align-items:center;justify-content:center;transition:all .2s}
+.cal-arrow:hover{border-color:var(--gold);color:var(--gold)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dow{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:center;padding:4px 0;font-weight:600}
+.cal-cell{min-height:78px;border:1px solid var(--border);border-radius:8px;padding:6px;cursor:pointer;background:rgba(255,255,255,0.015);transition:all .15s;display:flex;flex-direction:column;gap:3px;overflow:hidden}
+.cal-cell:hover{border-color:var(--gold)}
+.cal-cell.empty{background:none;border-color:transparent;cursor:default}
+.cal-cell.today{border-color:rgba(201,168,76,0.45)}
+.cal-cell.selected{background:var(--gold2);border-color:var(--gold)}
+.cal-daynum{font-size:12px;font-weight:600;color:var(--text)}
+.cal-cell.today .cal-daynum{color:var(--gold)}
+.cal-chip{font-size:9px;padding:1px 5px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
+.cal-more{font-size:9px;color:var(--muted);margin-top:auto}
+.cal-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:3px}
+@media(max-width:768px){
+  .cal-cell{min-height:54px;padding:4px}
+  .cal-chip{display:none}
+  .cal-grid{gap:3px}
+}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:3rem;color:var(--muted)}
+.empty-state div{font-size:2.5rem;margin-bottom:1rem}
+
+@media(max-width:768px){
+  body{flex-direction:column}
+  .sidebar{width:100%;height:auto;position:sticky;top:0;z-index:400;flex-direction:row;align-items:center;gap:6px;padding:.6rem .75rem;overflow-x:auto;overflow-y:hidden;border-right:none;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+  .sidebar-logo{display:none}
+  .nav-section{display:none}
+  .nav-item{flex-shrink:0;width:auto;font-size:12px;padding:.45rem .6rem;white-space:nowrap}
+  .sidebar-footer{margin-top:0;padding-top:0;border-top:none;display:flex;gap:6px;flex-shrink:0}
+  .content{padding:1rem}
+  .topbar{padding:.75rem 1rem}
+  .topbar-actions{gap:4px}
+  .table-card{overflow-x:auto}
+  table{min-width:480px}
+  .form-row{grid-template-columns:1fr}
+  .kpi-value{font-size:1.3rem}
+  .horaires-grid{grid-template-columns:repeat(2,1fr)}
+}
+select{background:var(--card)!important;color:var(--text)!important;color-scheme:dark;border:1px solid var(--border)!important;border-radius:8px}
+select option{background:var(--card)!important;color:var(--text)!important}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo"><span>🍽️</span> Le Jardin Secret</div>
+    <div class="login-sub">Panel d'administration</div>
+    <input id="l-pass" type="password" class="login-input" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Accéder au panneau</button>
+    <div class="login-hint">Mot de passe demo : <strong style="color:var(--gold)">admin123</strong></div>
+    <div class="login-err" id="login-err">Mot de passe incorrect</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo"><span>🍽️</span> Jardin Secret</div>
+  <div class="nav-section">Gestion</div>
+  <button class="nav-item active" onclick="showPage('reservations',this)"><span class="icon">📅</span> Réservations <span class="nav-badge" id="res-badge">0</span></button>
+  <button class="nav-item" onclick="showPage('menu',this)"><span class="icon">🍽️</span> Menu & Carte</button>
+  <button class="nav-item" onclick="showPage('horaires',this)"><span class="icon">🕐</span> Horaires</button>
+  <button class="nav-item" onclick="showPage('galerie',this)"><span class="icon">🖼️</span> Galerie</button>
+  <div class="nav-section">Paramètres</div>
+  <button class="nav-item" onclick="showPage('infos',this)"><span class="icon">ℹ️</span> Infos du restaurant</button>
+  <div class="sidebar-footer">
+    <button class="nav-item" onclick="logout()"><span class="icon">🚪</span> Déconnexion</button>
+    <a href="restaurant.html" target="_blank" class="nav-item" style="text-decoration:none"><span class="icon">👁️</span> Voir le site</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main" id="main-area" style="display:none">
+  <div class="topbar">
+    <span class="topbar-title" id="page-title">Réservations</span>
+    <div class="topbar-actions">
+      <span id="date-display" style="font-size:12px;color:var(--muted)"></span>
+      <button class="btn btn-gold btn-sm" id="topbar-action" onclick="topbarAction()">+ Ajouter</button>
+    </div>
+  </div>
+  <div class="content" id="page-content"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOut(event)">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-title">Titre</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STORAGE ───────────────────────────────────────────────────
+const KEY = 'js_admin_v2'
+function load() {
+  let d
+  try { d = JSON.parse(localStorage.getItem(KEY)) } catch { return initData() }
+  if (!d) return initData()
+  // Migration : ancienne galerie par défaut (photo du chef) → resynchroniser sur la galerie du site
+  if (Array.isArray(d.gallery) && d.gallery.some(g => g.url && g.url.includes('1577219491135'))) {
+    d.gallery = initData().gallery
+    localStorage.setItem(KEY, JSON.stringify(d))
+  }
+  return d
+}
+function save(d) { localStorage.setItem(KEY, JSON.stringify(d)) }
+
+function initData() {
+  return {
+    loggedIn: false,
+    infos: { name: 'Le Jardin Secret', address: '14 rue des Abbesses, 75018 Paris', phone: '01 42 54 00 00', email: 'contact@lejardinsecret.fr' },
+    horaires: [
+      { day: 'Lundi', midi: '', soir: '', closed: true },
+      { day: 'Mardi', midi: '12:00–14:30', soir: '19:00–22:30', closed: false },
+      { day: 'Mercredi', midi: '12:00–14:30', soir: '19:00–22:30', closed: false },
+      { day: 'Jeudi', midi: '12:00–14:30', soir: '19:00–22:30', closed: false },
+      { day: 'Vendredi', midi: '12:00–14:30', soir: '19:00–23:00', closed: false },
+      { day: 'Samedi', midi: '12:00–14:30', soir: '19:00–23:00', closed: false },
+      { day: 'Dimanche', midi: '12:00–15:00', soir: '', closed: false },
+    ],
+    menu: [
+      { id:1, cat:'Entrées', name:'Foie Gras Maison', desc:'Mi-cuit au torchon, chutney de figues', price:'24', badge:'Signature', active:true },
+      { id:2, cat:'Entrées', name:'Velouté de Châtaignes', desc:'Espuma de lard fumé, noisettes', price:'18', badge:'Saison', active:true },
+      { id:3, cat:'Plats', name:'Sole Meunière', desc:'Beurre noisette, câpres, légumes', price:'38', badge:'Chef', active:true },
+      { id:4, cat:'Plats', name:'Pigeon de Bresse Rôti', desc:'Jus corsé betterave, gnocchi', price:'46', badge:'Signature', active:true },
+      { id:5, cat:'Desserts', name:'Soufflé Grand Marnier', desc:'Crème anglaise vanille Madagascar', price:'16', badge:'Incontournable', active:true },
+      { id:6, cat:'Desserts', name:'Tarte Tatin', desc:'Pommes caramélisées, glace vanille', price:'14', badge:'', active:true },
+    ],
+    reservations: [
+      { id:'RES-ABC123', name:'Marie Dupont', email:'marie@email.com', phone:'06 12 34 56 78', date:'2026-06-15', time:'20:00', guests:'2 personnes', occasion:'Anniversaire', status:'confirmé', notes:'' },
+      { id:'RES-DEF456', name:'Jean Martin', email:'jean@email.com', phone:'06 87 65 43 21', date:'2026-06-16', time:'12:30', guests:'4 personnes', occasion:'', status:'confirmé', notes:'Allergie fruits à coque' },
+      { id:'RES-GHI789', name:'Sophie Blanc', email:'sophie@email.com', phone:'', date:'2026-06-16', time:'20:30', guests:'2 personnes', occasion:'Demande en mariage', status:'en attente', notes:'Champagne prévu' },
+    ],
+    gallery: [
+      { id:1, url:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=70', caption:'Salle principale', active:true },
+      { id:2, url:'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=70', caption:'Foie gras signature', active:true },
+      { id:3, url:'https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=70', caption:'Sole meunière', active:true },
+      { id:4, url:'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&q=70', caption:'Dessert signature', active:true },
+      { id:5, url:'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=70', caption:'En cuisine', active:true },
+    ],
+    nextId: 100,
+  }
+}
+
+let DB = load()
+let currentPage = 'reservations'
+let calYear, calMonth, calSelected
+
+// ─── AUTH ──────────────────────────────────────────────────────
+function doLogin() {
+  const pass = document.getElementById('l-pass').value
+  if (pass === 'admin123') {
+    DB.loggedIn = true; save(DB)
+    document.getElementById('login-screen').style.display = 'none'
+    document.getElementById('main-area').style.display = 'flex'
+    renderPage('reservations')
+    updateBadges()
+    document.getElementById('date-display').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' })
+  } else {
+    document.getElementById('login-err').style.display = 'block'
+  }
+}
+function logout() { DB.loggedIn = false; save(DB); location.reload() }
+if (DB.loggedIn) {
+  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('main-area').style.display = 'flex'
+  renderPage('reservations')
+  updateBadges()
+  document.getElementById('date-display').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' })
+}
+
+// ─── NAVIGATION ────────────────────────────────────────────────
+function showPage(page, el) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'))
+  el.classList.add('active')
+  currentPage = page
+  renderPage(page)
+}
+function updateBadges() {
+  const pending = DB.reservations.filter(r => r.status === 'en attente').length
+  document.getElementById('res-badge').textContent = pending
+  document.getElementById('res-badge').style.display = pending > 0 ? 'inline' : 'none'
+}
+
+// ─── PAGES ─────────────────────────────────────────────────────
+function renderPage(page) {
+  const titles = { reservations:'Réservations', menu:'Menu & Carte', horaires:'Horaires d\'ouverture', galerie:'Galerie photos', infos:'Informations du restaurant' }
+  document.getElementById('page-title').textContent = titles[page] || page
+  const actions = { reservations:'Exporter CSV', menu:'+ Ajouter un plat', horaires:'Sauvegarder', galerie:'+ Ajouter photo', infos:'Sauvegarder' }
+  document.getElementById('topbar-action').textContent = actions[page] || '+ Ajouter'
+  document.getElementById('topbar-action').style.display = actions[page] ? 'inline-flex' : 'none'
+
+  const pages = { reservations: renderReservations, menu: renderMenu, horaires: renderHoraires, galerie: renderGalerie, infos: renderInfos }
+  if (pages[page]) pages[page]()
+}
+
+function topbarAction() {
+  const actions = { reservations: exportCSV, menu: openAddPlat, horaires: saveHoraires, galerie: openAddPhoto, infos: saveInfos }
+  if (actions[currentPage]) actions[currentPage]()
+}
+
+// ─── RÉSERVATIONS ──────────────────────────────────────────────
+function renderReservations() {
+  const today = new Date()
+  const todayIso = today.toISOString().split('T')[0]
+  if (calYear === undefined) {
+    // Atterrir sur le mois du jour ; sinon sur le mois de la prochaine réservation
+    const dates = DB.reservations.map(r => r.date).filter(Boolean).sort()
+    const hasThisMonth = dates.some(d => d.slice(0,7) === todayIso.slice(0,7))
+    const base = hasThisMonth || !dates.length ? today : new Date((dates.find(d => d >= todayIso) || dates[dates.length-1]) + 'T00:00:00')
+    calYear = base.getFullYear(); calMonth = base.getMonth()
+    calSelected = hasThisMonth || !dates.length ? todayIso : (dates.find(d => d >= todayIso) || dates[dates.length-1])
+  }
+  if (!calSelected) calSelected = todayIso
+  const pending = DB.reservations.filter(r => r.status === 'en attente')
+  document.getElementById('page-content').innerHTML = `
+    ${pending.length > 0 ? `
+    <div class="table-card" style="border-color:rgba(234,179,8,0.3)">
+      <div class="table-header"><span class="table-title">⏳ En attente de confirmation (${pending.length})</span></div>
+      <table><thead><tr><th>Réf.</th><th>Client</th><th>Date</th><th>Heure</th><th>Couverts</th><th>Occasion</th><th>Actions</th></tr></thead>
+      <tbody>${pending.map(r => `
+        <tr>
+          <td style="color:var(--gold);font-weight:600;font-size:12px">${r.id}</td>
+          <td><strong>${r.name}</strong><br><span style="color:var(--muted);font-size:11px">${r.email||r.phone||''}</span></td>
+          <td>${r.date}</td><td>${r.time}</td><td>${r.guests}</td>
+          <td>${r.occasion||'—'}</td>
+          <td style="white-space:nowrap">
+            <button class="btn btn-sm" style="background:rgba(22,163,74,.12);color:#16a34a;border:1px solid rgba(22,163,74,.2)" onclick="updateResStatus('${r.id}','confirmé')">✅ Confirmer</button>
+            <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="updateResStatus('${r.id}','annulé')">✕ Annuler</button>
+          </td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>` : ''}
+
+    <div class="cal-wrap">
+      <div class="cal-head">
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="cal-arrow" onclick="calShift(-1)">‹</button>
+          <span class="cal-month">${new Date(calYear,calMonth,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</span>
+          <button class="cal-arrow" onclick="calShift(1)">›</button>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="openAddRes()">+ Nouvelle réservation</button>
+      </div>
+      <div class="cal-grid">
+        ${['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+        ${renderCalCells()}
+      </div>
+    </div>
+    <div id="day-panel">${renderDayPanel()}</div>`
+}
+function renderCalCells() {
+  const first = new Date(calYear, calMonth, 1)
+  const startDow = (first.getDay()+6)%7
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate()
+  const todayIso = new Date().toISOString().split('T')[0]
+  let cells = ''
+  for (let i=0;i<startDow;i++) cells += '<div class="cal-cell empty"></div>'
+  for (let d=1;d<=daysInMonth;d++) {
+    const iso = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+    const dayRes = DB.reservations.filter(r => r.date === iso).sort((a,b)=>a.time.localeCompare(b.time))
+    const cls = ['cal-cell']
+    if (iso===todayIso) cls.push('today')
+    if (iso===calSelected) cls.push('selected')
+    const chips = dayRes.slice(0,2).map(r => {
+      const c = r.status==='confirmé'?'green':r.status==='annulé'?'red':'yellow'
+      return `<span class="cal-chip badge-${c}">${r.time} ${r.name.split(' ')[0]}</span>`
+    }).join('')
+    const dots = dayRes.length ? `<span class="cal-more">${dayRes.map(r=>`<span class="cal-dot badge-${r.status==='confirmé'?'green':r.status==='annulé'?'red':'yellow'}" style="background:${r.status==='confirmé'?'#16a34a':r.status==='annulé'?'#dc2626':'#ca8a04'}"></span>`).join('')}</span>` : ''
+    const more = dayRes.length>2 ? `<span class="cal-more">+${dayRes.length-2} autre${dayRes.length-2>1?'s':''}</span>` : ''
+    cells += `<div class="${cls.join(' ')}" onclick="selectCalDay('${iso}')"><span class="cal-daynum">${d}</span>${chips}${more}${chips?'':dots}</div>`
+  }
+  return cells
+}
+function renderDayPanel() {
+  const dayRes = DB.reservations.filter(r => r.date === calSelected).sort((a,b)=>a.time.localeCompare(b.time))
+  const label = new Date(calSelected+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})
+  if (!dayRes.length) return `<div class="table-card"><div class="empty-state"><div>🗓️</div>Aucune réservation le ${label}<br><button class="btn btn-outline btn-sm" style="margin-top:1rem" onclick="openAddRes('${calSelected}')">+ Ajouter pour ce jour</button></div></div>`
+  return `<div class="table-card">
+    <div class="table-header"><span class="table-title" style="text-transform:capitalize">📅 ${label} — ${dayRes.length} réservation${dayRes.length>1?'s':''}</span></div>
+    <table><thead><tr><th>Réf.</th><th>Client</th><th>Heure</th><th>Couverts</th><th>Occasion</th><th>Notes</th><th>Statut</th><th>Actions</th></tr></thead>
+    <tbody>${dayRes.map(r => `
+      <tr>
+        <td style="color:var(--gold);font-weight:600;font-size:12px">${r.id}</td>
+        <td><strong>${r.name}</strong><br><span style="color:var(--muted);font-size:11px">${r.email||r.phone||''}</span></td>
+        <td>${r.time}</td><td>${r.guests}</td><td>${r.occasion||'—'}</td>
+        <td style="max-width:150px;font-size:12px;color:var(--muted)">${r.notes||'—'}</td>
+        <td><span class="badge badge-${r.status==='confirmé'?'green':r.status==='annulé'?'red':'yellow'}">${r.status}</span></td>
+        <td style="white-space:nowrap">
+          <select onchange="updateResStatus('${r.id}',this.value)" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;padding:4px 8px;outline:none">
+            <option ${r.status==='confirmé'?'selected':''}>confirmé</option>
+            <option ${r.status==='en attente'?'selected':''}>en attente</option>
+            <option ${r.status==='annulé'?'selected':''}>annulé</option>
+          </select>
+          <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="deleteRes('${r.id}')">🗑️</button>
+        </td>
+      </tr>`).join('')}</tbody></table>
+  </div>`
+}
+function selectCalDay(iso) { calSelected = iso; renderReservations() }
+function calShift(delta) {
+  calMonth += delta
+  if (calMonth < 0) { calMonth = 11; calYear-- }
+  if (calMonth > 11) { calMonth = 0; calYear++ }
+  renderReservations()
+}
+function renderResRows(list) {
+  if (!list.length) return '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem">Aucune réservation</td></tr>'
+  return list.map(r => `
+    <tr>
+      <td style="color:var(--gold);font-weight:600;font-size:12px">${r.id}</td>
+      <td><strong>${r.name}</strong><br><span style="color:var(--muted);font-size:11px">${r.email}</span></td>
+      <td>${r.date}</td><td>${r.time}</td><td>${r.guests}</td>
+      <td>${r.occasion||'—'}</td>
+      <td style="max-width:150px;font-size:12px;color:var(--muted)">${r.notes||'—'}</td>
+      <td><span class="badge badge-${r.status==='confirmé'?'green':r.status==='annulé'?'red':'yellow'}">${r.status}</span></td>
+      <td>
+        <select onchange="updateResStatus('${r.id}',this.value)" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;padding:4px 8px;outline:none">
+          <option ${r.status==='confirmé'?'selected':''}>confirmé</option>
+          <option ${r.status==='en attente'?'selected':''}>en attente</option>
+          <option ${r.status==='annulé'?'selected':''}>annulé</option>
+        </select>
+        <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="deleteRes('${r.id}')">🗑️</button>
+      </td>
+    </tr>`).join('')
+}
+function filterRes(q) {
+  const filtered = q ? DB.reservations.filter(r => r.name.toLowerCase().includes(q.toLowerCase()) || r.email.toLowerCase().includes(q.toLowerCase()) || r.id.toLowerCase().includes(q.toLowerCase())) : DB.reservations
+  document.getElementById('res-tbody').innerHTML = renderResRows(filtered)
+}
+function updateResStatus(id, status) {
+  const r = DB.reservations.find(r => r.id === id)
+  if (r) { r.status = status; save(DB); updateBadges(); renderPage(currentPage); toast('Statut mis à jour', 'success') }
+}
+function deleteRes(id) {
+  if (!confirm('Supprimer cette réservation ?')) return
+  DB.reservations = DB.reservations.filter(r => r.id !== id); save(DB); renderPage(currentPage); toast('Réservation supprimée', 'success')
+}
+function exportCSV() {
+  const rows = [['Réf','Nom','Email','Téléphone','Date','Heure','Couverts','Occasion','Statut','Notes']]
+  DB.reservations.forEach(r => rows.push([r.id,r.name,r.email,r.phone,r.date,r.time,r.guests,r.occasion,r.status,r.notes]))
+  const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n')
+  const a = document.createElement('a')
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv)
+  a.download = 'reservations.csv'; a.click()
+  toast('Export CSV téléchargé', 'success')
+}
+function openAddRes(prefillDate) {
+  document.getElementById('modal-title').textContent = 'Nouvelle réservation'
+  const timeOpts = ['12:00','12:30','13:00','13:30','14:00','19:00','19:30','20:00','20:30','21:00','21:30']
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="fg"><label class="fl">Nom du client *</label><input id="rname" class="fi" placeholder="Nom complet"></div>
+      <div class="fg"><label class="fl">Téléphone</label><input id="rphone" class="fi" placeholder="06 00 00 00 00"></div>
+    </div>
+    <div class="fg"><label class="fl">Email</label><input id="remail" class="fi" type="email" placeholder="client@email.com"></div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Date *</label><input id="rdate" class="fi" type="date" value="${prefillDate || new Date().toISOString().split('T')[0]}"></div>
+      <div class="fg"><label class="fl">Heure *</label><select id="rtime" class="fi">${timeOpts.map(t=>`<option>${t}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Couverts *</label>
+        <select id="rguests" class="fi">${[1,2,3,4,5,6,7,8,10,12].map(n=>`<option value="${n} personne${n>1?'s':''}">${n} personne${n>1?'s':''}</option>`).join('')}</select>
+      </div>
+      <div class="fg"><label class="fl">Occasion</label><input id="roccasion" class="fi" placeholder="Ex: Anniversaire"></div>
+    </div>
+    <div class="fg"><label class="fl">Notes</label><textarea id="rnotes" class="fi" rows="2" placeholder="Allergies, demandes particulières..."></textarea></div>
+    <div class="fg"><label class="fl">Statut</label>
+      <select id="rstatus" class="fi"><option>confirmé</option><option>en attente</option></select>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn btn-gold" onclick="saveRes()">💾 Enregistrer</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+}
+function saveRes() {
+  const name = document.getElementById('rname').value.trim()
+  if (!name) { toast('Le nom est requis', 'error'); return }
+  const date = document.getElementById('rdate').value
+  if (!date) { toast('La date est requise', 'error'); return }
+  const ref = 'RES-' + Math.random().toString(36).slice(2,8).toUpperCase()
+  DB.reservations.push({
+    id: ref, name,
+    email: document.getElementById('remail').value.trim(),
+    phone: document.getElementById('rphone').value.trim(),
+    date, time: document.getElementById('rtime').value,
+    guests: document.getElementById('rguests').value,
+    occasion: document.getElementById('roccasion').value.trim(),
+    status: document.getElementById('rstatus').value,
+    notes: document.getElementById('rnotes').value.trim(),
+  })
+  // Affiche le mois et le jour de la nouvelle réservation
+  const dt = new Date(date+'T00:00:00')
+  calYear = dt.getFullYear(); calMonth = dt.getMonth(); calSelected = date
+  save(DB); closeModal(); updateBadges(); renderPage(currentPage); toast('Réservation ajoutée ✅', 'success')
+}
+
+// ─── MENU ──────────────────────────────────────────────────────
+function renderMenu() {
+  const cats = [...new Set(DB.menu.map(m => m.cat))]
+  document.getElementById('page-content').innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+      <div class="toggle" id="menu-filter">
+        <button class="active" onclick="filterMenu('',this)">Tous</button>
+        ${cats.map(c => `<button onclick="filterMenu('${c}',this)">${c}</button>`).join('')}
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Plats au menu (${DB.menu.length})</span></div>
+      <table><thead><tr><th>Plat</th><th>Catégorie</th><th>Prix</th><th>Badge</th><th>Visible</th><th>Actions</th></tr></thead>
+      <tbody id="menu-tbody">${renderMenuRows(DB.menu)}</tbody></table>
+    </div>`
+}
+function renderMenuRows(list) {
+  return list.map(m => `
+    <tr>
+      <td><strong>${m.name}</strong><br><span style="color:var(--muted);font-size:12px">${m.desc}</span></td>
+      <td><span class="badge badge-blue">${m.cat}</span></td>
+      <td style="color:var(--gold);font-weight:600">${m.price} €</td>
+      <td>${m.badge ? `<span class="badge badge-yellow">${m.badge}</span>` : '—'}</td>
+      <td><label style="cursor:pointer"><input type="checkbox" ${m.active?'checked':''} onchange="toggleMenu(${m.id},this.checked)" style="accent-color:var(--gold)"> Visible</label></td>
+      <td>
+        <button class="btn btn-sm btn-outline" onclick="openEditPlat(${m.id})">✏️</button>
+        <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="deletePlat(${m.id})">🗑️</button>
+      </td>
+    </tr>`).join('')
+}
+function filterMenu(cat, el) {
+  document.querySelectorAll('#menu-filter button').forEach(b => b.classList.remove('active')); el.classList.add('active')
+  document.getElementById('menu-tbody').innerHTML = renderMenuRows(cat ? DB.menu.filter(m => m.cat === cat) : DB.menu)
+}
+function toggleMenu(id, val) { const m = DB.menu.find(m => m.id===id); if(m){m.active=val;save(DB);toast('Visibilité mise à jour','success')} }
+function deletePlat(id) {
+  if(!confirm('Supprimer ce plat ?')) return
+  DB.menu = DB.menu.filter(m => m.id !== id); save(DB); renderMenu(); toast('Plat supprimé','success')
+}
+function openAddPlat() { openPlatModal(null) }
+function openEditPlat(id) { openPlatModal(DB.menu.find(m => m.id===id)) }
+function openPlatModal(plat) {
+  document.getElementById('modal-title').textContent = plat ? 'Modifier le plat' : 'Ajouter un plat'
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-row">
+      <div class="fg"><label class="fl">Nom *</label><input id="pname" class="fi" value="${plat?.name||''}" placeholder="Nom du plat"></div>
+      <div class="fg"><label class="fl">Catégorie *</label>
+        <select id="pcat" class="fi"><option ${plat?.cat==='Entrées'?'selected':''}>Entrées</option><option ${plat?.cat==='Plats'?'selected':''}>Plats</option><option ${plat?.cat==='Desserts'?'selected':''}>Desserts</option><option ${plat?.cat==='Vins'?'selected':''}>Vins</option></select>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Description</label><textarea id="pdesc" class="fi" rows="2">${plat?.desc||''}</textarea></div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Prix (€) *</label><input id="pprice" class="fi" type="number" step="0.5" min="0" value="${plat?.price||''}" placeholder="Ex: 24"></div>
+      <div class="fg"><label class="fl">Badge</label><input id="pbadge" class="fi" value="${plat?.badge||''}" placeholder="Ex: Signature"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn btn-gold" onclick="savePlat(${plat?.id||'null'})">💾 Sauvegarder</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+}
+function savePlat(id) {
+  const name = document.getElementById('pname').value.trim()
+  if (!name) { toast('Le nom est requis','error'); return }
+  const price = document.getElementById('pprice').value.trim()
+  if (price === '' || isNaN(parseFloat(price)) || parseFloat(price) < 0) { toast('Le prix est requis','error'); return }
+  if (id) {
+    const m = DB.menu.find(m => m.id===id)
+    Object.assign(m, { name, cat:document.getElementById('pcat').value, desc:document.getElementById('pdesc').value, price:document.getElementById('pprice').value, badge:document.getElementById('pbadge').value })
+  } else {
+    DB.menu.push({ id:++DB.nextId, name, cat:document.getElementById('pcat').value, desc:document.getElementById('pdesc').value, price:document.getElementById('pprice').value, badge:document.getElementById('pbadge').value, active:true })
+  }
+  save(DB); closeModal(); renderMenu(); toast('Plat sauvegardé ✅','success')
+}
+
+// ─── HORAIRES ──────────────────────────────────────────────────
+function renderHoraires() {
+  document.getElementById('page-content').innerHTML = `
+    <div class="horaires-grid" id="horaires-grid">
+      ${DB.horaires.map((h,i) => `
+        <div class="horaire-card">
+          <div class="horaire-day">${h.day}</div>
+          <div class="horaire-row">
+            <label style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px">
+              <input type="checkbox" ${h.closed?'checked':''} onchange="toggleClosed(${i},this.checked)" style="accent-color:var(--gold)"> Fermé
+            </label>
+          </div>
+          <div id="hours-${i}" style="display:${h.closed?'none':'block'}">
+            <div class="horaire-row" style="margin-top:8px">
+              <label class="fl" style="width:50px">Midi</label>
+              <input class="fi" style="font-size:12px;padding:6px 8px" value="${h.midi}" placeholder="12:00–14:30" onchange="updateHoraire(${i},'midi',this.value)">
+            </div>
+            <div class="horaire-row" style="margin-top:6px">
+              <label class="fl" style="width:50px">Soir</label>
+              <input class="fi" style="font-size:12px;padding:6px 8px" value="${h.soir}" placeholder="19:00–22:30" onchange="updateHoraire(${i},'soir',this.value)">
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <button class="btn btn-gold" style="margin-top:1.5rem" onclick="saveHoraires()">💾 Sauvegarder les horaires</button>`
+}
+function toggleClosed(i, val) {
+  DB.horaires[i].closed = val
+  document.getElementById('hours-'+i).style.display = val ? 'none' : 'block'
+}
+function updateHoraire(i, field, val) { DB.horaires[i][field] = val }
+function saveHoraires() { save(DB); toast('Horaires sauvegardés ✅', 'success') }
+
+// ─── GALERIE ───────────────────────────────────────────────────
+function renderGalerie() {
+  document.getElementById('page-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px" id="gallery-grid">
+      ${DB.gallery.map(g => `
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+          <img src="${g.url}" alt="${g.caption}" style="width:100%;height:160px;object-fit:cover">
+          <div style="padding:0.75rem">
+            <input class="fi" style="font-size:12px;padding:6px 8px;margin-bottom:6px" value="${g.caption}" onchange="updateCaption(${g.id},this.value)">
+            <div style="display:flex;gap:6px;align-items:center">
+              <label style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer">
+                <input type="checkbox" ${g.active?'checked':''} onchange="toggleGallery(${g.id},this.checked)" style="accent-color:var(--gold)"> Visible
+              </label>
+              <button class="btn btn-sm btn-danger" style="margin-left:auto" onclick="deleteGallery(${g.id})">🗑️</button>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`
+}
+function updateCaption(id, val) { const g = DB.gallery.find(g=>g.id===id); if(g) { g.caption=val; save(DB) } }
+function toggleGallery(id, val) { const g = DB.gallery.find(g=>g.id===id); if(g){ g.active=val; save(DB); toast('Visibilité mise à jour','success') } }
+function deleteGallery(id) {
+  if(!confirm('Supprimer cette photo ?')) return
+  DB.gallery = DB.gallery.filter(g=>g.id!==id); save(DB); renderGalerie(); toast('Photo supprimée','success')
+}
+function openAddPhoto() {
+  document.getElementById('modal-title').textContent = 'Ajouter une photo'
+  document.getElementById('modal-body').innerHTML = `
+    <div class="fg"><label class="fl">URL de l'image *</label><input id="gurl" class="fi" placeholder="https://..."></div>
+    <div class="fg"><label class="fl">Légende</label><input id="gcap" class="fi" placeholder="Description de la photo"></div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn btn-gold" onclick="savePhoto()">💾 Ajouter</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+}
+function savePhoto() {
+  const url = document.getElementById('gurl').value.trim()
+  if (!url) { toast('URL requise','error'); return }
+  DB.gallery.push({ id:++DB.nextId, url, caption:document.getElementById('gcap').value, active:true })
+  save(DB); closeModal(); renderGalerie(); toast('Photo ajoutée ✅','success')
+}
+
+// ─── INFOS ─────────────────────────────────────────────────────
+function renderInfos() {
+  const i = DB.infos
+  document.getElementById('page-content').innerHTML = `
+    <div style="max-width:600px">
+      <div class="table-card"><div class="modal-body" style="padding:1.5rem">
+        <div class="fg"><label class="fl">Nom du restaurant</label><input id="iname" class="fi" value="${i.name}"></div>
+        <div class="fg"><label class="fl">Adresse</label><input id="iaddress" class="fi" value="${i.address}"></div>
+        <div class="form-row">
+          <div class="fg"><label class="fl">Téléphone</label><input id="iphone" class="fi" value="${i.phone}"></div>
+          <div class="fg"><label class="fl">Email</label><input id="iemail" class="fi" value="${i.email}"></div>
+        </div>
+        <button class="btn btn-gold" onclick="saveInfos()">💾 Sauvegarder</button>
+      </div></div>
+    </div>`
+}
+function saveInfos() {
+  DB.infos = { name:document.getElementById('iname')?.value||DB.infos.name, address:document.getElementById('iaddress')?.value||DB.infos.address, phone:document.getElementById('iphone')?.value||DB.infos.phone, email:document.getElementById('iemail')?.value||DB.infos.email }
+  save(DB); toast('Informations sauvegardées ✅','success')
+}
+
+// ─── MODAL ─────────────────────────────────────────────────────
+function openModal() { document.getElementById('modal').style.display = 'flex' }
+function closeModal() { document.getElementById('modal').style.display = 'none' }
+function closeModalOut(e) { if(e.target===document.getElementById('modal')) closeModal() }
+
+// ─── TOAST ─────────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const t = document.getElementById('toast')
+  t.textContent = (type==='success'?'✅ ':'❌ ') + msg
+  t.className = `toast toast-${type} show`
+  setTimeout(() => t.classList.remove('show'), 3000)
+}
+</script>
+</body>
+</html>

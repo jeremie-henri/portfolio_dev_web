@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Salon Éclat</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f8f8f8;--sidebar:#ffffff;--card:#ffffff;--accent:#111111;--accent2:#f2f2f2;--text:#111111;--muted:#888888;--border:#e5e5e5;--green:#2d6a4f;--red:#9b2226;--gold:#b5804a}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;display:flex;min-height:100vh}
+#login-screen{position:fixed;inset:0;background:#f8f8f8;display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:white;border:1px solid var(--border);border-radius:20px;padding:2.5rem;width:380px;text-align:center;box-shadow:0 20px 60px rgba(124,58,237,0.12)}
+.login-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;font-style:italic;margin-bottom:.25rem;color:var(--text)}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:2rem}
+.login-input{width:100%;padding:11px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;outline:none;margin-bottom:10px}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{width:100%;padding:12px;background:var(--accent);color:white;border:none;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.04em}
+.login-hint{font-size:11px;color:var(--muted);margin-top:12px}
+
+.sidebar{width:220px;background:var(--sidebar);border-right:1px solid var(--border);padding:1.5rem 1rem;display:flex;flex-direction:column;gap:4px;flex-shrink:0;height:100vh;position:sticky;top:0;overflow-y:auto}
+.sidebar-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;font-style:italic;padding:.5rem .75rem;margin-bottom:1rem;color:var(--text)}
+.nav-section{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.75rem .75rem .4rem;margin-top:.5rem}
+.nav-item{display:flex;align-items:center;gap:9px;padding:.6rem .75rem;border-radius:10px;cursor:pointer;color:var(--muted);font-size:13px;transition:all .2s;border:none;background:none;font-family:inherit;width:100%;text-align:left}
+.nav-item:hover{background:var(--accent2);color:var(--accent)}
+.nav-item.active{background:var(--accent2);color:var(--accent);font-weight:600}
+.nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px}
+.sidebar-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border)}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:1rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:white;box-shadow:0 1px 6px rgba(0,0,0,0.04)}
+.topbar-title{font-family:'Playfair Display',serif;font-weight:800;font-size:1.05rem}
+.content{flex:1;overflow-y:auto;padding:1.5rem 2rem}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:1.5rem}
+.kpi{background:white;border:1px solid var(--border);border-radius:14px;padding:1.1rem}
+.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.kpi-value{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:800}
+.kpi-change{font-size:12px;color:var(--muted);margin-top:3px}
+
+.table-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem}
+.table-header{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
+.table-title{font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 1.1rem;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;background:rgba(0,0,0,.02)}
+td{padding:11px 1.1rem;border-top:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:hover td{background:rgba(124,58,237,.02)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600}
+.b-green{background:rgba(5,150,105,.1);color:#059669}
+.b-yellow{background:rgba(217,119,6,.1);color:#d97706}
+.b-red{background:rgba(220,38,38,.1);color:#dc2626}
+.b-purple{background:rgba(0,0,0,.06);color:#444}
+.b-blue{background:rgba(37,99,235,.1);color:#2563eb}
+
+/* AGENDA */
+.agenda-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem}
+.agenda-day-header{text-align:center;font-size:10px;font-weight:600;text-transform:uppercase;color:var(--muted);padding:4px}
+.agenda-day{min-height:100px;background:white;border:1px solid var(--border);border-radius:8px;padding:6px;font-size:11px;overflow:hidden}
+.agenda-day.today{border-color:var(--accent);background:var(--accent2)}
+.agenda-rdv{background:var(--accent2);border-left:2px solid var(--accent);border-radius:4px;padding:3px 5px;margin-bottom:3px;cursor:pointer;font-size:10px;color:var(--accent);font-weight:600}
+.agenda-rdv:hover{background:rgba(124,58,237,.2)}
+.agenda-rdv.annulé{background:rgba(220,38,38,.08);border-color:#dc2626;color:#dc2626}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal{background:white;border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-family:'Playfair Display',serif;font-weight:800}
+.modal-body{padding:1.5rem;display:flex;flex-direction:column;gap:12px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fi{padding:10px 13px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s;width:100%}
+.fi:focus{border-color:var(--accent);background:white}
+.fi::placeholder{color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{padding:8px 16px;border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent);color:white}
+.btn-primary:hover{opacity:.9}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:rgba(220,38,38,.08);color:#dc2626;border:1px solid rgba(220,38,38,.2)}
+.btn-sm{padding:5px 11px;font-size:11px;border-radius:7px}
+.search-input{padding:8px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;outline:none;width:200px}
+
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-success{background:var(--accent);color:white}
+.toast-error{background:#dc2626;color:white}
+
+@media(max-width:768px){
+  body{flex-direction:column}
+  .sidebar{width:100%;height:auto;position:sticky;top:0;z-index:400;flex-direction:row;align-items:center;gap:6px;padding:.6rem .75rem;overflow-x:auto;overflow-y:hidden;border-right:none;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+  .sidebar-logo{display:none}
+  .nav-section{display:none}
+  .nav-item{flex-shrink:0;width:auto;font-size:12px;padding:.45rem .6rem;white-space:nowrap}
+  .sidebar-footer{margin-top:0;padding-top:0;border-top:none;display:flex;gap:6px;flex-shrink:0}
+  .content{padding:1rem;overflow-x:hidden}
+  .topbar{padding:.75rem 1rem}
+  .topbar-actions{gap:4px}
+  .agenda-grid,.agenda-day-header:nth-child(n){min-width:0}
+  .agenda-scroll{overflow-x:auto}
+  .agenda-grid{min-width:640px}
+  .table-card{overflow-x:auto}
+  table{min-width:480px}
+  .form-row{grid-template-columns:1fr}
+  .kpi-value{font-size:1.3rem}
+}
+select{background:var(--bg)!important;color:var(--text)!important;color-scheme:light;border:1.5px solid var(--border)!important;border-radius:8px}
+select option{background:white!important;color:var(--text)!important}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">✂️ Salon Éclat</div>
+    <div class="login-sub">Panneau d'administration</div>
+    <input id="l-pass" type="password" class="login-input" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Accéder au panneau</button>
+    <div class="login-hint">Mot de passe demo : <strong style="color:var(--accent)">admin123</strong></div>
+  </div>
+</div>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">✨ Salon Éclat</div>
+  <div class="nav-section">Agenda</div>
+  <button class="nav-item active" onclick="showPage('dashboard',this)"><span>📊</span> Vue d'ensemble</button>
+  <button class="nav-item" onclick="showPage('agenda',this)"><span>📅</span> Agenda semaine</button>
+  <button class="nav-item" onclick="showPage('rdv',this)"><span>🗓️</span> Rendez-vous <span class="nav-badge" id="rdv-badge">0</span></button>
+  <div class="nav-section">Gestion</div>
+  <button class="nav-item" onclick="showPage('equipe',this)"><span>👩</span> Équipe</button>
+  <button class="nav-item" onclick="showPage('services',this)"><span>✂️</span> Prestations</button>
+  <button class="nav-item" onclick="showPage('horaires',this)"><span>🕐</span> Horaires</button>
+  <div class="sidebar-footer">
+    <button class="nav-item" onclick="logout()"><span>🚪</span> Déconnexion</button>
+    <a href="rdv.html" target="_blank" class="nav-item" style="text-decoration:none"><span>👁️</span> Voir le site</a>
+  </div>
+</aside>
+
+<div class="main" id="main-area" style="display:none">
+  <div class="topbar">
+    <span class="topbar-title" id="page-title">Vue d'ensemble</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="date-display" style="font-size:12px;color:var(--muted)"></span>
+      <button class="btn btn-primary btn-sm" id="topbar-action" onclick="topbarAction()">+ Nouveau RDV</button>
+    </div>
+  </div>
+  <div class="content" id="page-content"></div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="closeModalOut(event)">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-title">Titre</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='se_admin_v2'
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||initData()}catch{return initData()}}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+function initData(){
+  return{
+    loggedIn:false,nextId:100,
+    rdvs:[
+      {id:'RDV-001',client:'Marie Dupont',email:'marie@email.com',phone:'06 12 34 56',service:'Coupe femme',duration:45,prix:45,date:'2026-06-10',time:'10:30',praticienne:'Sophie M.',statut:'confirmé',notes:''},
+      {id:'RDV-002',client:'Sophie Blanc',email:'sophie@email.com',phone:'06 98 76 54',service:'Balayage',duration:120,prix:120,date:'2026-06-10',time:'14:00',praticienne:'Lucie B.',statut:'confirmé',notes:'Éviter les reflets roux'},
+      {id:'RDV-003',client:'Claire Martin',email:'claire@email.com',phone:'',service:'Couleur',duration:90,prix:85,date:'2026-06-11',time:'09:00',praticienne:'Sophie M.',statut:'en attente',notes:''},
+      {id:'RDV-004',client:'Emma Robert',email:'emma@email.com',phone:'06 45 67 89',service:'Soin profond',duration:30,prix:35,date:'2026-06-12',time:'11:00',praticienne:'Camille P.',statut:'confirmé',notes:'Cheveux secs'},
+    ],
+    equipe:[
+      {id:1,nom:'Sophie Martin',role:'Coloriste',specialites:'Balayage, couleur, mèches',experience:'8 ans',disponible:true},
+      {id:2,nom:'Lucie Bernard',role:'Coiffeuse',specialites:'Coupes tendance, brushing',experience:'5 ans',disponible:true},
+      {id:3,nom:'Camille Petit',role:'Styliste',specialites:'Coiffures de mariage, soirée',experience:'6 ans',disponible:true},
+      {id:4,nom:'Emma Rousseau',role:'Esthéticienne',specialites:'Soins visage, traitements',experience:'4 ans',disponible:false},
+    ],
+    services:[
+      {id:1,nom:'Coupe femme',categorie:'Coupe',duree:45,prix:45,actif:true},
+      {id:2,nom:'Coupe homme',categorie:'Coupe',duree:30,prix:28,actif:true},
+      {id:3,nom:'Couleur',categorie:'Couleur',duree:90,prix:85,actif:true},
+      {id:4,nom:'Balayage',categorie:'Couleur',duree:120,prix:120,actif:true},
+      {id:5,nom:'Soin profond',categorie:'Soin',duree:30,prix:35,actif:true},
+      {id:6,nom:'Coiffage mariage',categorie:'Spécial',duree:120,prix:150,actif:true},
+    ],
+    horaires:[
+      {jour:'Lundi',debut:'09:00',fin:'19:00',ferme:false},
+      {jour:'Mardi',debut:'09:00',fin:'19:00',ferme:false},
+      {jour:'Mercredi',debut:'09:00',fin:'20:00',ferme:false},
+      {jour:'Jeudi',debut:'09:00',fin:'19:00',ferme:false},
+      {jour:'Vendredi',debut:'09:00',fin:'20:00',ferme:false},
+      {jour:'Samedi',debut:'09:00',fin:'18:00',ferme:false},
+      {jour:'Dimanche',debut:'',fin:'',ferme:true},
+    ]
+  }
+}
+
+let DB=load(),currentPage='dashboard'
+
+function doLogin(){
+  if(document.getElementById('l-pass').value==='admin123'){
+    DB.loggedIn=true;save(DB)
+    document.getElementById('login-screen').style.display='none'
+    document.getElementById('main-area').style.display='flex'
+    init()
+  }
+}
+function logout(){DB.loggedIn=false;save(DB);location.reload()}
+if(DB.loggedIn){document.getElementById('login-screen').style.display='none';document.getElementById('main-area').style.display='flex';init()}
+
+function init(){
+  renderPage('dashboard');updateBadges()
+  document.getElementById('date-display').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})
+}
+function updateBadges(){
+  const n=DB.rdvs.filter(r=>r.statut==='en attente').length
+  document.getElementById('rdv-badge').textContent=n
+  document.getElementById('rdv-badge').style.display=n>0?'inline':'none'
+}
+function showPage(page,el){
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));el.classList.add('active')
+  currentPage=page;renderPage(page)
+}
+function topbarAction(){
+  const a={rdv:openAddRdv,agenda:openAddRdv,services:openAddService,equipe:openAddMembre}
+  if(a[currentPage])a[currentPage]()
+  else openAddRdv()
+}
+function renderPage(p){
+  const t={dashboard:'Vue d\'ensemble',agenda:'Agenda semaine',rdv:'Rendez-vous',equipe:'Mon équipe',services:'Prestations',horaires:'Horaires d\'ouverture'}
+  const a={rdv:'+ Nouveau RDV',agenda:'+ Nouveau RDV',equipe:'+ Ajouter membre',services:'+ Nouveau service',horaires:'Sauvegarder'}
+  document.getElementById('page-title').textContent=t[p]||p
+  const btn=document.getElementById('topbar-action')
+  btn.textContent=a[p]||'+ Nouveau RDV'
+  const pages={dashboard:renderDashboard,agenda:renderAgenda,rdv:renderRdv,equipe:renderEquipe,services:renderServices,horaires:renderHoraires}
+  if(pages[p])pages[p]()
+}
+
+// ─── DASHBOARD ─────────────────────────────────────────────────
+function renderDashboard(){
+  const ca=DB.rdvs.filter(r=>r.statut==='confirmé').reduce((a,r)=>a+r.prix,0)
+  const today=DB.rdvs.filter(r=>r.date===new Date().toISOString().split('T')[0])
+  document.getElementById('page-content').innerHTML=`
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">RDV total</div><div class="kpi-value" style="color:var(--accent)">${DB.rdvs.length}</div><div class="kpi-change">${DB.rdvs.filter(r=>r.statut==='en attente').length} en attente</div></div>
+      <div class="kpi"><div class="kpi-label">CA confirmé</div><div class="kpi-value" style="color:var(--green)">${ca} €</div><div class="kpi-change">RDV confirmés</div></div>
+      <div class="kpi"><div class="kpi-label">Équipe</div><div class="kpi-value">${DB.equipe.filter(e=>e.disponible).length}/${DB.equipe.length}</div><div class="kpi-change">Disponibles</div></div>
+      <div class="kpi"><div class="kpi-label">Services</div><div class="kpi-value">${DB.services.filter(s=>s.actif).length}</div><div class="kpi-change">${DB.services.length} au total</div></div>
+    </div>
+    ${DB.rdvs.filter(r=>r.statut==='en attente').length>0?`
+    <div class="table-card">
+      <div class="table-header"><span class="table-title" style="color:var(--gold)">⏳ En attente de confirmation</span></div>
+      <table><thead><tr><th>Client</th><th>Service</th><th>Date</th><th>Heure</th><th>Actions</th></tr></thead>
+      <tbody>${DB.rdvs.filter(r=>r.statut==='en attente').map(r=>`
+        <tr>
+          <td><strong>${r.client}</strong></td><td>${r.service}</td><td>${r.date}</td><td>${r.time}</td>
+          <td>
+            <button class="btn btn-sm" style="background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2)" onclick="updateRdvStatus('${r.id}','confirmé',true)">✅ Confirmer</button>
+            <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="updateRdvStatus('${r.id}','annulé',true)">✕</button>
+          </td>
+        </tr>`).join('')}</tbody>
+    </table></div>`:``}
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Prochains rendez-vous</span></div>
+      <table><thead><tr><th>Réf.</th><th>Client</th><th>Service</th><th>Date</th><th>Heure</th><th>Praticienne</th><th>Statut</th></tr></thead>
+      <tbody>${DB.rdvs.slice(-5).reverse().map(r=>`
+        <tr>
+          <td style="color:var(--accent);font-weight:700;font-size:11px">${r.id}</td>
+          <td>${r.client}</td><td>${r.service}</td><td>${r.date}</td><td>${r.time}</td>
+          <td>${r.praticienne}</td>
+          <td><span class="badge b-${r.statut==='confirmé'?'green':r.statut==='annulé'?'red':'yellow'}">${r.statut}</span></td>
+        </tr>`).join('')}</tbody>
+    </table></div>`
+}
+
+// ─── AGENDA ────────────────────────────────────────────────────
+function renderAgenda(){
+  const today=new Date()
+  const days=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim']
+  // Semaine courante
+  const monday=new Date(today);monday.setDate(today.getDate()-today.getDay()+1)
+  const week=Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return d})
+  document.getElementById('page-content').innerHTML=`
+    <div class="agenda-grid">
+      ${week.map((d,i)=>`<div class="agenda-day-header">${days[i]}<br><strong style="color:var(--text)">${d.getDate()}</strong></div>`).join('')}
+      ${week.map(d=>{
+        const ds=d.toISOString().split('T')[0]
+        const rdvs=DB.rdvs.filter(r=>r.date===ds)
+        const isToday=ds===today.toISOString().split('T')[0]
+        return`<div class="agenda-day${isToday?' today':''}">
+          ${rdvs.map(r=>`<div class="agenda-rdv ${r.statut}" onclick="viewRdv('${r.id}')">${r.time} ${r.client.split(' ')[0]}<br>${r.service.split(' ')[0]}</div>`).join('')}
+          ${rdvs.length===0?'<span style="color:var(--muted);font-size:10px">Libre</span>':''}
+        </div>`}).join('')}
+    </div>`
+}
+
+// ─── RDV ───────────────────────────────────────────────────────
+function renderRdv(){
+  document.getElementById('page-content').innerHTML=`
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Tous les RDV (${DB.rdvs.length})</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input class="search-input" placeholder="🔍 Rechercher..." oninput="filterRdv(this.value)">
+          <button onclick="exportAdminPDF()" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Exporter PDF
+          </button>
+        </div>
+      </div>
+      <table><thead><tr><th>Réf.</th><th>Client</th><th>Service</th><th>Date</th><th>Heure</th><th>Praticienne</th><th>Prix</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody id="rdv-tbody">${renderRdvRows(DB.rdvs)}</tbody>
+    </table></div>`
+}
+function renderRdvRows(list){
+  return list.map(r=>`
+    <tr>
+      <td style="color:var(--accent);font-weight:700;font-size:11px">${r.id}</td>
+      <td><strong>${r.client}</strong><br><span style="color:var(--muted);font-size:11px">${r.email}</span></td>
+      <td>${r.service}</td><td>${r.date}</td><td>${r.time}</td>
+      <td>${r.praticienne}</td>
+      <td style="font-weight:600;color:var(--accent)">${r.prix} €</td>
+      <td>
+        <select onchange="updateRdvStatus('${r.id}',this.value)" style="background:var(--bg);border:1px solid var(--border);border-radius:7px;font-size:11px;padding:4px 8px;color:var(--text);outline:none">
+          ${['en attente','confirmé','annulé','no-show'].map(s=>`<option ${r.statut===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-outline" onclick="viewRdv('${r.id}')">👁️</button>
+        <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="deleteRdv('${r.id}')">🗑️</button>
+      </td>
+    </tr>`).join('')
+}
+function filterRdv(q){
+  document.getElementById('rdv-tbody').innerHTML=renderRdvRows(q?DB.rdvs.filter(r=>r.client.toLowerCase().includes(q.toLowerCase())||r.service.toLowerCase().includes(q.toLowerCase())):DB.rdvs)
+}
+function updateRdvStatus(id,s,rerender){
+  const r=DB.rdvs.find(r=>r.id===id)
+  if(r){r.statut=s;save(DB);updateBadges();toast('Statut mis à jour ✅','success');if(rerender)renderPage(currentPage)}
+}
+function deleteRdv(id){if(!confirm('Supprimer ?'))return;DB.rdvs=DB.rdvs.filter(r=>r.id!==id);save(DB);renderRdv();toast('RDV supprimé','success')}
+function viewRdv(id){
+  const r=DB.rdvs.find(r=>r.id===id);if(!r)return
+  document.getElementById('modal-title').textContent='RDV — '+r.client
+  document.getElementById('modal-body').innerHTML=`
+    ${[['Réf.',r.id],['Service',r.service],['Durée',r.duration+' min'],['Prix',r.prix+' €'],['Date',r.date],['Heure',r.time],['Praticienne',r.praticienne],['Email',r.email],['Téléphone',r.phone||'—'],['Notes',r.notes||'—']].map(([l,v])=>`
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">${l}</span><span style="font-weight:500">${v}</span></div>`).join('')}
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button class="btn btn-primary btn-sm" onclick="updateRdvStatus('${r.id}','confirmé',true);closeModal()">✅ Confirmer</button>
+      <button class="btn btn-sm btn-danger" onclick="updateRdvStatus('${r.id}','annulé',true);closeModal()">✕ Annuler</button>
+    </div>`
+  openModal()
+}
+function openAddRdv(){
+  document.getElementById('modal-title').textContent='Nouveau rendez-vous'
+  document.getElementById('modal-body').innerHTML=`
+    <div class="form-row">
+      <div class="fg"><label class="fl">Client *</label><input id="rclient" class="fi" placeholder="Nom complet"></div>
+      <div class="fg"><label class="fl">Email *</label><input id="remail" class="fi" type="email" placeholder="email@..."></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Service *</label>
+        <select id="rservice" class="fi" onchange="updatePrix()">${DB.services.filter(s=>s.actif).map(s=>`<option data-prix="${s.prix}" data-dur="${s.duree}">${s.nom}</option>`).join('')}</select>
+      </div>
+      <div class="fg"><label class="fl">Prix (€)</label><input id="rprix" class="fi" type="number" value="${DB.services[0]?.prix||0}" readonly></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Date * <span id="date-required-hint" style="color:var(--red);font-size:10px;letter-spacing:0;text-transform:none;font-weight:400">— obligatoire</span></label><input id="rdate" class="fi" type="date" min="${new Date().toISOString().split('T')[0]}" onchange="this.style.borderColor='var(--border)';this.style.background='var(--bg)';document.getElementById('date-required-hint').style.display='none'"></div>
+      <div class="fg"><label class="fl">Heure *</label>
+        <select id="rtime" class="fi">${['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'].map(t=>`<option>${t}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Praticienne</label>
+      <select id="rprat" class="fi">${DB.equipe.map(e=>`<option>${e.nom} — ${e.role}</option>`).join('')}</select>
+    </div>
+    <div class="fg"><label class="fl">Notes</label><textarea id="rnotes" class="fi" rows="2" placeholder="Allergies, préférences..."></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveRdv()">💾 Enregistrer</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+}
+function updatePrix(){
+  const s=document.getElementById('rservice')
+  const opt=s.options[s.selectedIndex]
+  document.getElementById('rprix').value=opt.dataset.prix||0
+}
+function saveRdv(){
+  const client=document.getElementById('rclient').value.trim()
+  if(!client){toast('Nom requis','error');document.getElementById('rclient').focus();return}
+  const dateEl=document.getElementById('rdate')
+  if(!dateEl.value){
+    dateEl.style.borderColor='var(--red)'
+    dateEl.style.background='rgba(220,38,38,.06)'
+    dateEl.focus()
+    toast('⚠️ Sélectionnez une date avant de confirmer','error')
+    return
+  }
+  const s=DB.services.find(s=>s.nom===document.getElementById('rservice').value)
+  DB.rdvs.push({id:'RDV-'+String(++DB.nextId).padStart(3,'0'),client,email:document.getElementById('remail').value,phone:'',service:document.getElementById('rservice').value,duration:s?.duree||45,prix:parseInt(document.getElementById('rprix').value)||0,date:dateEl.value,time:document.getElementById('rtime').value,praticienne:document.getElementById('rprat').value.split(' — ')[0],statut:'confirmé',notes:document.getElementById('rnotes').value})
+  save(DB);closeModal();renderRdv();updateBadges();toast('RDV ajouté ✅','success')
+}
+
+// ─── ÉQUIPE ────────────────────────────────────────────────────
+function renderEquipe(){
+  document.getElementById('page-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
+      ${DB.equipe.map(e=>`
+        <div style="background:white;border:1px solid ${e.disponible?'var(--border)':'rgba(220,38,38,.2)'};border-radius:16px;padding:1.25rem">
+          <div style="width:56px;height:56px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:white;margin-bottom:0.875rem">
+            ${e.nom[0]}
+          </div>
+          <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;margin-bottom:4px">${e.nom}</div>
+          <div style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:6px">${e.role}</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${e.specialites}</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Exp. : ${e.experience}</div>
+          <div style="display:flex;gap:6px;align-items:center;justify-content:space-between">
+            <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer">
+              <input type="checkbox" ${e.disponible?'checked':''} onchange="toggleDispo(${e.id},this.checked)" style="accent-color:var(--accent)"> Disponible
+            </label>
+            <div style="display:flex;gap:4px">
+              <button class="btn btn-sm btn-outline" onclick="openEditMembre(${e.id})">✏️</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteMembre(${e.id})">🗑️</button>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`
+}
+function toggleDispo(id,v){const e=DB.equipe.find(e=>e.id===id);if(e){e.disponible=v;save(DB);toast('Mise à jour','success')}}
+function deleteMembre(id){if(!confirm('Supprimer ce membre ?'))return;DB.equipe=DB.equipe.filter(e=>e.id!==id);save(DB);renderEquipe();toast('Membre supprimé','success')}
+function openAddMembre(){openMembreModal(null)}
+function openEditMembre(id){openMembreModal(DB.equipe.find(e=>e.id===id))}
+function openMembreModal(e){
+  document.getElementById('modal-title').textContent=e?'Modifier le membre':'Nouveau membre'
+  document.getElementById('modal-body').innerHTML=`
+    <div class="form-row">
+      <div class="fg"><label class="fl">Prénom & Nom *</label><input id="enom" class="fi" value="${e?.nom||''}"></div>
+      <div class="fg"><label class="fl">Rôle</label><input id="erole" class="fi" value="${e?.role||''}"></div>
+    </div>
+    <div class="fg"><label class="fl">Spécialités</label><input id="espec" class="fi" value="${e?.specialites||''}" placeholder="Coupes, couleur..."></div>
+    <div class="fg"><label class="fl">Expérience</label><input id="eexp" class="fi" value="${e?.experience||''}" placeholder="Ex: 5 ans"></div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveMembre(${e?.id||'null'})">💾 Sauvegarder</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+}
+function saveMembre(id){
+  const nom=document.getElementById('enom').value.trim()
+  if(!nom){toast('Nom requis','error');return}
+  const data={nom,role:document.getElementById('erole').value,specialites:document.getElementById('espec').value,experience:document.getElementById('eexp').value,disponible:true}
+  if(id){Object.assign(DB.equipe.find(e=>e.id===id),data)}else{DB.equipe.push({id:++DB.nextId,...data})}
+  save(DB);closeModal();renderEquipe();toast('Membre sauvegardé ✅','success')
+}
+
+// ─── SERVICES ──────────────────────────────────────────────────
+function renderServices(){
+  document.getElementById('page-content').innerHTML=`
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Prestations (${DB.services.length})</span></div>
+      <table><thead><tr><th>Prestation</th><th>Catégorie</th><th>Durée</th><th>Prix</th><th>Visible</th><th>Actions</th></tr></thead>
+      <tbody>${DB.services.map(s=>`
+        <tr>
+          <td><strong>${s.nom}</strong></td>
+          <td><span class="badge b-purple">${s.categorie}</span></td>
+          <td>${s.duree} min</td>
+          <td style="font-weight:700;color:var(--accent)">${s.prix} €</td>
+          <td><label style="cursor:pointer"><input type="checkbox" ${s.actif?'checked':''} onchange="toggleService(${s.id},this.checked)" style="accent-color:var(--accent)"> Active</label></td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="openEditService(${s.id})">✏️</button>
+            <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="deleteService(${s.id})">🗑️</button>
+          </td>
+        </tr>`).join('')}</tbody>
+    </table></div>`
+}
+function toggleService(id,v){const s=DB.services.find(s=>s.id===id);if(s){s.actif=v;save(DB);toast('Mise à jour','success')}}
+function deleteService(id){if(!confirm('Supprimer ?'))return;DB.services=DB.services.filter(s=>s.id!==id);save(DB);renderServices();toast('Service supprimé','success')}
+function openAddService(){openServiceModal(null)}
+function openEditService(id){openServiceModal(DB.services.find(s=>s.id===id))}
+function openServiceModal(s){
+  document.getElementById('modal-title').textContent=s?'Modifier la prestation':'Nouvelle prestation'
+  document.getElementById('modal-body').innerHTML=`
+    <div class="fg"><label class="fl">Nom *</label><input id="snom" class="fi" value="${s?.nom||''}" placeholder="Nom de la prestation"></div>
+    <div class="form-row">
+      <div class="fg"><label class="fl">Catégorie</label>
+        <select id="scat" class="fi"><option ${s?.categorie==='Coupe'?'selected':''}>Coupe</option><option ${s?.categorie==='Couleur'?'selected':''}>Couleur</option><option ${s?.categorie==='Soin'?'selected':''}>Soin</option><option ${s?.categorie==='Spécial'?'selected':''}>Spécial</option></select>
+      </div>
+      <div class="fg"><label class="fl">Durée (min)</label><input id="sdur" class="fi" type="number" value="${s?.duree||45}"></div>
+    </div>
+    <div class="fg"><label class="fl">Prix (€) *</label><input id="sprix" class="fi" type="number" step="0.5" value="${s?.prix||''}"></div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveService(${s?.id||'null'})">💾 Sauvegarder</button>
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+    </div>`
+  openModal()
+}
+function saveService(id){
+  const nom=document.getElementById('snom').value.trim()
+  if(!nom){toast('Nom requis','error');return}
+  const data={nom,categorie:document.getElementById('scat').value,duree:parseInt(document.getElementById('sdur').value)||45,prix:parseFloat(document.getElementById('sprix').value)||0,actif:true}
+  if(id){Object.assign(DB.services.find(s=>s.id===id),data)}else{DB.services.push({id:++DB.nextId,...data})}
+  save(DB);closeModal();renderServices();toast('Service sauvegardé ✅','success')
+}
+
+// ─── HORAIRES ──────────────────────────────────────────────────
+function renderHoraires(){
+  document.getElementById('page-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;max-width:900px">
+      ${DB.horaires.map((h,i)=>`
+        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:1rem">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:10px">${h.jour}</div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:8px;cursor:pointer">
+            <input type="checkbox" ${h.ferme?'checked':''} onchange="toggleFerme(${i},this.checked)" style="accent-color:var(--accent)"> Fermé
+          </label>
+          <div id="hh-${i}" style="display:${h.ferme?'none':'flex'};flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font-size:11px;color:var(--muted);width:30px">Ouv.</span>
+              <input class="fi" style="font-size:12px;padding:5px 8px" value="${h.debut}" placeholder="09:00" onchange="updateH(${i},'debut',this.value)">
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font-size:11px;color:var(--muted);width:30px">Ferm.</span>
+              <input class="fi" style="font-size:12px;padding:5px 8px" value="${h.fin}" placeholder="19:00" onchange="updateH(${i},'fin',this.value)">
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <button class="btn btn-primary" style="margin-top:1.5rem" onclick="saveHoraires()">💾 Sauvegarder les horaires</button>`
+}
+function toggleFerme(i,v){DB.horaires[i].ferme=v;document.getElementById('hh-'+i).style.display=v?'none':'flex'}
+function updateH(i,f,v){DB.horaires[i][f]=v}
+function saveHoraires(){save(DB);toast('Horaires sauvegardés ✅','success')}
+
+// ─── EXPORT PDF ────────────────────────────────────────────────
+function exportAdminPDF(){
+  if(!window.jspdf){toast('jsPDF non chargé, réessayez','error');return}
+  const {jsPDF}=window.jspdf
+  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'})
+  const W=297, accent=[124,58,237], dark=[26,21,35], muted=[107,114,128]
+  const green=[5,150,105], red=[220,38,38], gold=[217,119,6]
+
+  // ── En-tête ──────────────────────────────────────────────────
+  doc.setFillColor(...accent)
+  doc.rect(0,0,W,30,'F')
+  doc.setTextColor(255,255,255)
+  doc.setFont('helvetica','bold')
+  doc.setFontSize(18)
+  doc.text('✂ Salon Éclat — Planning administratif',14,13)
+  doc.setFont('helvetica','normal')
+  doc.setFontSize(9)
+  doc.text('Généré le '+new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}),14,22)
+  doc.setTextColor(200,180,255)
+  doc.text('CONFIDENTIEL — usage interne',W-14,22,{align:'right'})
+
+  // ── KPIs ─────────────────────────────────────────────────────
+  let y=38
+  const ca=DB.rdvs.filter(r=>r.statut==='confirmé').reduce((a,r)=>a+r.prix,0)
+  const enAttente=DB.rdvs.filter(r=>r.statut==='en attente').length
+  const kpis=[
+    {label:'Total RDV',value:String(DB.rdvs.length),color:accent},
+    {label:'CA confirmé',value:ca+' €',color:green},
+    {label:'En attente',value:String(enAttente),color:gold},
+    {label:'Annulés',value:String(DB.rdvs.filter(r=>r.statut==='annulé').length),color:red},
+    {label:'Praticien·nes',value:String(DB.equipe.filter(e=>e.disponible).length)+'/'+DB.equipe.length,color:muted},
+  ]
+  const kw=50, km=5, kx0=14
+  kpis.forEach((k,i)=>{
+    const kx=kx0+i*(kw+km)
+    doc.setFillColor(245,243,255)
+    doc.roundedRect(kx,y,kw,18,2,2,'F')
+    doc.setDrawColor(...k.color)
+    doc.setLineWidth(0.6)
+    doc.roundedRect(kx,y,kw,18,2,2,'S')
+    doc.setFont('helvetica','bold')
+    doc.setFontSize(16)
+    doc.setTextColor(...k.color)
+    doc.text(k.value,kx+kw/2,y+11,{align:'center'})
+    doc.setFont('helvetica','normal')
+    doc.setFontSize(8)
+    doc.setTextColor(...muted)
+    doc.text(k.label,kx+kw/2,y+16,{align:'center'})
+  })
+  y+=26
+
+  // ── Tableau ───────────────────────────────────────────────────
+  doc.setFont('helvetica','bold')
+  doc.setFontSize(11)
+  doc.setTextColor(...dark)
+  doc.text('Liste des rendez-vous',14,y+2)
+  y+=8
+
+  // En-têtes colonnes
+  const cols=[
+    {label:'Réf.',w:22},{label:'Client',w:42},{label:'Service',w:38},
+    {label:'Date',w:26},{label:'Heure',w:18},{label:'Praticienne',w:36},
+    {label:'Prix',w:18},{label:'Statut',w:28}
+  ]
+  let cx=14
+  doc.setFillColor(237,233,254)
+  doc.rect(14,y,W-28,8,'F')
+  doc.setFont('helvetica','bold')
+  doc.setFontSize(8)
+  doc.setTextColor(...accent)
+  cols.forEach(c=>{doc.text(c.label.toUpperCase(),cx+2,y+5.5);cx+=c.w})
+  y+=8
+
+  // Lignes
+  doc.setFont('helvetica','normal')
+  doc.setFontSize(8.5)
+  DB.rdvs.forEach((r,idx)=>{
+    if(y>185){doc.addPage();y=14}
+    if(idx%2===0){doc.setFillColor(250,248,255);doc.rect(14,y,W-28,8,'F')}
+    cx=14
+    doc.setTextColor(...accent);doc.setFont('helvetica','bold')
+    doc.text(r.id,cx+2,y+5.5);cx+=cols[0].w
+    doc.setTextColor(...dark);doc.setFont('helvetica','normal')
+    doc.text(r.client.substring(0,20),cx+2,y+5.5);cx+=cols[1].w
+    doc.text(r.service.substring(0,18),cx+2,y+5.5);cx+=cols[2].w
+    doc.text(r.date,cx+2,y+5.5);cx+=cols[3].w
+    doc.text(r.time,cx+2,y+5.5);cx+=cols[4].w
+    doc.text((r.praticienne||'—').substring(0,16),cx+2,y+5.5);cx+=cols[5].w
+    doc.setFont('helvetica','bold');doc.setTextColor(...accent)
+    doc.text(r.prix+' €',cx+2,y+5.5);cx+=cols[6].w
+    const sc=r.statut==='confirmé'?green:r.statut==='annulé'?red:gold
+    doc.setTextColor(...sc)
+    doc.text(r.statut,cx+2,y+5.5)
+    doc.setDrawColor(235,230,250);doc.setLineWidth(0.2)
+    doc.line(14,y+8,W-14,y+8)
+    y+=8
+  })
+
+  // ── Résumé par praticienne ────────────────────────────────────
+  y+=6
+  if(y>170){doc.addPage();y=14}
+  doc.setFont('helvetica','bold')
+  doc.setFontSize(11)
+  doc.setTextColor(...dark)
+  doc.text('Résumé par praticienne',14,y)
+  y+=7
+  const byPrat={}
+  DB.rdvs.filter(r=>r.statut==='confirmé').forEach(r=>{
+    if(!byPrat[r.praticienne])byPrat[r.praticienne]={count:0,ca:0}
+    byPrat[r.praticienne].count++;byPrat[r.praticienne].ca+=r.prix
+  })
+  doc.setFont('helvetica','normal');doc.setFontSize(9)
+  Object.entries(byPrat).forEach(([nom,d])=>{
+    doc.setTextColor(...muted);doc.text(nom+' :',14,y)
+    doc.setTextColor(...dark);doc.text(d.count+' RDV — '+d.ca+' € CA',70,y)
+    y+=6
+  })
+
+  // ── Pied de page ─────────────────────────────────────────────
+  doc.setFillColor(...dark)
+  doc.rect(0,195,W,12,'F')
+  doc.setTextColor(180,160,220)
+  doc.setFontSize(8)
+  doc.text('Salon Éclat · Panneau admin · jeremiehenri.dev',W/2,201,{align:'center'})
+
+  doc.save('planning-admin-salon-eclat.pdf')
+  toast('📄 PDF exporté !','success')
+}
+
+function openModal(){document.getElementById('modal').style.display='flex'}
+function closeModal(){document.getElementById('modal').style.display='none'}
+function closeModalOut(e){if(e.target===document.getElementById('modal'))closeModal()}
+function toast(msg,type='success'){
+  const t=document.getElementById('toast');t.textContent=msg
+  t.className=`toast toast-${type} show`
+  setTimeout(()=>t.classList.remove('show'),3000)
+}
+</script>
+</body>
+</html>

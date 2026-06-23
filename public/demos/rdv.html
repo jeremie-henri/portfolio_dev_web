@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Salon Éclat — Beauté & Bien-être</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#ffffff;--card:#ffffff;--accent:#111111;--accent2:#f5f5f5;--teal:#555555;--text:#111111;--muted:#888888;--border:#e5e5e5;--green:#2d6a4f;--red:#9b2226}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden}
+
+/* NAV */
+nav{background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:1.25rem 3rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:'Playfair Display',serif;font-weight:700;font-size:1.3rem;color:var(--text);letter-spacing:-.01em}
+.logo span{font-style:italic}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color .2s;letter-spacing:.06em;text-transform:uppercase}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{padding:10px 24px;background:var(--text);color:white;font-size:12px;font-weight:600;text-decoration:none;border:none;cursor:pointer;font-family:inherit;letter-spacing:.06em;text-transform:uppercase;transition:opacity .2s}
+.nav-cta:hover{opacity:.8}
+
+/* HERO — sticky : reste épinglé pendant que le contenu glisse par-dessus */
+.hero{position:sticky;top:0;height:100vh;min-height:600px;overflow:hidden;z-index:0}
+/* Feuille de contenu qui glisse par-dessus le hero */
+.content-sheet{position:relative;z-index:1;background:var(--bg)}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&q=90') center/cover no-repeat}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 100%)}
+.hero-content{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:4rem 3rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:white;font-size:11px;font-weight:500;padding:6px 16px;margin-bottom:1.5rem;width:fit-content;letter-spacing:.08em;text-transform:uppercase;backdrop-filter:blur(8px)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:pulse 1.5s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,6vw,5.5rem);font-weight:700;line-height:1.0;margin-bottom:1.25rem;color:white;letter-spacing:-.02em}
+.hero h1 em{font-style:italic;font-weight:400}
+.hero p{color:rgba(255,255,255,.75);font-weight:300;max-width:480px;margin-bottom:2.5rem;line-height:1.8;font-size:1.05rem}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero-stats{display:none}
+.hero-right{display:none}
+.hero-booking-card{display:none}
+.hero-right-overlay{display:none}
+
+/* LOYALTY BAR */
+.loyalty-bar{background:var(--text);color:rgba(255,255,255,.7);text-align:center;padding:12px 1rem;font-size:12px;font-weight:400;letter-spacing:.04em}
+.loyalty-bar strong{color:white}
+
+/* SECTION */
+.section{padding:6rem 3rem;max-width:1200px;margin:0 auto}
+.sec-eyebrow{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:700;letter-spacing:-.02em;margin-bottom:.75rem;line-height:1.1}
+.sec-title em{font-style:italic;font-weight:400}
+.sec-desc{color:var(--muted);font-weight:300;max-width:500px;margin-bottom:3rem;font-size:1rem;line-height:1.8}
+.divider{max-width:100%;margin:0;border:none;border-top:1px solid var(--border)}
+
+/* BEFORE / AFTER */
+.ba-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px}
+.ba-card{overflow:hidden;position:relative;cursor:pointer;aspect-ratio:4/5}
+.ba-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+.ba-card:hover img{transform:scale(1.04)}
+.ba-label{position:absolute;bottom:16px;left:16px;background:white;color:var(--text);font-size:11px;font-weight:600;padding:4px 12px;letter-spacing:.04em;text-transform:uppercase}
+.ba-service{position:absolute;top:16px;right:16px;background:var(--text);color:white;font-size:10px;font-weight:600;padding:4px 10px;letter-spacing:.06em;text-transform:uppercase}
+.ba-result{position:absolute;top:16px;left:16px;background:white;color:var(--text);font-size:10px;font-weight:600;padding:4px 10px;display:none;text-transform:uppercase;letter-spacing:.04em}
+.ba-card:hover .ba-result{display:block}
+.ba-card:hover .ba-label{display:none}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:var(--border)}
+.svc-card{background:white;padding:1.75rem 1.25rem;text-align:left;cursor:pointer;transition:background .2s;position:relative}
+.svc-card:hover,.svc-card.active{background:var(--text)}
+.svc-card:hover .svc-name,.svc-card.active .svc-name{color:white}
+.svc-card:hover .svc-dur,.svc-card.active .svc-dur,.svc-card:hover .svc-price,.svc-card.active .svc-price{color:rgba(255,255,255,.6)}
+.svc-emoji{font-size:1.5rem;margin-bottom:12px;display:block}
+.svc-name{font-weight:600;font-size:14px;margin-bottom:4px;transition:color .2s}
+.svc-dur{font-size:12px;color:var(--muted);transition:color .2s}
+.svc-price{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-top:8px;transition:color .2s}
+.popular-tag{position:absolute;top:16px;right:16px;background:var(--text);color:white;font-size:9px;font-weight:700;padding:3px 8px;letter-spacing:.08em;text-transform:uppercase}
+
+/* PACKAGES */
+.packs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border)}
+.pack-card{background:white;padding:2rem;position:relative;transition:background .2s}
+.pack-card:hover{background:var(--accent2)}
+.pack-card.featured{background:var(--text)}
+.pack-card.featured .pack-new,.pack-card.featured .pack-items,.pack-card.featured h3{color:white}
+.pack-card.featured .pack-old,.pack-card.featured .pack-saving,.pack-card.featured .pack-item{color:rgba(255,255,255,.6)}
+.pack-badge{display:inline-block;background:white;color:var(--text);font-size:9px;font-weight:700;padding:3px 10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+.pack-items{margin:1rem 0;display:flex;flex-direction:column;gap:6px}
+.pack-item{font-size:13px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.pack-price{display:flex;align-items:center;gap:10px;margin-top:1.25rem;flex-wrap:wrap}
+.pack-old{font-size:13px;color:var(--muted);text-decoration:line-through}
+.pack-new{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--text)}
+.pack-saving{font-size:12px;color:var(--teal);font-weight:600}
+
+/* BOOKING */
+.booking-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:3rem;align-items:start}
+.booking-block{background:white;border:1px solid var(--border);padding:2rem}
+.block-title{font-family:'Playfair Display',serif;font-weight:700;font-size:1.1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
+
+/* CALENDAR */
+.cal-nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.cal-month-lbl{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem}
+.cal-nav-btn{width:32px;height:32px;border:1px solid var(--border);background:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.cal-nav-btn:hover{border-color:var(--text);background:var(--text);color:white}
+.cal-wdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px}
+.cal-wday{text-align:center;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;color:var(--muted)}
+.cal-day.in-month{color:var(--text)}
+.cal-day.available{cursor:pointer}
+.cal-day.available:hover{background:var(--accent2)}
+.cal-day.selected{background:var(--text);color:white;font-weight:600}
+.cal-day.unavailable{opacity:.25;pointer-events:none}
+.slots-sec{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:none}
+.slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:.75rem}
+.filter-btn{padding:7px 16px;border:1px solid var(--border);font-size:12px;color:var(--muted);background:white;cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s;letter-spacing:.04em}
+.filter-btn.active,.filter-btn:hover{border-color:var(--text);color:var(--text);background:var(--accent2)}
+.filter-btn.active{font-weight:700}
+.slot{padding:9px 4px;border:1px solid var(--border);text-align:center;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;background:white;position:relative}
+.slot:hover{border-color:var(--text);background:var(--accent2)}
+.slot.selected{background:var(--text);color:white;border-color:var(--text)}
+.slot.full{background:var(--bg);color:var(--muted);cursor:not-allowed;text-decoration:line-through;border-color:var(--border)}
+.slot-tag{position:absolute;top:-5px;right:4px;background:var(--teal);color:white;font-size:8px;padding:1px 5px}
+
+/* FORM */
+.form-group{margin-bottom:14px}
+.form-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:block;margin-bottom:6px}
+.form-input{width:100%;padding:12px 14px;border:1px solid var(--border);font-size:14px;font-family:inherit;color:var(--text);background:white;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--text)}
+.form-input::placeholder{color:#ccc}
+.summary-box{background:var(--accent2);border:1px solid var(--border);padding:1rem;margin:1rem 0}
+.sum-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.sum-row:last-child{border-bottom:none;font-weight:700;padding-top:10px}
+.deposit-notice{background:var(--accent2);border:1px solid var(--border);padding:.75rem 1rem;font-size:12px;color:var(--teal);margin:.75rem 0;line-height:1.6}
+.btn-confirm{width:100%;padding:14px;background:var(--text);color:white;border:none;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:opacity .2s}
+.btn-confirm:hover{opacity:.8}
+.btn-confirm:disabled{opacity:.4;cursor:not-allowed}
+.alert{padding:12px 16px;font-size:13px;margin-bottom:10px;display:none;line-height:1.5}
+.alert-success{background:#f0fdf4;border:1px solid #86efac;color:var(--green)}
+.alert-error{background:#fff1f2;border:1px solid #fda4af;color:var(--red)}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;background:var(--border)}
+.team-card{background:white;overflow:hidden;transition:all .2s;cursor:pointer}
+.team-card:hover{background:var(--accent2)}
+.team-img{aspect-ratio:3/4;overflow:hidden}
+.team-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.team-card:hover .team-img img{transform:scale(1.04)}
+.team-body{padding:1.25rem}
+.team-name{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;margin-bottom:2px}
+.team-role{font-size:12px;color:var(--muted);font-weight:400;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
+.team-specs{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.team-spec{font-size:10px;padding:3px 8px;background:var(--accent2);color:var(--text);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.team-rating{font-size:12px;color:var(--muted);margin-top:8px}
+
+/* AVIS */
+.avis-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border)}
+.avis-card{background:white;padding:2rem}
+.avis-stars{color:var(--text);font-size:12px;margin-bottom:1rem;letter-spacing:.1em}
+.avis-text{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text);font-style:italic;line-height:1.7;margin-bottom:1rem;font-weight:400}
+.avis-author{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.08em}
+
+/* FAQ */
+.faq-list{max-width:700px;display:flex;flex-direction:column;gap:0}
+.faq-q{padding:1.25rem 0;border-bottom:1px solid var(--border);font-size:14px;font-weight:500;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color .2s;user-select:none}
+.faq-q:hover,.faq-q.open{color:var(--muted)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;font-size:13px;color:var(--muted);line-height:1.8;padding:0}
+.faq-a.open{max-height:200px;padding:.75rem 0 1.25rem}
+
+footer{background:var(--text);color:rgba(255,255,255,.5);padding:2.5rem 3rem;font-size:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+footer strong{color:rgba(255,255,255,.8)}
+
+.admin-lnk{display:flex;width:fit-content;margin:1.5rem auto 2.5rem;background:var(--text);color:white;padding:9px 18px;font-size:11px;font-family:inherit;font-weight:600;text-decoration:none;align-items:center;gap:6px;letter-spacing:.05em;text-transform:uppercase}
+.btn{padding:12px 28px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:opacity .2s;display:inline-flex;align-items:center;gap:8px;letter-spacing:.06em;text-transform:uppercase}
+.btn-primary{background:white;color:var(--text)}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,.4);color:white}
+.btn-outline:hover{border-color:white}
+
+@media(max-width:900px){
+  .booking-layout{grid-template-columns:1fr}
+  .section{padding:4rem 1.5rem}
+  nav{padding:1rem 1.5rem}.nav-links{display:none}
+  .hero-content{padding:2rem 1.5rem}
+  .team-grid{grid-template-columns:repeat(2,1fr)}
+  .avis-grid{grid-template-columns:1fr}
+}
+select{background:white!important;color:var(--text)!important;border:1px solid var(--border)!important}
+select option{background:white!important;color:var(--text)!important}
+
+/* Aucune règle CSS reveal — géré entièrement via JS inline styles */
+</style>
+</head>
+<body>
+
+<div class="loyalty-bar">Programme fidélité : <strong>5ème visite offerte</strong> · Parrainez un(e) ami(e) = <strong>10€ offerts</strong> à vous deux</div>
+
+<nav>
+  <div class="logo">Salon <span>Éclat</span></div>
+  <div class="nav-links">
+    <a href="#avant-apres">Avant/Après</a>
+    <a href="#services">Prestations</a>
+    <a href="#packs">Formules</a>
+    <a href="#booking">Réserver</a>
+    <a href="#equipe">Équipe</a>
+  </div>
+  <a href="#booking" class="nav-cta">Prendre RDV</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="live-dot"></span> Réservation en ligne 24h/24</div>
+    <h1>Votre beauté,<br><em>sublimée.</em></h1>
+    <p>Coloristes expertes, soins premium, résultats garantis. Réservez votre créneau en 60 secondes, annulation gratuite jusqu'à 24h avant.</p>
+    <div class="hero-ctas">
+      <a href="#booking" class="btn btn-primary">Prendre rendez-vous</a>
+      <a href="#avant-apres" class="btn btn-outline">Nos réalisations</a>
+    </div>
+  </div>
+</div>
+
+<div class="content-sheet">
+
+<!-- AVANT / APRÈS -->
+<div class="section" id="avant-apres">
+  <div class="sec-eyebrow">Nos réalisations</div>
+  <div class="sec-title">Avant / Après</div>
+  <div class="sec-desc">Des transformations réelles réalisées par notre équipe. Survolez pour voir le résultat.</div>
+  <div class="ba-grid" id="ba-grid"></div>
+</div>
+<hr class="divider">
+
+<!-- SOINS -->
+<div class="section" id="services">
+  <div class="sec-eyebrow">Réservation en ligne</div>
+  <div class="sec-title">Choisissez vos soins</div>
+  <div class="sec-desc">Sélectionnez une ou plusieurs prestations — le total et la durée se calculent automatiquement.</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem">
+    <button class="filter-btn active" onclick="filterSoins('tous',this)">Tous</button>
+    <button class="filter-btn" onclick="filterSoins('Coupe',this)">Coupes</button>
+    <button class="filter-btn" onclick="filterSoins('Couleur',this)">Couleurs</button>
+    <button class="filter-btn" onclick="filterSoins('Soin',this)">Soins</button>
+    <button class="filter-btn" onclick="filterSoins('Spécial',this)">Occasions</button>
+  </div>
+  <div id="soins-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:1.5rem"></div>
+  <div id="selection-bar" style="display:none;background:var(--accent2);border:1.5px solid rgba(183,110,121,.25);border-radius:14px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <div>
+      <div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:4px" id="sel-summary">Aucune prestation sélectionnée</div>
+      <div style="font-size:12px;color:var(--muted)" id="sel-details"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="text-align:right">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:800;color:var(--accent)" id="sel-total">0 €</div>
+        <div style="font-size:11px;color:var(--muted)" id="sel-duration">0 min</div>
+      </div>
+      <a href="#booking" class="nav-cta" id="sel-cta" onclick="scrollToBooking()">Réserver →</a>
+    </div>
+  </div>
+</div>
+<hr class="divider">
+
+<!-- BOOKING -->
+<div class="section" id="booking">
+  <div class="sec-eyebrow">Prise de rendez-vous</div>
+  <div class="sec-title">Réservez votre créneau</div>
+  <div class="sec-desc">Confirmation immédiate · Rappel 24h avant · Annulation gratuite</div>
+  <div class="booking-layout">
+    <div>
+      <div class="booking-block">
+        <div class="block-title">📅 Choisissez une date</div>
+        <div class="cal-nav-row">
+          <button class="cal-nav-btn" id="cal-prev">‹</button>
+          <span class="cal-month-lbl" id="cal-month"></span>
+          <button class="cal-nav-btn" id="cal-next">›</button>
+        </div>
+        <div class="cal-wdays">
+          <div class="cal-wday">L</div><div class="cal-wday">M</div><div class="cal-wday">M</div>
+          <div class="cal-wday">J</div><div class="cal-wday">V</div>
+          <div class="cal-wday" style="color:#ef4444">S</div><div class="cal-wday" style="color:#ef4444">D</div>
+        </div>
+        <div class="cal-grid" id="cal-days"></div>
+        <div class="slots-sec" id="slots-sec">
+          <div style="font-size:13px;font-weight:600;color:var(--text)" id="slots-label">Créneaux disponibles</div>
+          <div class="slots-grid" id="slots-grid"></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="booking-block">
+        <div class="block-title">📝 Vos informations</div>
+        <div class="alert alert-success" id="bk-success"></div>
+        <div class="alert alert-error" id="bk-error"></div>
+        <form id="bk-form" onsubmit="submitBooking(event)">
+          <div class="form-group"><label class="form-label">Prénom & Nom *</label><input name="name" class="form-input" placeholder="Marie Dupont" required></div>
+          <div class="form-group"><label class="form-label">Email *</label><input name="email" type="email" class="form-input" placeholder="marie@email.com" required></div>
+          <div class="form-group"><label class="form-label">Téléphone</label><input name="phone" class="form-input" placeholder="06 12 34 56 78"></div>
+          <div class="form-group"><label class="form-label">Praticienne</label>
+            <select name="practitioner" class="form-input">
+              <option>Pas de préférence</option>
+              <option>Sophie M. — Coloriste</option>
+              <option>Lucie B. — Coiffeuse</option>
+              <option>Camille P. — Styliste</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Notes</label><textarea name="notes" class="form-input" rows="2" placeholder="Allergies, souhaits particuliers..."></textarea></div>
+          <div class="summary-box">
+            <div class="sum-row"><span style="color:var(--muted)">Prestation</span><span style="font-weight:600" id="sum-svc">—</span></div>
+            <div class="sum-row"><span style="color:var(--muted)">Date</span><span style="font-weight:600" id="sum-date">—</span></div>
+            <div class="sum-row"><span style="color:var(--muted)">Heure</span><span style="font-weight:600" id="sum-time">—</span></div>
+            <div class="sum-row"><span style="color:var(--muted)">Durée</span><span style="font-weight:600" id="sum-dur">—</span></div>
+            <div class="sum-row"><span>Prix total</span><span style="color:var(--accent)" id="sum-price">—</span></div>
+          </div>
+          <div class="deposit-notice">🔒 <strong>Acompte de 20% requis</strong> à la réservation (via Stripe sécurisé). Remboursé intégralement en cas d'annulation 24h avant. Réduit les no-show de 70%.</div>
+          <button type="submit" class="btn-confirm" id="bk-submit">✅ Confirmer et payer l'acompte</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="divider">
+
+<!-- EQUIPE -->
+<div class="section" id="equipe">
+  <div class="sec-eyebrow">Notre équipe</div>
+  <div class="sec-title">Des expertes à votre service</div>
+  <div class="sec-desc">Chacune formée aux dernières techniques, passionnée par son métier.</div>
+  <div class="team-grid" id="team-grid"></div>
+</div>
+<hr class="divider">
+
+<!-- AVIS -->
+<div class="section">
+  <div class="sec-eyebrow">Ce qu'elles disent</div>
+  <div class="sec-title">Avis clients vérifiés</div>
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:800">4.9</div>
+    <div><div style="color:#fbbf24;font-size:18px">★★★★★</div><div style="font-size:13px;color:var(--muted)">312 avis Google · Treatwell</div></div>
+  </div>
+  <div class="avis-grid" id="avis-grid"></div>
+</div>
+<hr class="divider">
+
+<!-- FAQ -->
+<div class="section" id="faq">
+  <div class="sec-eyebrow">FAQ</div>
+  <div class="sec-title">Questions fréquentes</div>
+  <div class="faq-list" id="faq-list"></div>
+</div>
+
+<footer>
+  <p style="font-family:'Playfair Display',serif;font-size:1.1rem;color:rgba(255,255,255,.7);font-style:italic">Salon Éclat</p>
+  <p>© 2026 · Site réalisé par <strong>Jérémie Henri</strong> · <strong>DÉMO</strong></p>
+</footer>
+<a href="admin-rdv.html" class="admin-lnk">⚙️ Panel Admin</a>
+
+</div><!-- /content-sheet -->
+
+<script>
+const MONTHS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+const SERVICES_DATA=[
+  {emoji:'✂️',nom:'Coupe femme',categorie:'Coupe',dur:45,prix:45,popular:true},
+  {emoji:'💈',nom:'Coupe homme',categorie:'Coupe',dur:30,prix:28,popular:false},
+  {emoji:'🎨',nom:'Couleur complète',categorie:'Couleur',dur:90,prix:85,popular:false},
+  {emoji:'✨',nom:'Balayage',categorie:'Couleur',dur:120,prix:120,popular:true},
+  {emoji:'💆',nom:'Soin profond',categorie:'Soin',dur:30,prix:35,popular:false},
+  {emoji:'💅',nom:'Brushing & Mise en plis',categorie:'Soin',dur:45,prix:40,popular:false},
+  {emoji:'🌈',nom:'Mèches & Highlights',categorie:'Couleur',dur:90,prix:95,popular:false},
+  {emoji:'💍',nom:'Coiffage mariage',categorie:'Spécial',dur:120,prix:150,popular:false},
+  {emoji:'🎭',nom:'Coiffure événement',categorie:'Spécial',dur:60,prix:80,popular:false},
+]
+const PACKAGES=[
+  {name:'Pack Éclat Total',items:['Coupe femme','Couleur complète','Soin profond'],old:165,price:139,saving:'15%',badge:'Le plus populaire',featured:true},
+  {name:'Pack Couleur & Soin',items:['Balayage','Soin profond','Brushing'],old:155,price:135,saving:'13%',badge:'Nouveau'},
+  {name:'Pack Beauté Rapide',items:['Coupe femme','Soin express'],old:70,price:60,saving:'14%',badge:'Idéal 1h30'},
+]
+const TEAM_DATA=[
+  {name:'Sophie Martin',role:'Coloriste experte',spec:['Balayage','Couleur','Mèches'],exp:'8 ans',rating:'4.9',img:'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=400&q=75'},
+  {name:'Lucie Bernard',role:'Coiffeuse styliste',spec:['Coupes','Brushing','Chignons'],exp:'5 ans',rating:'4.8',img:'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=75'},
+  {name:'Camille Petit',role:'Styliste mariages',spec:['Mariages','Soirées','Tresses'],exp:'6 ans',rating:'5.0',img:'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=75'},
+  {name:'Emma Rousseau',role:'Esthéticienne',spec:['Soins visage','Sourcils','Maquillage'],exp:'4 ans',rating:'4.7',img:'https://images.unsplash.com/photo-1548142813-c348350df52b?w=400&q=75'},
+]
+const BA_DATA=[
+  {service:'Couleur',
+   before:'../photos/couleur1.png',
+   after:'../photos/couleur2.png',
+   desc:'Coloration — résultat lumineux'},
+  {service:'Mise en forme',
+   before:'../photos/avant2.png',
+   after:'../photos/apres2.png',
+   desc:'Mise en forme — volume et brillance'},
+  {service:'Cheveux blancs',
+   before:'../photos/avant_cheveux_blancs.png',
+   after:'../photos/apres_cheveux_blancs.png',
+   desc:'Coloration cheveux blancs — couvrance parfaite'},
+  {service:'Balayage',
+   before:'../photos/avant4.png',
+   after:'../photos/apres4.png',
+   desc:'Balayage — reflets naturels'},
+]
+const AVIS_DATA=[
+  {stars:5,text:'"Sophie est une magicienne du balayage. Résultat naturel et lumineux, exactement ce que je voulais. Je n\'irai plus nulle part ailleurs !"',author:'Marie L. · Balayage'},
+  {stars:5,text:'"L\'appli de RDV est super pratique. Je réserve depuis mon téléphone en 2 minutes. L\'équipe est super professionnelle."',author:'Claire R. · Coupe femme'},
+  {stars:5,text:'"Coiffure de mariage parfaite, tenue toute la journée. Camille a su exactement ce que je voulais. Merci !"',author:'Justine M. · Coiffage mariage'},
+  {stars:4,text:'"Très bonne expérience, salon agréable et équipe souriante. Juste un peu d\'attente malgré le RDV, mais résultat au top."',author:'Nathalie V. · Couleur'},
+  {stars:5,text:'"Le soin profond a transformé mes cheveux secs. Lucie m\'a donné plein de conseils pour l\'entretien. Super !"',author:'Isabelle D. · Soin profond'},
+  {stars:5,text:'"Pack Éclat Total, c\'est la vie. 3h de bonheur à un prix imbattable. Le programme fidélité est un vrai plus."',author:'Sophie T. · Pack Éclat Total'},
+]
+const FAQ_DATA=[
+  {q:'Comment annuler mon rendez-vous ?',a:'Vous pouvez annuler gratuitement jusqu\'à 24h avant votre RDV en répondant à votre email de confirmation. En-dessous de 24h, l\'acompte est conservé.'},
+  {q:'L\'acompte est-il remboursable ?',a:'Oui, intégralement si l\'annulation intervient plus de 24h avant. L\'acompte représente 20% du prix de la prestation.'},
+  {q:'Puis-je venir sans rendez-vous ?',a:'Nous acceptons les clients sans RDV selon disponibilité, mais la réservation est fortement recommandée pour garantir votre créneau.'},
+  {q:'Quels sont les moyens de paiement ?',a:'Nous acceptons CB, espèces, sans contact, Apple Pay et chèques-cadeaux Salon Éclat.'},
+  {q:'Proposez-vous des cartes cadeaux ?',a:'Oui ! Cartes cadeaux disponibles en salon pour tous montants. Idéales pour offrir un moment de beauté.'},
+]
+
+let selectedSoins=[], selDate=null, selSlot=null, curDate=new Date(2026,5,1), filterCat='tous'
+
+
+function renderBA(){
+  var grid = document.getElementById('ba-grid')
+  if (!grid) return
+  grid.innerHTML = ''
+  BA_DATA.forEach(function(b) {
+    var card = document.createElement('div')
+    card.className = 'ba-card'
+    card.style.cssText = 'position:relative;overflow:hidden;cursor:pointer'
+    
+    // Image "Avant" visible par défaut
+    var imgBefore = document.createElement('img')
+    imgBefore.src = b.before
+    imgBefore.alt = 'Avant ' + b.service
+    imgBefore.loading = 'lazy'
+    imgBefore.className = 'ba-img-before'
+    imgBefore.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s'
+    
+    // Image "Après" cachée par défaut
+    var imgAfter = document.createElement('img')
+    imgAfter.src = b.after
+    imgAfter.alt = 'Après ' + b.service
+    imgAfter.loading = 'lazy'
+    imgAfter.className = 'ba-img-after'
+    imgAfter.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s'
+    
+    // Badge service
+    var svcBadge = document.createElement('span')
+    svcBadge.style.cssText = 'position:absolute;top:10px;right:10px;background:var(--accent);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;z-index:3'
+    svcBadge.textContent = b.service
+    
+    // Label Avant
+    var lblBefore = document.createElement('span')
+    lblBefore.style.cssText = 'position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,.6);color:white;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;backdrop-filter:blur(4px);z-index:3;transition:opacity .3s'
+    lblBefore.textContent = '← Avant'
+    
+    // Label Après
+    var lblAfter = document.createElement('span')
+    lblAfter.style.cssText = 'position:absolute;bottom:10px;right:10px;background:var(--accent);color:white;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;z-index:3;opacity:0;transition:opacity .3s'
+    lblAfter.textContent = 'Après ✨'
+    
+    // Description résultat
+    var desc = document.createElement('div')
+    desc.style.cssText = 'position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.7));color:white;font-size:12px;font-weight:600;padding:.75rem 1rem;opacity:0;transition:opacity .3s;z-index:3'
+    desc.textContent = b.desc
+    
+    card.appendChild(imgBefore)
+    card.appendChild(imgAfter)
+    card.appendChild(svcBadge)
+    card.appendChild(lblBefore)
+    card.appendChild(lblAfter)
+    card.appendChild(desc)
+    
+    card.addEventListener('mouseenter', function() {
+      imgBefore.style.opacity = '0'
+      imgAfter.style.opacity = '1'
+      lblBefore.style.opacity = '0'
+      lblAfter.style.opacity = '1'
+      desc.style.opacity = '1'
+    })
+    card.addEventListener('mouseleave', function() {
+      imgBefore.style.opacity = '1'
+      imgAfter.style.opacity = '0'
+      lblBefore.style.opacity = '1'
+      lblAfter.style.opacity = '0'
+      desc.style.opacity = '0'
+    })
+    
+    grid.appendChild(card)
+  })
+}
+
+function renderServices(){
+  document.getElementById('services-grid').innerHTML=SERVICES_DATA.map((s,i)=>`
+    <div class="svc-card${selSvc===i?' active':''}" onclick-removed>
+      ${s.popular?'<span class="popular-tag">⭐ Populaire</span>':''}
+      <span class="svc-emoji">${s.emoji}</span>
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-dur">${s.dur} min</div>
+      <div class="svc-price">${s.price} €</div>
+    </div>`).join('')
+}
+
+function selectSvc(i){
+  selSvc=i;const s=SERVICES_DATA[i]
+  document.getElementById('sum-svc').textContent=s.name
+  document.getElementById('sum-dur').textContent=s.dur+' min'
+  document.getElementById('sum-price').textContent=s.price+' € (acompte '+Math.round(s.price*.2)+' €)'
+  renderServices()
+  document.getElementById('booking').scrollIntoView({behavior:'smooth'})
+}
+
+
+function selectPackage(name,price){
+  // Trouver la durée totale du pack (somme des services)
+  const packDurations = {
+    "Pack Éclat Total": "3h00 (coupe + couleur + soin)",
+    "Pack Couleur & Soin": "2h30 (balayage + soin + brushing)",
+    "Pack Beauté Rapide": "1h15 (coupe + soin express)"
+  }
+  document.getElementById('sum-svc').textContent = name
+  document.getElementById('sum-dur').textContent = packDurations[name] || "Voir détail"
+  document.getElementById('sum-price').textContent = price + ' € (acompte ' + Math.round(price*.2) + ' €)'
+  // Date et heure restent à sélectionner — on guide l'utilisateur
+  document.getElementById('sum-date').textContent = '— Sélectionnez une date'
+  document.getElementById('sum-time').textContent = '— Sélectionnez un créneau'
+  document.getElementById('booking').scrollIntoView({behavior:'smooth'})
+}
+
+function renderTeam(){
+  document.getElementById('team-grid').innerHTML=TEAM_DATA.map(t=>`
+    <div class="team-card">
+      <div class="team-img"><img src="${t.img}" alt="${t.name}" loading="lazy"></div>
+      <div class="team-body">
+        <div class="team-name">${t.name}</div>
+        <div class="team-role">${t.role}</div>
+        <div class="team-specs">${t.spec.map(s=>`<span class="team-spec">${s}</span>`).join('')}</div>
+        <div class="team-rating">⭐ ${t.rating} · ${t.exp} d'expérience</div>
+      </div>
+    </div>`).join('')
+}
+
+function renderAvis(){
+  document.getElementById('avis-grid').innerHTML=AVIS_DATA.map(a=>`
+    <div class="avis-card">
+      <div class="avis-stars">${'★'.repeat(a.stars)}${'☆'.repeat(5-a.stars)}</div>
+      <div class="avis-text">${a.text}</div>
+      <div class="avis-author">${a.author}</div>
+    </div>`).join('')
+}
+
+function renderFAQ(){
+  document.getElementById('faq-list').innerHTML=FAQ_DATA.map((f,i)=>`
+    <div>
+      <div class="faq-q" id="fq-${i}" onclick="toggleFaq(${i})">${f.q} <span>▾</span></div>
+      <div class="faq-a" id="fa-${i}">${f.a}</div>
+    </div>`).join('')
+}
+function toggleFaq(i){
+  const q=document.getElementById('fq-'+i),a=document.getElementById('fa-'+i)
+  const open=q.classList.contains('open')
+  document.querySelectorAll('.faq-q').forEach(e=>e.classList.remove('open'))
+  document.querySelectorAll('.faq-a').forEach(e=>e.classList.remove('open'))
+  if(!open){q.classList.add('open');a.classList.add('open')}
+}
+
+// CALENDAR
+
+
+
+function quickSelectSvc(nomSvc) {
+  if (!nomSvc) return;
+  var s = SERVICES_DATA.find(function(x) { return x.nom === nomSvc; });
+  if (!s) return;
+  selectedSoins = [s];
+  updateSelectionBar();
+  updateBookingSummary();
+  renderSoins();
+  document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderSoins(filter) {
+  filter = filter || filterCat;
+  var list = filter === 'tous'
+    ? SERVICES_DATA
+    : SERVICES_DATA.filter(function(s) { return s.categorie === filter; });
+  var grid = document.getElementById('soins-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  list.forEach(function(s) {
+    var isSel = selectedSoins.some(function(x) { return x.nom === s.nom; });
+    var card = document.createElement('div');
+    card.style.background = 'white';
+    card.style.border = '1.5px solid ' + (isSel ? 'var(--accent)' : 'var(--border)');
+    card.style.borderRadius = '14px';
+    card.style.padding = '1.25rem';
+    card.style.cursor = 'pointer';
+    card.style.transition = 'all .2s';
+    card.style.position = 'relative';
+    if (isSel) card.style.background = 'var(--accent2)';
+
+    if (s.popular) {
+      var pop = document.createElement('span');
+      pop.style.cssText = 'position:absolute;top:-7px;right:10px;background:var(--accent);color:white;font-size:9px;font-weight:700;padding:2px 9px;border-radius:100px';
+      pop.textContent = 'Populaire';
+      card.appendChild(pop);
+    }
+    if (isSel) {
+      var check = document.createElement('div');
+      check.style.cssText = 'position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700';
+      check.textContent = '✓';
+      card.appendChild(check);
+    }
+
+    var emoji = document.createElement('span');
+    emoji.style.cssText = 'font-size:2rem;display:block;margin-bottom:8px';
+    emoji.textContent = s.emoji;
+    card.appendChild(emoji);
+
+    var name = document.createElement('div');
+    name.style.cssText = 'font-weight:700;font-size:14px;margin-bottom:4px;padding-right:26px';
+    name.textContent = s.nom;
+    card.appendChild(name);
+
+    var dur = document.createElement('div');
+    dur.style.cssText = 'font-size:12px;color:var(--muted);margin-bottom:8px';
+    dur.textContent = s.dur + ' min';
+    card.appendChild(dur);
+
+    var price = document.createElement('div');
+    price.style.cssText = 'font-size:1rem;font-weight:800;color:var(--accent)';
+    price.textContent = s.prix + ' €';
+    card.appendChild(price);
+
+    card.addEventListener('click', (function(soin) {
+      return function() { toggleSoin(soin); };
+    })(s));
+    grid.appendChild(card);
+  });
+}
+
+function filterSoins(cat, el) {
+  filterCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  renderSoins(cat);
+}
+
+function toggleSoin(s) {
+  var idx = selectedSoins.findIndex(function(x) { return x.nom === s.nom; });
+  if (idx >= 0) { selectedSoins.splice(idx, 1); }
+  else { selectedSoins.push(s); }
+  renderSoins();
+  updateSelectionBar();
+  updateBookingSummary();
+}
+
+function updateSelectionBar() {
+  var bar = document.getElementById('selection-bar');
+  var summary = document.getElementById('sel-summary');
+  var details = document.getElementById('sel-details');
+  var totalEl = document.getElementById('sel-total');
+  var durEl = document.getElementById('sel-duration');
+  if (!bar) return;
+  if (selectedSoins.length === 0) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  var totalPrice = selectedSoins.reduce(function(a, s) { return a + s.prix; }, 0);
+  var totalDur = selectedSoins.reduce(function(a, s) { return a + s.dur; }, 0);
+  if (summary) summary.textContent = selectedSoins.length + ' soin' + (selectedSoins.length > 1 ? 's' : '') + ' sélectionné' + (selectedSoins.length > 1 ? 's' : '');
+  if (details) details.textContent = selectedSoins.map(function(s) { return s.nom; }).join(' + ');
+  if (totalEl) totalEl.textContent = totalPrice + ' €';
+  if (durEl) durEl.textContent = totalDur + ' min au total';
+}
+
+function updateBookingSummary() {
+  var sumSvc = document.getElementById('sum-svc');
+  var sumDur = document.getElementById('sum-dur');
+  var sumPrice = document.getElementById('sum-price');
+  if (!sumSvc) return;
+  if (selectedSoins.length === 0) {
+    sumSvc.textContent = '—'; sumDur.textContent = '—'; sumPrice.textContent = '—'; return;
+  }
+  var totalPrice = selectedSoins.reduce(function(a, s) { return a + s.prix; }, 0);
+  var totalDur = selectedSoins.reduce(function(a, s) { return a + s.dur; }, 0);
+  sumSvc.textContent = selectedSoins.map(function(s) { return s.nom; }).join(' + ');
+  sumDur.textContent = totalDur + ' min';
+  sumPrice.textContent = totalPrice + ' € (acompte ' + Math.round(totalPrice * 0.2) + ' €)';
+}
+
+
+function renderCal(){
+  document.getElementById('cal-month').textContent=MONTHS[curDate.getMonth()]+' '+curDate.getFullYear()
+  const first=new Date(curDate.getFullYear(),curDate.getMonth(),1)
+  const last=new Date(curDate.getFullYear(),curDate.getMonth()+1,0)
+  let start=first.getDay()===0?6:first.getDay()-1,html=''
+  for(let i=0;i<start;i++)html+='<div class="cal-day"></div>'
+  for(let d=1;d<=last.getDate();d++){
+    const dow=new Date(curDate.getFullYear(),curDate.getMonth(),d).getDay()
+    const isWknd=dow===0||dow===6
+    const isSel=selDate===d
+    html+=`<div class="cal-day in-month${isWknd?' unavailable':' available'}${isSel?' selected':''}" ${!isWknd?`onclick="pickDay(${d})"`:''}>${d}</div>`
+  }
+  document.getElementById('cal-days').innerHTML=html
+}
+
+function pickDay(d){
+  selDate=d;selSlot=null
+  const ds=`${d} ${MONTHS[curDate.getMonth()]} ${curDate.getFullYear()}`
+  document.getElementById('slots-label').textContent='Créneaux — '+ds
+  document.getElementById('sum-date').textContent=ds
+  document.getElementById('sum-time').textContent='—'
+  renderCal();renderSlots()
+  document.getElementById('slots-sec').style.display='block'
+}
+
+function renderSlots(){
+  const times=['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:45','15:30','16:15','17:00']
+  const full=['09:30','14:45']
+  const last=['17:00']
+  const grid=document.getElementById('slots-grid')
+  grid.innerHTML=''
+  times.forEach(function(t){
+    const div=document.createElement('div')
+    div.className='slot'+(full.includes(t)?' full':'')+(selSlot===t?' selected':'')
+    div.textContent=t
+    if(last.includes(t)){
+      const tag=document.createElement('span')
+      tag.className='slot-tag'
+      tag.textContent='Dernier'
+      div.appendChild(tag)
+    }
+    if(!full.includes(t)){
+      div.addEventListener('click',function(){pickSlot(t)})
+    }
+    grid.appendChild(div)
+  })
+}
+
+function pickSlot(t){selSlot=t;document.getElementById('sum-time').textContent=t;renderSlots()}
+
+async function submitBooking(e){
+  e.preventDefault()
+  if(selectedSoins.length===0){showError('Sélectionnez au moins une prestation.');return}
+  if(!selDate||!selSlot){showError('Sélectionnez une date et un créneau.');return}
+  const totalPrice=selectedSoins.reduce(function(a,s){return a+s.prix},0)
+  const totalDur=selectedSoins.reduce(function(a,s){return a+s.dur},0)
+  const s={nom:selectedSoins.map(function(x){return x.nom}).join(' + '),dur:totalDur,prix:totalPrice}
+  const btn=document.getElementById('bk-submit')
+  btn.textContent='Envoi en cours...';btn.disabled=true
+  hideAlerts()
+  const fd=new FormData(e.target)
+  const body={...Object.fromEntries(fd.entries()),service:s.nom,duration:String(s.dur),price:String(s.prix),date:`${selDate} ${MONTHS[curDate.getMonth()]} ${curDate.getFullYear()}`,time:selSlot}
+  try{
+    let ref=null
+    try{
+      const res=await fetch('/api/booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      const ct=res.headers.get('content-type')||''
+      if(ct.includes('application/json')){
+        const data=await res.json()
+        if(res.ok)ref=data.ref
+      }
+    }catch(_){}
+    if(!ref)ref='RDV-'+Math.random().toString(36).slice(2,5).toUpperCase()+Math.floor(Math.random()*100)
+    const data={ref}
+    const suc=document.getElementById('bk-success')
+    suc.style.display='block'
+    suc.innerHTML=`✅ <strong>RDV confirmé !</strong> Réf. <strong>${data.ref}</strong><br>${s.name} le ${body.date} à ${selSlot}<br>Email envoyé · Acompte de ${Math.round(s.price*.2)} € sera prélevé.`
+    e.target.reset();selDate=null;selSlot=null;renderCal();document.getElementById('slots-sec').style.display='none'
+  }catch(er){showError(er.message||'Erreur. Réessayez ou appelez le 01 42 00 00 00.')}
+  finally{btn.textContent='✅ Confirmer et payer l\'acompte';btn.disabled=false}
+}
+function showError(m){const el=document.getElementById('bk-error');el.style.display='block';el.textContent='❌ '+m}
+function hideAlerts(){document.getElementById('bk-success').style.display='none';document.getElementById('bk-error').style.display='none'}
+
+document.getElementById('cal-prev').onclick=()=>{curDate.setMonth(curDate.getMonth()-1);renderCal()}
+document.getElementById('cal-next').onclick=()=>{curDate.setMonth(curDate.getMonth()+1);renderCal()}
+
+renderSoins();renderCal();renderBA();renderTeam();renderAvis();renderFAQ()
+
+// ─── ANIMATIONS AU SCROLL ─────────────────────────────────────
+;(function(){
+  var SELECTORS = '.sec-eyebrow, .sec-title, .sec-desc, .ba-card, .svc-card, .pack-card, .booking-block, .team-card, .avis-card, .faq-q, .loyalty-bar'
+
+  // Cacher tous les éléments via inline style
+  document.querySelectorAll(SELECTORS).forEach(function(el, globalIdx){
+    // Délai échelonné : détecter la position dans le parent
+    var delay = 0
+    var kids = el.parentElement ? Array.from(el.parentElement.children) : []
+    var pos = kids.indexOf(el)
+    if(pos===1) delay=100; else if(pos===2) delay=200; else if(pos===3) delay=300; else if(pos>=4) delay=380
+
+    el._revealDelay = delay
+    el._revealed   = false
+    el.style.opacity   = '0'
+    el.style.transform = 'translateY(26px)'
+  })
+
+  function doReveal(el){
+    if(el._revealed) return
+    el._revealed = true
+    var d = el._revealDelay || 0
+    setTimeout(function(){
+      el.setAttribute('style',
+        'opacity:1!important;transform:translateY(0)!important;' +
+        'transition:opacity 650ms cubic-bezier(.22,1,.36,1),transform 650ms cubic-bezier(.22,1,.36,1)!important'
+      )
+    }, d)
+  }
+
+  function check(){
+    var limit = window.innerHeight * 0.9
+    document.querySelectorAll(SELECTORS).forEach(function(el){
+      if(!el._revealed && el.getBoundingClientRect().top < limit) doReveal(el)
+    })
+  }
+
+  window.addEventListener('scroll', check, {passive:true})
+  // Premier check différé — laisse le browser terminer le layout
+  setTimeout(check, 200)
+})()
+</script>
+</body>
+</html>

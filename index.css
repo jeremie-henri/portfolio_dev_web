@@ -1,0 +1,147 @@
+/* ============================================
+   index.css — Point d'entrée CSS global
+   Portfolio Jérémie Henri
+   ============================================ */
+
+/* 1️⃣  Les 3 directives Tailwind obligatoires */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2️⃣  Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+/* 3️⃣  Variables CSS globales */
+:root {
+  --accent:   #7c6af7;
+  --accent-2: #5eead4;
+  --muted:    #7a7890;
+  --border:   rgba(255, 255, 255, 0.07);
+}
+
+/* 4️⃣  Reset & base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0a0a0f;
+  color: #e8e6f0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 5️⃣  Texture de bruit (grain subtle sur tout le site) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.4;
+}
+
+/* 6️⃣  Classes utilitaires custom (avec @layer pour Tailwind) */
+@layer components {
+
+  /* Bouton principal */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-7 py-3 rounded-lg
+           text-sm font-medium text-white transition-all duration-150
+           cursor-pointer select-none;
+    background: var(--accent);
+    box-shadow: 0 0 24px rgba(124, 106, 247, 0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 32px rgba(124, 106, 247, 0.5);
+  }
+
+  /* Bouton fantôme */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-7 py-3 rounded-lg
+           text-sm font-medium transition-all duration-150
+           cursor-pointer select-none;
+    border: 1px solid var(--border);
+    color: #e8e6f0;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  /* Carte générique */
+  .card {
+    @apply rounded-xl overflow-hidden transition-all duration-200;
+    background: #111118;
+    border: 1px solid var(--border);
+  }
+  .card:hover {
+    border-color: rgba(124, 106, 247, 0.35);
+    transform: translateY(-4px);
+  }
+
+  /* Badge / tag */
+  .badge {
+    @apply inline-block text-xs px-2 py-1 rounded;
+    background: #1a1a24;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .badge-accent {
+    @apply badge;
+    border-color: rgba(124, 106, 247, 0.3);
+    color: var(--accent);
+    background: rgba(124, 106, 247, 0.08);
+  }
+
+  /* Label de section */
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-widest mb-3;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+  }
+
+  /* Titre de section */
+  .section-title {
+    @apply font-head font-bold leading-tight mb-4;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    letter-spacing: -0.02em;
+  }
+
+  /* Input de formulaire */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-lg text-sm outline-none transition-all duration-200;
+    background: #111118;
+    border: 1px solid var(--border);
+    color: #e8e6f0;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .form-input::placeholder { color: var(--muted); }
+  .form-input:focus { border-color: rgba(124, 106, 247, 0.5); }
+}
+
+/* 7️⃣  Scrollbar custom (optionnel, effet premium) */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0f; }
+::-webkit-scrollbar-thumb {
+  background: #2a2a3a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* 8️⃣  Sélection de texte */
+::selection {
+  background: rgba(124, 106, 247, 0.3);
+  color: #fff;
+}

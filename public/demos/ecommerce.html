@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maison Provence — Boutique artisanale</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f4ede0;--card:#fffdf6;--accent:#2d6a4f;--accent2:#c8dfd0;--text:#1a0f00;--muted:#6b5840;--border:#cec4b0;--warm:#c1440e;--red:#c0392b;--gold:#8b6d14}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden}
+
+/* SHIPPING BAR */
+#shipping-bar{background:#1a0f00;color:#f4ede0;text-align:center;padding:9px 1rem;font-size:12px;font-weight:500;position:relative;z-index:50;letter-spacing:.03em}
+#shipping-bar span{color:#74d4a1}
+.shipping-progress-wrap{display:inline-block;width:100px;height:3px;background:rgba(255,255,255,.15);border-radius:2px;vertical-align:middle;margin:0 8px}
+.shipping-progress-fill{height:100%;background:#74d4a1;border-radius:2px;transition:width .5s}
+
+/* NAV */
+nav{background:var(--card);border-bottom:2px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.35rem;color:var(--text);font-style:italic;letter-spacing:.01em}
+.logo span{color:var(--accent);font-style:normal;font-weight:800}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-size:11px;color:var(--muted);text-decoration:none;transition:color .2s;text-transform:uppercase;font-weight:600;letter-spacing:.1em}
+.nav-links a:hover{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.cart-btn{position:relative;background:var(--accent);color:white;border:none;padding:9px 18px;border-radius:5px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;letter-spacing:.02em}
+.cart-btn:hover{background:#1d4a31}
+.cart-count{position:absolute;top:-6px;right:-6px;background:var(--warm);color:white;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.wishlist-btn{background:none;border:1.5px solid var(--border);width:38px;height:38px;border-radius:5px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.wishlist-btn:hover{border-color:var(--warm)}
+
+/* HERO */
+.hero{height:760px;display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden}
+.hero-left{background:linear-gradient(160deg,#1c3828 0%,#0d2016 55%,#1c2d20 100%);padding:2.5rem 3.5rem 2.5rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;overflow:hidden}
+.hero-left::after{content:'';position:absolute;bottom:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:60px solid rgba(116,212,161,.04);pointer-events:none}
+.hero-left::before{content:'';position:absolute;top:-40px;left:-40px;width:200px;height:200px;border-radius:50%;border:40px solid rgba(116,212,161,.03);pointer-events:none}
+.hero-right{position:relative;overflow:hidden}
+.hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(13,32,22,.5) 0%,transparent 50%);pointer-events:none;z-index:1}
+/* Slideshow */
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease-in-out}
+.hero-slide.active{opacity:1}
+.hero-slide img{width:100%;height:100%;object-fit:cover;filter:sepia(.1)saturate(.95)brightness(.85)}
+.hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(116,212,161,.1);border:1px solid rgba(116,212,161,.22);color:#74d4a1;font-size:10px;font-weight:600;padding:4px 12px;border-radius:3px;letter-spacing:.06em;text-transform:uppercase}
+.hero h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.4rem,4vw,3.7rem);font-weight:700;line-height:1.08;margin-bottom:1.25rem;color:#f4ede0}
+.hero h1 em{color:#74d4a1;font-style:italic}
+.hero p{color:rgba(244,237,224,.6);font-weight:300;max-width:400px;margin-bottom:2rem;line-height:1.85;font-size:15px}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;width:fit-content;background:#74d4a1;color:#0d2016;padding:13px 28px;border:none;border-radius:5px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.03em;transition:all .2s}
+.hero-cta:hover{background:#52b788;transform:translateX(4px)}
+.hero-stats{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(244,237,224,.1)}
+.hero-stat strong{font-family:'Playfair Display',Georgia,serif;font-size:1.7rem;font-weight:700;color:#74d4a1;display:block;line-height:1}
+.hero-stat span{font-size:10px;color:rgba(244,237,224,.45);text-transform:uppercase;letter-spacing:.1em}
+
+/* TRUST BAR */
+.trust-bar{background:var(--text);color:rgba(244,237,224,.65);padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.02em}
+.trust-item strong{color:#74d4a1}
+
+/* SECTION */
+.section{padding:4.5rem 2rem;max-width:1200px;margin:0 auto}
+.sec-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
+.sec-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:700;margin-bottom:.75rem;letter-spacing:-.01em;color:var(--text)}
+.sec-desc{color:var(--muted);font-weight:300;max-width:500px;margin-bottom:2.5rem;font-size:15px;line-height:1.75}
+.divider{max-width:1200px;margin:0 auto;border:none;border-top:2px solid var(--border)}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem;align-items:center}
+.filter-btn{padding:7px 18px;border:1.5px solid var(--border);border-radius:4px;font-size:11px;color:var(--muted);background:var(--card);cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s;letter-spacing:.04em;text-transform:uppercase}
+.filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent2)}
+.filter-sep{width:1px;height:24px;background:var(--border)}
+
+/* PRODUCTS GRID */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.product-card{background:var(--card);border:1.5px solid var(--border);border-radius:7px;overflow:hidden;transition:all .3s;position:relative}
+.product-card:hover{box-shadow:0 12px 36px rgba(26,15,0,.14);transform:translateY(-5px);border-color:var(--accent)}
+.product-img-wrap{height:210px;overflow:hidden;position:relative}
+.product-img{width:100%;height:100%;object-fit:cover;transition:transform .5s;filter:sepia(.05)}
+.product-card:hover .product-img{transform:scale(1.07)}
+.product-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s;display:flex;align-items:center;justify-content:center;gap:8px}
+.product-card:hover .product-overlay{background:rgba(13,32,22,.5)}
+.overlay-btn{opacity:0;transform:translateY(10px);transition:all .3s;padding:9px 18px;border-radius:4px;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.03em}
+.product-card:hover .overlay-btn{opacity:1;transform:translateY(0)}
+.overlay-btn.primary{background:var(--card);color:var(--text)}
+.overlay-btn.wish{background:rgba(255,255,255,.12);color:white;width:38px;height:38px;padding:0;border-radius:50%;font-size:16px;flex-shrink:0}
+.overlay-btn.wish.active{background:var(--warm)}
+.product-badges{position:absolute;top:10px;left:10px;display:flex;flex-direction:column;gap:4px}
+.product-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:3px;width:fit-content;text-transform:uppercase;letter-spacing:.05em}
+.badge-bio{background:var(--accent);color:white}
+.badge-promo{background:var(--warm);color:white}
+.badge-new{background:var(--gold);color:white}
+.badge-stock{background:rgba(192,57,43,.9);color:white}
+.product-body{padding:1rem 1.1rem;border-top:1.5px solid var(--border)}
+.product-cat{font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:5px;font-weight:600}
+.product-name{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1rem;margin-bottom:4px;color:var(--text);line-height:1.2}
+.product-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px}
+.product-footer{display:flex;align-items:center;justify-content:space-between}
+.product-price{font-family:'Playfair Display',Georgia,serif;font-size:1.05rem;font-weight:700;color:var(--text)}
+.product-old-price{font-size:11px;color:var(--muted);text-decoration:line-through;margin-right:4px;font-weight:400;font-family:'DM Sans',sans-serif}
+.add-btn{background:var(--accent);color:white;border:none;width:34px;height:34px;border-radius:4px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;font-weight:700;transition:background .2s}
+.add-btn:hover{background:#1d4a31}
+.stock-indicator{font-size:11px;margin-bottom:6px;font-weight:600}
+.stock-low{color:var(--warm)}
+.stock-ok{color:var(--accent)}
+.stars{color:#c9a84c;font-size:11px;margin-bottom:4px}
+.review-count{color:var(--muted);font-size:11px;margin-left:3px}
+
+/* BUNDLES */
+.bundles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.bundle-card{background:var(--card);border:1.5px solid var(--border);border-radius:7px;padding:1.75rem;position:relative;overflow:hidden;transition:all .25s;display:flex;flex-direction:column}
+.bundle-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#52b788)}
+.bundle-card:hover{border-color:var(--accent);box-shadow:0 10px 32px rgba(45,106,79,.14);transform:translateY(-3px)}
+.bundle-badge{display:inline-block;background:var(--accent);color:white;font-size:9px;font-weight:700;padding:3px 10px;border-radius:3px;margin-bottom:1rem;letter-spacing:.07em;text-transform:uppercase;align-self:flex-start}
+.bundle-items{display:flex;gap:7px;margin:.875rem 0;flex-wrap:wrap}
+.bundle-item{display:flex;align-items:center;gap:5px;font-size:12px;background:var(--bg);padding:5px 10px;border-radius:3px;border:1px solid var(--border);color:var(--muted)}
+.bundle-price-row{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:1rem;border-top:1.5px solid var(--border)}
+.bundle-old{font-size:13px;color:var(--muted);text-decoration:line-through}
+.bundle-new{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:700;color:var(--accent)}
+.bundle-saving{font-size:11px;color:var(--warm);font-weight:700;background:rgba(193,68,14,.1);padding:2px 8px;border-radius:3px;letter-spacing:.03em}
+
+/* REVIEWS */
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.review-card{background:var(--card);border:1.5px solid var(--border);border-radius:7px;padding:1.25rem}
+.review-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.review-avatar{width:38px;height:38px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--accent);flex-shrink:0}
+.review-text{font-size:13px;color:var(--text);font-style:italic;margin-bottom:8px;line-height:1.6}
+.review-product{font-size:11px;color:var(--muted)}
+
+/* PANELS */
+.wishlist-panel{position:fixed;top:0;right:-380px;width:360px;height:100vh;background:var(--card);z-index:300;transition:right .35s cubic-bezier(.4,0,.2,1);box-shadow:-4px 0 20px rgba(0,0,0,.12);display:flex;flex-direction:column}
+.wishlist-panel.open{right:0}
+.panel-header{padding:1.25rem 1.5rem;border-bottom:2px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.panel-header h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1rem;color:var(--text)}
+.close-panel{background:none;border:1.5px solid var(--border);width:30px;height:30px;border-radius:4px;cursor:pointer;font-size:16px}
+.panel-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:10px}
+.wish-item{display:flex;gap:10px;align-items:center}
+.wish-thumb{width:52px;height:52px;border-radius:4px;object-fit:cover;flex-shrink:0}
+.wish-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;margin-left:auto;flex-shrink:0}
+
+/* CART */
+.cart-sidebar{position:fixed;top:0;right:-420px;width:400px;height:100vh;background:var(--card);box-shadow:-4px 0 24px rgba(0,0,0,.12);z-index:200;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.cart-sidebar.open{right:0}
+.cart-header{padding:1.25rem 1.5rem;border-bottom:2px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.cart-header h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.05rem;color:var(--text)}
+.cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:10px}
+.cart-item{display:flex;gap:12px;align-items:center;padding:10px;background:var(--bg);border-radius:5px;border:1px solid var(--border)}
+.cart-thumb{width:48px;height:48px;border-radius:4px;object-fit:cover;flex-shrink:0;font-size:1.5rem;display:flex;align-items:center;justify-content:center;background:var(--accent2)}
+.cart-item-name{font-size:13px;font-weight:600;color:var(--text)}
+.cart-item-price{font-size:12px;color:var(--accent);font-weight:600}
+.qty-ctrl{display:flex;align-items:center;gap:6px;margin-top:4px}
+.qty-btn{width:22px;height:22px;border:1.5px solid var(--border);background:var(--card);border-radius:3px;cursor:pointer;font-size:12px;font-weight:700}
+.qty-val{font-size:12px;font-weight:600;min-width:16px;text-align:center}
+.cart-footer{padding:1.25rem 1.5rem;border-top:2px solid var(--border)}
+.cart-shipping-bar{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:.75rem 1rem;margin-bottom:1rem}
+.cart-shipping-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:6px}
+.cart-shipping-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .5s}
+.cart-total-row{display:flex;justify-content:space-between;margin-bottom:.75rem;font-size:14px}
+.checkout-btn{width:100%;padding:13px;background:var(--accent);color:white;border:none;border-radius:5px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:.03em}
+.checkout-btn:hover{background:#1d4a31}
+.cart-empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+
+/* QUICK VIEW */
+.qv-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:400;align-items:center;justify-content:center;padding:1rem}
+.qv-modal{background:var(--card);border-radius:10px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;display:grid;grid-template-columns:1.1fr 1fr}
+.qv-img{border-radius:10px 0 0 10px;overflow:hidden}
+.qv-img img{width:100%;height:100%;object-fit:cover;min-height:300px;filter:sepia(.08)}
+.qv-body{padding:2rem;display:flex;flex-direction:column;gap:12px;position:relative}
+.qv-close{position:absolute;top:1rem;right:1rem;background:var(--bg);border:1.5px solid var(--border);width:30px;height:30px;border-radius:4px;cursor:pointer;font-size:15px}
+.qv-title{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.25rem;margin-top:1.5rem;color:var(--text)}
+.qv-stars{display:flex;align-items:center;gap:6px;color:#c9a84c}
+.qv-desc{font-size:13px;color:var(--muted);line-height:1.65}
+.qv-price{font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--accent)}
+.qv-tags{display:flex;flex-wrap:wrap;gap:6px}
+.qv-tag{font-size:11px;padding:3px 9px;border-radius:3px;background:var(--accent2);color:var(--accent);font-weight:600;letter-spacing:.03em}
+.qty-row{display:flex;align-items:center;gap:12px;margin-top:auto}
+.qty-large{display:flex;align-items:center;gap:12px;border:1.5px solid var(--border);border-radius:5px;padding:6px 14px}
+.qty-large button{background:none;border:none;font-size:18px;font-weight:700;cursor:pointer;color:var(--text)}
+.qty-large span{font-weight:600;min-width:20px;text-align:center}
+.qv-add{flex:1;padding:12px;background:var(--accent);color:white;border:none;border-radius:5px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:.03em}
+.qv-add:hover{background:#1d4a31}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#f4ede0;padding:10px 24px;border-radius:5px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:all .3s;pointer-events:none;border-left:3px solid #74d4a1}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* OVERLAY */
+.overlay-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
+.overlay-bg.show{display:block}
+
+/* NEWSLETTER */
+.newsletter{background:linear-gradient(155deg,#1c3828,#0d2016);color:#f4ede0;padding:4.5rem 2rem;text-align:center}
+.newsletter h2{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:.5rem}
+.newsletter h2 em{color:#74d4a1;font-style:italic}
+.newsletter p{color:rgba(244,237,224,.5);margin-bottom:1.75rem;font-size:14px}
+.newsletter-form{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.newsletter-input{padding:12px 18px;border-radius:5px;border:none;font-family:inherit;font-size:14px;width:280px;outline:none;background:#f4ede0;color:var(--text)}
+.newsletter-btn{padding:12px 24px;background:#74d4a1;color:#0d2016;border:none;border-radius:5px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:.03em}
+.newsletter-btn:hover{background:#52b788}
+
+footer{border-top:2px solid var(--border);padding:2.5rem 2rem;text-align:center;font-size:12px;color:var(--muted);background:var(--card)}
+footer strong{color:var(--accent)}
+
+.admin-btn{display:flex;width:fit-content;margin:1.5rem auto 2.5rem;background:rgba(0,0,0,0.85);color:#fff;padding:9px 18px;font-size:11px;font-family:inherit;font-weight:600;border-radius:8px;text-decoration:none;align-items:center;gap:6px;border:1px solid rgba(255,255,255,0.1);letter-spacing:.05em}
+
+@media(max-width:900px){
+  .hero,.qv-modal{grid-template-columns:1fr}
+  .hero-right,.qv-img{display:none}
+  .hero-left{padding:3rem 1.5rem}
+  .nav-links,.trust-bar{display:none}
+  nav{padding:1rem 1.25rem}
+  .section{padding:2.5rem 1.25rem}
+  .bundles-grid{grid-template-columns:1fr}
+  .reviews-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .hero h1{font-size:2rem}
+  .hero-stats{gap:1.5rem;flex-wrap:wrap}
+  .hero-badges{flex-wrap:wrap}
+  .newsletter-input{width:100%;max-width:100%}
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+}
+select{background:var(--card)!important;color:var(--text)!important;color-scheme:light;border:1.5px solid var(--border)!important;border-radius:5px}
+select option{background:var(--card)!important;color:var(--text)!important}
+</style>
+<link rel="canonical" href="https://jeremiehenri.fr/demos/ecommerce.html">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Store","name":"Maison Provence","description":"Boutique en ligne de produits artisanaux provençaux : huiles d'olive, miels, épices et coffrets.","url":"https://jeremiehenri.fr/demos/ecommerce.html","address":{"@type":"PostalAddress","addressCountry":"FR"},"sameAs":["https://jeremiehenri.fr"]}
+</script>
+</head>
+<body>
+<a href="#" style="position:absolute;top:-100%;left:1rem;background:#16a34a;color:#fff;padding:0.5rem 1rem;border-radius:0 0 8px 8px;font-size:14px;font-weight:600;text-decoration:none;z-index:9999;transition:top .2s" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Aller au contenu principal</a>
+
+<!-- SHIPPING BAR -->
+<div id="shipping-bar">
+  🚚 <span id="shipping-msg">Livraison gratuite dès 40€</span>
+  <div class="shipping-progress-wrap"><div class="shipping-progress-fill" id="main-shipping-fill" style="width:0%"></div></div>
+  <span id="shipping-pct" style="font-size:11px;opacity:.7">0 / 40€</span>
+</div>
+
+<nav>
+  <div class="logo">Maison <span>Provence</span></div>
+  <div class="nav-links">
+    <a href="#produits">Produits</a>
+    <a href="#bundles">Coffrets</a>
+    <a href="#avis">Avis</a>
+  </div>
+  <div class="nav-right">
+    <button class="wishlist-btn" onclick="openWishlist()" id="wish-btn" title="Ma liste de souhaits">🤍 <span id="wish-count" style="font-size:11px;font-weight:700;display:none;color:var(--warm)">0</span></button>
+    <button class="cart-btn" onclick="openCart()">🛒 Panier<span class="cart-count" id="cart-count">0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+  
+    <h1>Les saveurs de <em>Provence</em><br>livrées chez vous</h1>
+    <p>Huiles d'olive, miels et épices sélectionnés directement auprès de nos producteurs partenaires. Qualité artisanale garantie.</p>
+    <button class="hero-cta" onclick="document.getElementById('produits').scrollIntoView({behavior:'smooth'})">Découvrir la boutique →</button>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>247+</strong><span>Avis clients</span></div>
+      <div class="hero-stat"><strong>40+</strong><span>Producteurs</span></div>
+      <div class="hero-stat"><strong>4.9★</strong><span>Note moyenne</span></div>
+    </div>
+  </div>
+  <div class="hero-right" id="hero-slideshow">
+    <div class="hero-slide active"><img src="../photos/hero.webp" alt="Produits artisanaux de Provence"></div>
+    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=900&q=88" alt="Huile d'olive" style="object-position:center 60%"></div>
+    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&q=88" alt="Miel artisanal"></div>
+    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?w=900&q=88" alt="Épices provençales"></div>
+  </div>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item">🚚 <strong>Livraison offerte dès 40€</strong></div>
+  <div class="trust-item">🌿 <strong>Bio & naturel</strong> · certifié AB</div>
+  <div class="trust-item">🤝 <strong>Producteurs locaux</strong> · Provence</div>
+  <div class="trust-item">↩️ <strong>Retour 30 jours</strong> · satisfait ou remboursé</div>
+</div>
+
+<!-- PRODUITS -->
+<div class="section" id="produits">
+  <div class="sec-eyebrow">Notre sélection</div>
+  <div class="sec-title">Produits du terroir</div>
+  <div class="sec-desc">Survolez un produit pour voir les détails ou l'ajouter directement au panier.</div>
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterProd('tous',this)">Tous</button>
+    <button class="filter-btn" onclick="filterProd('Huiles',this)">Huiles d'olive</button>
+    <button class="filter-btn" onclick="filterProd('Miels',this)">Miels</button>
+    <button class="filter-btn" onclick="filterProd('Épices',this)">Herbes & épices</button>
+    <button class="filter-btn" onclick="filterProd('Coffrets',this)">Coffrets</button>
+    <button class="filter-btn" onclick="filterProd('Condiments',this)">Condiments</button>
+    <div class="filter-sep"></div>
+    <button class="filter-btn" onclick="filterProd('promo',this)">🔥 Promos</button>
+    <button class="filter-btn" onclick="filterProd('new',this)">✨ Nouveautés</button>
+  </div>
+  <div class="products-grid" id="products-grid"></div>
+</div>
+<hr class="divider">
+
+<!-- BUNDLES -->
+<div class="section" id="bundles">
+  <div class="sec-eyebrow">Fréquemment achetés ensemble</div>
+  <div class="sec-title">Nos coffrets maison</div>
+  <div class="sec-desc">Des combinaisons soigneusement choisies pour vous faire économiser.</div>
+  <div class="bundles-grid" id="bundles-grid"></div>
+</div>
+<hr class="divider">
+
+<!-- AVIS -->
+<div class="section" id="avis">
+  <div class="sec-eyebrow">Ils ont adoré</div>
+  <div class="sec-title">Avis clients vérifiés</div>
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
+    <div style="font-family:'Playfair Display',Georgia,serif;font-size:3rem;font-weight:700;color:var(--text)">4.9</div>
+    <div><div style="color:#c9a84c;font-size:18px">★★★★★</div><div style="font-size:13px;color:var(--muted)">Basé sur 247 avis</div></div>
+    <div style="margin-left:auto;display:flex;flex-direction:column;gap:3px;width:180px">
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="color:var(--muted);width:10px">5</span><div style="flex:1;height:5px;background:var(--border);border-radius:2px"><div style="width:78%;height:100%;background:#c9a84c;border-radius:2px"></div></div><span style="color:var(--muted);width:24px">78%</span></div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="color:var(--muted);width:10px">4</span><div style="flex:1;height:5px;background:var(--border);border-radius:2px"><div style="width:15%;height:100%;background:#c9a84c;border-radius:2px"></div></div><span style="color:var(--muted);width:24px">15%</span></div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="color:var(--muted);width:10px">3</span><div style="flex:1;height:5px;background:var(--border);border-radius:2px"><div style="width:4%;height:100%;background:#c9a84c;border-radius:2px"></div></div><span style="color:var(--muted);width:24px">4%</span></div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="color:var(--muted);width:10px">2</span><div style="flex:1;height:5px;background:var(--border);border-radius:2px"><div style="width:2%;height:100%;background:#c9a84c;border-radius:2px"></div></div><span style="color:var(--muted);width:24px">2%</span></div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="color:var(--muted);width:10px">1</span><div style="flex:1;height:5px;background:var(--border);border-radius:2px"><div style="width:1%;height:100%;background:#c9a84c;border-radius:2px"></div></div><span style="color:var(--muted);width:24px">1%</span></div>
+    </div>
+  </div>
+  <div class="reviews-grid" id="reviews-grid"></div>
+</div>
+<hr class="divider">
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <h2>🌿 Rejoignez la famille <em>Provence</em></h2>
+  <p>Recevez nos nouveautés, recettes et offres exclusives — sans spam.</p>
+  <div class="newsletter-form">
+    <input class="newsletter-input" type="email" placeholder="votre@email.fr" id="nl-email">
+    <button class="newsletter-btn" onclick="subscribeNewsletter()">S'inscrire — 10% offerts</button>
+  </div>
+  <p id="nl-msg" style="margin-top:1rem;font-size:13px;color:#4ade80;display:none">✅ Merci ! Votre code PROVENCE10 vous a été envoyé par email.</p>
+</div>
+
+<footer>
+  <p>© 2026 Maison Provence · Site réalisé par <strong>Jérémie Henri</strong> · <strong>DÉMO — jeremiehenri.dev</strong></p>
+</footer>
+
+<!-- CART -->
+<div class="overlay-bg" id="overlay" onclick="closeAll()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header"><h3>🛒 Mon panier</h3><button class="close-panel" onclick="closeCart()">✕</button></div>
+  <div class="cart-items" id="cart-items-list"><div class="cart-empty">🛒<br><br>Votre panier est vide</div></div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-shipping-bar">
+      <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:500"><span id="cart-ship-msg">🚚 Plus que X€ pour la livraison gratuite</span></div>
+      <div class="cart-shipping-track"><div class="cart-shipping-fill" id="cart-ship-fill" style="width:0%"></div></div>
+    </div>
+    <div class="cart-total-row"><span>Sous-total</span><span id="cart-subtotal">0 €</span></div>
+    <div class="cart-total-row"><span id="cart-ship-label">Livraison</span><span id="cart-ship-cost">5.90 €</span></div>
+    <div class="cart-total-row" style="font-weight:700;font-size:15px;border-top:1px solid var(--border);padding-top:8px"><span>Total</span><span id="cart-total-price" style="color:var(--accent)">0 €</span></div>
+    <button class="checkout-btn" onclick="checkout()">Commander — Payer en ligne 🔒</button>
+  </div>
+</div>
+
+<!-- WISHLIST -->
+<div class="wishlist-panel" id="wishlist-panel">
+  <div class="panel-header"><h3>❤️ Ma liste de souhaits (<span id="wish-total">0</span>)</h3><button class="close-panel" onclick="closeWishlist()">✕</button></div>
+  <div class="panel-items" id="wish-items"><div class="cart-empty">🤍<br><br>Aucun favori pour l'instant</div></div>
+</div>
+
+<!-- QUICK VIEW -->
+<div class="qv-overlay" id="qv-overlay" role="dialog" aria-modal="true" aria-label="Aperçu du produit" onclick="closeQV(event)">
+  <div class="qv-modal" id="qv-modal"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+<a href="admin-ecommerce.html" class="admin-btn">⚙️ Panel Admin</a>
+
+<script>
+const FREE_SHIP = 40
+const SHIP_COST = 5.90
+
+const PRODUCTS = [
+  {id:1,cat:'Huiles',emoji:'🫒',name:"Huile d'olive extra vierge",desc:"Pressée à froid, récolte 2025. Fruité vert intense, notes d'herbe fraîche.",price:18.90,oldPrice:null,badge:'bio',isNew:false,stock:47,tags:['Bio','AOP','Pressée à froid'],rating:4.9,reviews:84,
+   img:'../photos/huile%20olive%20vierge.webp'},
+  {id:2,cat:'Miels',emoji:'🍯',name:'Miel de lavande AOP',desc:'Fleurs de lavande fine de Haute-Provence. Doux et floral, idéal au petit-déjeuner.',price:12.50,oldPrice:null,badge:'bio',isNew:false,stock:32,tags:['AOP','Bio','Artisanal'],rating:4.8,reviews:62,
+   img:'../photos/miel%20lavande%20aop.jpg'},
+  {id:3,cat:'Épices',emoji:'🌿',name:'Herbes de Provence',desc:'Mélange artisanal : thym, romarin, origan, sarriette. Parfum intense.',price:7.90,oldPrice:9.90,badge:'promo',isNew:false,stock:3,tags:['Artisanal','Séché naturellement'],rating:4.7,reviews:45,
+   img:'../photos/herbesprovence.jpg'},
+  {id:4,cat:'Coffrets',emoji:'🎁',name:'Coffret Saveurs du Sud',desc:"Huile d'olive, miel lavande et herbes de Provence. Idéal en cadeau.",price:48.00,oldPrice:58.00,badge:'promo',isNew:false,stock:15,tags:['Idée cadeau','Livraison offerte'],rating:5.0,reviews:103,
+   img:'../photos/coffret%20herbes.jpg'},
+  {id:5,cat:'Miels',emoji:'🌸',name:'Miel de fleurs sauvages',desc:'Polyfloraux des garrigues provençales, récolté en juin. Notes fruitées.',price:9.90,oldPrice:null,badge:'new',isNew:true,stock:28,tags:['Nouveau','Bio','Printemps 2026'],rating:4.9,reviews:18,
+   img:'../photos/Miel-fleurs-sauvage-.webp'},
+  {id:6,cat:'Huiles',emoji:'🌶️',name:"Huile d'olive pimentée",desc:"Infusion de piment d'Espelette et basilic frais. Pour les amateurs de caractère.",price:15.50,oldPrice:null,badge:null,isNew:true,stock:22,tags:['Épicé','Artisanal','Limité'],rating:4.6,reviews:31,
+   img:'../photos/huile%20piment.webp'},
+  {id:7,cat:'Épices',emoji:'🌶',name:"Piment d'Espelette AOP",desc:'Piment doux et parfumé du Pays Basque. Incontournable de la cuisine du Sud.',price:8.90,oldPrice:null,badge:'bio',isNew:false,stock:35,tags:['AOP','Bio','Doux'],rating:4.8,reviews:29,
+   img:'../photos/poudre-piment-espelette.webp'},
+  {id:8,cat:'Coffrets',emoji:'🎀',name:'Coffret Noël Provence',desc:'Sélection festive : huile premium, miel de lavande, herbes et sel rose.',price:62.00,oldPrice:75.00,badge:'promo',isNew:true,stock:8,tags:['Édition limitée','Noël','Idée cadeau'],rating:5.0,reviews:7,
+   img:'../photos/photo-1512909006721-3d6018887383.jpg'},
+  {id:9,cat:'Condiments',emoji:'🧄',name:'Tapenade olives noires',desc:"Olives noires, câpres et anchois broyés à l'ancienne. Apéritif provençal.",price:6.50,oldPrice:null,badge:'new',isNew:true,stock:19,tags:['Artisanal','Apéritif','Vegan'],rating:4.7,reviews:12,
+   img:'../photos/tapenade.jpg'},
+  {id:10,cat:'Condiments',emoji:'🫙',name:'Confiture figue et lavande',desc:'Figues fraîches de Provence et lavande bio. Parfait avec du fromage de chèvre.',price:7.20,oldPrice:null,badge:null,isNew:false,stock:41,tags:['Artisanal','Bio','Sans conservateur'],rating:4.5,reviews:24,
+   img:'../photos/confitures.webp'},
+  {id:11,cat:'Huiles',emoji:'🌰',name:'Huile de noix artisanale',desc:'Noix du Périgord pressées à froid. Idéale pour les salades et carpaccios.',price:14.90,oldPrice:null,badge:'bio',isNew:false,stock:26,tags:['Bio','Périgord','Pressée à froid'],rating:4.6,reviews:38,
+   img:'../photos/huile-noix.jpg'},
+]
+
+const BUNDLES = [
+  {name:"L'Essentiel Provençal",items:["Huile d'olive","Miel lavande","Herbes Provence"],prix:34.90,oldPrix:41.30,saving:'16%',badge:'Le + populaire',emoji:'🌿'},
+  {name:"Coffret Gourmand",items:["Huile pimentée","Miel sauvages","Herbes Provence"],prix:31.90,oldPrix:37.30,saving:'14%',badge:'Idée cadeau',emoji:'🎁'},
+  {name:"Duo d'Huiles Premium",items:["Huile extra vierge","Huile pimentée"],prix:31.90,oldPrix:34.40,saving:'7%',badge:'Livraison offerte',emoji:'🫒'},
+]
+
+const REVIEWS = [
+  {initials:"ML",name:"Marie-Laure B.",stars:5,text:"Huile excellente, livraison rapide.",product:"Huile d'olive extra vierge"},
+  {initials:"JD",name:"Jean-Paul D.",stars:5,text:"Coffret parfait en cadeau. Produits authentiques.",product:"Coffret Saveurs du Sud"},
+  {initials:"SC",name:"Sophie C.",stars:5,text:"Miel de lavande divin, je commande chaque mois !",product:"Miel de lavande AOP"},
+  {initials:"TM",name:"Thomas M.",stars:4,text:"Herbes de Provence très parfumées, meilleures que le supermarché.",product:"Herbes de Provence"},
+  {initials:"CB",name:"Claire B.",stars:5,text:"Commande facile, produits bien protégés. Abonnée !",product:"Miel de fleurs sauvages"},
+  {initials:"NR",name:"Nicolas R.",stars:5,text:"Huile pimentée fantastique sur bruschetta.",product:"Huile pimentée"},
+]
+
+let cart=[], wishlist=[], qvQty=1, currentQvId=null
+
+// ─── SYNC DEPUIS ADMIN ────────────────────────────────────────
+function getAdminData(){
+  try {
+    const d = JSON.parse(localStorage.getItem('mp_admin_v3'))
+    if(d && d.produits) return d.produits
+  } catch(e){}
+  return null
+}
+function getAdminVisibility(){
+  const produits = getAdminData()
+  if(produits) return new Set(produits.filter(p=>!p.actif).map(p=>p.id))
+  return new Set([5])
+}
+function applyAdminOverrides(list){
+  const produits = getAdminData()
+  if(!produits) return list
+  return list.map(p => {
+    const admin = produits.find(a => a.id === p.id)
+    if(!admin || !(admin.reduction > 0)) return p
+    const reduction = admin.reduction
+    return { ...p, oldPrice: p.price, price: parseFloat((p.price * (1 - reduction/100)).toFixed(2)), badge: 'promo' }
+  })
+}
+
+// ─── RENDER PRODUCTS ──────────────────────────────────────────
+function renderProducts(filter='tous'){
+  const hidden = getAdminVisibility()
+  let list = applyAdminOverrides(
+    (filter==='tous'?PRODUCTS:filter==='promo'?PRODUCTS.filter(p=>p.badge==='promo'||((getAdminData()||[]).find?.(a=>a.id===p.id)?.reduction||0)>0):filter==='new'?PRODUCTS.filter(p=>p.isNew):PRODUCTS.filter(p=>p.cat===filter))
+    .filter(p => !hidden.has(p.id))
+  )
+  document.getElementById('products-grid').innerHTML = list.map(p=>{
+    const inWish = wishlist.includes(p.id)
+    const stockClass = p.stock<=5?'stock-low':'stock-ok'
+    const stockMsg = p.stock===0?'Rupture de stock':p.stock<=5?`⚠️ Plus que ${p.stock} en stock`:`✓ En stock (${p.stock})`
+    return`<div class="product-card">
+      <div class="product-img-wrap">
+        <img class="product-img" src="${p.img}" alt="${p.name}" loading="lazy">
+        <div class="product-badges">
+          ${p.badge==='bio'?'<span class="product-badge badge-bio">Bio</span>':''}
+          ${p.badge==='promo'?'<span class="product-badge badge-promo">Promo</span>':''}
+          ${p.badge==='new'||p.isNew?'<span class="product-badge badge-new">Nouveau</span>':''}
+          ${p.stock>0&&p.stock<=5?'<span class="product-badge badge-stock">Dernières pièces</span>':''}
+        </div>
+        <div class="product-overlay">
+          <button class="overlay-btn wish${inWish?' active':''}" onclick="toggleWish(${p.id},event)" title="${inWish?'Retirer des favoris':'Ajouter aux favoris'}">${inWish?'❤️':'🤍'}</button>
+          <button class="overlay-btn primary" onclick="openQV(${p.id},event)">👁️ Voir le détail</button>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-cat">${p.cat}</div>
+        <div class="stars">★★★★${p.rating>=5?'★':'☆'} <span class="review-count">(${p.reviews})</span></div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="stock-indicator ${stockClass}">${stockMsg}</div>
+        <div class="product-footer">
+          <div class="product-price">${p.oldPrice?`<del class="product-old-price" aria-label="Ancien prix : ${p.oldPrice.toFixed(2)} €">${p.oldPrice.toFixed(2)} €</del>`:''}${p.price.toFixed(2)} €</div>
+          ${p.stock>0?`<button class="add-btn" onclick="addToCart(${p.id})" title="Ajouter au panier">+</button>`:`<span style="font-size:11px;color:var(--muted)">Indispo.</span>`}
+        </div>
+      </div>
+    </div>`
+  }).join('')
+}
+
+function filterProd(f,el){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active')
+  renderProducts(f)
+}
+
+// ─── BUNDLES ──────────────────────────────────────────────────
+function renderBundles(){
+  const grid=document.getElementById('bundles-grid')
+  grid.innerHTML=''
+  BUNDLES.forEach(function(b){
+    const card=document.createElement('div')
+    card.className='bundle-card'
+    card.innerHTML='<span class="bundle-badge">'+b.saving+' économisé</span>'
+      +'<div style="font-size:2rem;margin-bottom:.5rem">'+b.emoji+'</div>'
+      +'<div style="font-size:1.05rem;font-weight:800;margin-bottom:.25rem">'+b.name+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-bottom:.5rem">'+b.badge+'</div>'
+      +'<div class="bundle-items">'+b.items.map(function(i){return'<div class="bundle-item">✓ '+i+'</div>'}).join('')+'</div>'
+      +'<div class="bundle-price-row">'
+      +'<span class="bundle-old">'+b.oldPrix.toFixed(2)+' €</span>'
+      +'<span class="bundle-new">'+b.prix.toFixed(2)+' €</span>'
+      +'<span class="bundle-saving">-'+b.saving+'</span>'
+      +'</div>'
+    const btn=document.createElement('button')
+    btn.style.cssText='width:100%;margin-top:1rem;padding:11px;background:var(--accent);color:white;border:none;border-radius:5px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.03em'
+    btn.textContent='Ajouter au panier →'
+    btn.addEventListener('click',function(){addBundleToCart(b.name,b.prix)})
+    card.appendChild(btn)
+    grid.appendChild(card)
+  })
+}
+
+function addBundleToCart(name,price){
+  const existing=cart.find(i=>i.name===name)
+  if(existing)existing.qty++
+  else cart.push({id:'bundle-'+Date.now(),name,emoji:'🎁',price,qty:1})
+  updateCart();openCart();showToast('Coffret ajouté au panier ✅')
+}
+
+// ─── REVIEWS ──────────────────────────────────────────────────
+function renderReviews(){
+  document.getElementById('reviews-grid').innerHTML=REVIEWS.map(r=>{
+    const stars='★'.repeat(r.stars)+'☆'.repeat(5-r.stars)
+    return '<div class="review-card">'
+      +'<div class="review-header">'
+      +'<div class="review-avatar">'+r.initials+'</div>'
+      +'<div><div style="font-weight:600;font-size:13px">'+r.name+'</div>'
+      +'<div class="stars" style="font-size:12px">'+stars+'</div></div>'
+      +'</div>'
+      +'<div class="review-text">'+r.text+'</div>'
+      +'<div class="review-product">Acheté : '+r.product+'</div>'
+      +'</div>'
+  }).join('')
+}
+
+// ─── QUICK VIEW ───────────────────────────────────────────────
+function openQV(id,e){
+  e&&e.stopPropagation()
+  const p=PRODUCTS.find(p=>p.id===id);if(!p)return
+  currentQvId=id;qvQty=1
+  document.getElementById('qv-modal').innerHTML=`
+    <div class="qv-img"><img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;min-height:400px"></div>
+    <div class="qv-body">
+      <button class="qv-close" onclick="document.getElementById('qv-overlay').style.display='none'" aria-label="Fermer l'aperçu du produit">✕</button>
+      <span style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:600">${p.cat}</span>
+      <div class="qv-title">${p.name}</div>
+      <div class="qv-stars"><span style="color:#c9a84c">★★★★${p.rating>=5?'★':'☆'}</span> <span style="font-size:12px;color:var(--muted)">${p.rating} (${p.reviews} avis)</span></div>
+      <div class="qv-desc">${p.desc}</div>
+      <div class="qv-tags">${p.tags.map(t=>`<span class="qv-tag">${t}</span>`).join('')}</div>
+      <div class="qv-price">${p.oldPrice?`<span style="font-size:14px;color:var(--muted);text-decoration:line-through;font-weight:400;font-family:'DM Sans'">${p.oldPrice.toFixed(2)} €</span> `:''}${p.price.toFixed(2)} €</div>
+      <div style="font-size:12px;font-weight:600;color:${p.stock<=5?'var(--red)':'var(--accent)'}">${p.stock===0?'Rupture de stock':p.stock<=5?`⚠️ Plus que ${p.stock} en stock`:'✓ En stock'}</div>
+      <div class="qty-row">
+        <div class="qty-large">
+          <button onclick="changeQvQty(-1)">−</button>
+          <span id="qv-qty-display">1</span>
+          <button onclick="changeQvQty(1)">+</button>
+        </div>
+        <button class="qv-add" onclick="addToCartQV()">Ajouter au panier</button>
+      </div>
+    </div>`
+  document.getElementById('qv-overlay').style.display='flex'
+}
+function changeQvQty(d){qvQty=Math.max(1,qvQty+d);document.getElementById('qv-qty-display').textContent=qvQty}
+function addToCartQV(){
+  addToCart(currentQvId,qvQty)
+  document.getElementById('qv-overlay').style.display='none'
+}
+function closeQV(e){if(e.target===document.getElementById('qv-overlay'))document.getElementById('qv-overlay').style.display='none'}
+
+// ─── CART ─────────────────────────────────────────────────────
+function addToCart(id,qty=1){
+  const p=PRODUCTS.find(p=>p.id===id);if(!p||p.stock===0)return
+  const existing=cart.find(i=>i.id===id)
+  if(existing)existing.qty+=qty
+  else cart.push({...p,qty})
+  updateCart();openCart()
+  showToast(p.name+' ajouté ✅')
+}
+
+function updateCart(){
+  const count=cart.reduce((a,i)=>a+i.qty,0)
+  document.getElementById('cart-count').textContent=count
+  const subtotal=cart.reduce((a,i)=>a+i.price*i.qty,0)
+  const remaining=Math.max(0,FREE_SHIP-subtotal)
+  const pct=Math.min(100,Math.round((subtotal/FREE_SHIP)*100))
+  // Main shipping bar
+  document.getElementById('main-shipping-fill').style.width=pct+'%'
+  document.getElementById('shipping-pct').textContent=subtotal.toFixed(2)+' / '+FREE_SHIP+'€'
+  if(remaining>0){document.getElementById('shipping-msg').textContent='Plus que '+remaining.toFixed(2)+'€ pour la livraison gratuite !'}
+  else{document.getElementById('shipping-msg').textContent='🎉 Livraison gratuite débloquée !';document.getElementById('shipping-msg').style.color='#4ade80'}
+
+  if(!cart.length){
+    document.getElementById('cart-items-list').innerHTML='<div class="cart-empty">🛒<br><br>Votre panier est vide</div>'
+    document.getElementById('cart-footer').style.display='none'
+    return
+  }
+  document.getElementById('cart-footer').style.display='block'
+  // Cart items
+  document.getElementById('cart-items-list').innerHTML=cart.map(i=>`
+    <div class="cart-item">
+      <div class="cart-thumb" style="font-size:1.5rem;display:flex;align-items:center;justify-content:center">${i.emoji||'📦'}</div>
+      <div style="flex:1">
+        <div class="cart-item-name">${i.name}</div>
+        <div class="cart-item-price">${(i.price*i.qty).toFixed(2)} €</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${i.id},-1)">−</button>
+          <span class="qty-val">${i.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${i.id},1)">+</button>
+          <button onclick="removeItem(${i.id})" style="background:none;border:none;color:var(--muted);cursor:pointer;margin-left:4px;font-size:13px">🗑️</button>
+        </div>
+      </div>
+    </div>`).join('')
+  // Cart shipping
+  const freeShip=subtotal>=FREE_SHIP
+  document.getElementById('cart-ship-fill').style.width=pct+'%'
+  document.getElementById('cart-ship-msg').textContent=freeShip?'🎉 Livraison gratuite !':'🚚 Plus que '+remaining.toFixed(2)+'€ pour la livraison gratuite'
+  document.getElementById('cart-ship-label').textContent='Livraison'
+  document.getElementById('cart-ship-cost').textContent=freeShip?'Gratuite ✅':SHIP_COST.toFixed(2)+' €'
+  const total=subtotal+(freeShip?0:SHIP_COST)
+  document.getElementById('cart-subtotal').textContent=subtotal.toFixed(2)+' €'
+  document.getElementById('cart-total-price').textContent=total.toFixed(2)+' €'
+
+  updateWishlistUI()
+}
+
+function changeQty(id,d){
+  const item=cart.find(i=>i.id===id);if(!item)return
+  item.qty+=d;if(item.qty<=0)cart=cart.filter(i=>i.id!==id)
+  updateCart()
+}
+function removeItem(id){cart=cart.filter(i=>i.id!==id);updateCart()}
+
+// ─── WISHLIST ─────────────────────────────────────────────────
+function toggleWish(id,e){
+  e&&e.stopPropagation()
+  if(wishlist.includes(id)){wishlist=wishlist.filter(w=>w!==id);showToast('Retiré des favoris')}
+  else{wishlist.push(id);showToast('Ajouté aux favoris ❤️')}
+  updateWishlistUI();renderProducts(document.querySelector('.filter-btn.active')?.textContent||'tous')
+}
+
+function updateWishlistUI(){
+  const count=wishlist.length
+  const wc=document.getElementById('wish-count')
+  wc.textContent=count;wc.style.display=count>0?'inline':'none'
+  document.getElementById('wish-total').textContent=count
+  if(!wishlist.length){document.getElementById('wish-items').innerHTML='<div class="cart-empty">🤍<br><br>Aucun favori</div>';return}
+  document.getElementById('wish-items').innerHTML=wishlist.map(id=>{
+    const p=PRODUCTS.find(p=>p.id===id);if(!p)return''
+    return`<div class="wish-item">
+      <img class="wish-thumb" src="${p.img}" alt="${p.name}">
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${p.name}</div><div style="font-size:12px;color:var(--accent);font-weight:600">${p.price.toFixed(2)} €</div><button onclick="addToCart(${p.id})" style="font-size:11px;color:var(--accent);background:none;border:1px solid var(--accent);border-radius:6px;padding:2px 8px;cursor:pointer;margin-top:4px">+ Panier</button></div>
+      <button class="wish-remove" onclick="toggleWish(${p.id},event)">✕</button>
+    </div>`}).join('')
+}
+
+async function checkout(){
+  const subtotal=cart.reduce((a,i)=>a+i.price*i.qty,0)
+  const email=prompt('Votre email pour la confirmation :')
+  if(!email||!email.includes('@'))return
+  const items=cart.map(i=>({name:i.name,price:i.price,qty:i.qty}))
+  try{
+    const res=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create-checkout',items,customerEmail:email})})
+    const data=await res.json()
+    if(data.url){window.location.href=data.url;return}
+  }catch(e){}
+  // Fallback demo
+  try{await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'confirm',email,items,total:subtotal.toFixed(2)+' €'})})}catch(e){}
+  document.getElementById('cart-sidebar').innerHTML=`
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;text-align:center;gap:1rem">
+      <div style="font-size:3.5rem">🎉</div>
+      <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.25rem">Commande confirmée !</h3>
+      <p style="font-size:13px;color:var(--muted)">Total payé : <strong style="color:var(--accent)">${subtotal.toFixed(2)} €</strong></p>
+      <p style="font-size:12px;color:var(--muted)">Confirmation envoyée à <strong>${email}</strong></p>
+      <p style="font-size:12px;color:var(--muted);background:var(--bg);padding:10px;border-radius:8px">🚚 Livraison estimée : 48-72h</p>
+      <button onclick="cart=[];updateCart();closeCart()" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600">Continuer mes achats</button>
+    </div>`
+  document.getElementById('overlay').classList.add('show')
+}
+
+function openCart(){document.getElementById('cart-sidebar').classList.add('open');document.getElementById('overlay').classList.add('show')}
+function closeCart(){document.getElementById('cart-sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+function openWishlist(){document.getElementById('wishlist-panel').classList.add('open');document.getElementById('overlay').classList.add('show')}
+function closeWishlist(){document.getElementById('wishlist-panel').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+function closeAll(){closeCart();closeWishlist()}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+function subscribeNewsletter(){
+  const v=document.getElementById('nl-email').value
+  if(!v||!v.includes('@')){return}
+  document.getElementById('nl-msg').style.display='block'
+  document.getElementById('nl-email').value=''
+}
+
+renderProducts()
+renderBundles()
+renderReviews()
+
+// ─── HERO SLIDESHOW ───────────────────────────────────────────
+;(function(){
+  var slides = document.querySelectorAll('#hero-slideshow .hero-slide')
+  if(!slides.length) return
+  var cur = 0
+  setInterval(function(){
+    slides[cur].classList.remove('active')
+    cur = (cur + 1) % slides.length
+    slides[cur].classList.add('active')
+  }, 4000)
+})()
+</script>
+</body>
+</html>

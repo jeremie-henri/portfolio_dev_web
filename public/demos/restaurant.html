@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="canonical" href="https://jeremiehenri.fr/demos/restaurant.html">
+<title>Le Jardin Secret — Restaurant Gastronomique Paris</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+<meta name="description" content="Restaurant gastronomique au cœur de Paris. Cuisine française contemporaine, produits du terroir, réservation en ligne.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#c9a84c;--gold2:#e8c97a;--dark:#0d0c0b;--card:#1c1a17;--text:#f4efe6;--muted:#8a7f6e;--border:rgba(201,168,76,0.12)}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1.1rem 3rem;display:flex;align-items:center;justify-content:space-between;transition:all .35s}
+nav.scrolled{background:rgba(13,12,11,0.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);letter-spacing:0.02em}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-size:12px;color:rgba(244,239,230,0.6);letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.btn-reserve{padding:9px 22px;border:1px solid var(--gold);color:var(--gold);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;background:none;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-reserve:hover{background:var(--gold);color:#0d0c0b}
+
+/* HERO */
+#hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=85') center/cover no-repeat;transform:scale(1.05);transition:transform 8s ease}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(13,12,11,0.2) 0%,rgba(13,12,11,0.5) 50%,rgba(13,12,11,0.9) 100%)}
+.hero-content{position:relative;z-index:1;padding:2rem}
+.hero-eyebrow{display:flex;align-items:center;justify-content:center;gap:16px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;opacity:0;animation:fadeUp .8s .3s forwards}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:50px;height:1px;background:var(--gold);opacity:.5}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(3rem,8vw,6.5rem);font-weight:400;line-height:1.0;letter-spacing:-0.02em;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .5s forwards}
+.hero-title em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:1.1rem;color:rgba(244,239,230,0.7);max-width:500px;margin:0 auto 2.5rem;font-weight:300;opacity:0;animation:fadeUp .8s .7s forwards}
+.hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp .8s .9s forwards}
+.hero-scroll{position:absolute;bottom:2rem;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(244,239,230,0.4);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;opacity:0;animation:fadeUp .8s 1.2s forwards;pointer-events:none}
+.hero-scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--gold));animation:scrollLine 2s infinite}
+@keyframes scrollLine{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* DISTINCTIONS */
+.distinctions{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.5rem 3rem;display:flex;justify-content:center;gap:4rem;flex-wrap:wrap}
+.distinction{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+.distinction-icon{font-size:1.4rem}
+.distinction strong{color:var(--text);display:block;font-size:14px}
+
+/* SECTIONS */
+.section{padding:6rem clamp(1.5rem,8vw,6rem);max-width:1200px;margin:0 auto}
+.eyebrow{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:'';width:30px;height:1px;background:var(--gold)}
+h2.title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.1;color:var(--text);margin-bottom:1rem}
+h2.title em{font-style:italic;color:var(--gold)}
+.desc{color:var(--muted);max-width:520px;font-weight:300;margin-bottom:3rem;line-height:1.8}
+.divider{max-width:1200px;margin:0 auto;border:none;border-top:1px solid var(--border)}
+
+/* MENU */
+.menu-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:3rem;overflow-x:auto}
+.menu-tab{padding:0.75rem 1.75rem;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.menu-tab.active,.menu-tab:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1px;background:var(--border)}
+.menu-item{background:var(--dark);padding:1.75rem;display:flex;justify-content:space-between;align-items:start;gap:2rem;transition:background .2s}
+.menu-item:hover{background:var(--card)}
+.menu-item-info h3{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:400;color:var(--text);margin-bottom:6px}
+.menu-item-info p{font-size:12px;color:var(--muted);line-height:1.6}
+.menu-item-badge{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.3);padding:2px 8px;border-radius:2px;margin-bottom:8px;display:inline-block}
+.menu-price{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);white-space:nowrap;flex-shrink:0}
+
+/* GALERIE */
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,220px);gap:8px}
+.gallery-item{overflow:hidden;border-radius:4px;cursor:pointer;position:relative}
+.gallery-item:first-child{grid-column:span 2;grid-row:span 2}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.gallery-item:hover img{transform:scale(1.05)}
+.gallery-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s;display:flex;align-items:center;justify-content:center}
+.gallery-item:hover .gallery-overlay{background:rgba(0,0,0,0.3)}
+.gallery-icon{color:white;font-size:1.5rem;opacity:0;transition:opacity .3s}
+.gallery-item:hover .gallery-icon{opacity:1}
+
+/* CHEF */
+.chef-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.chef-img{position:relative}
+.chef-img img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:4px}
+.chef-award{position:absolute;bottom:-20px;right:-20px;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;text-align:center}
+.chef-award-num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);display:block;line-height:1}
+.chef-award-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.chef-text p{color:var(--muted);font-weight:300;line-height:1.9;margin-bottom:1.25rem}
+.chef-sig{font-family:'Playfair Display',serif;font-style:italic;font-size:1.6rem;color:var(--gold);margin-top:1.5rem;display:block}
+
+/* AVIS */
+.avis-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.avis-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1.5rem}
+.avis-stars{color:var(--gold);font-size:14px;margin-bottom:0.75rem}
+.avis-text{font-family:'Playfair Display',serif;font-style:italic;font-size:0.95rem;color:var(--text);line-height:1.7;margin-bottom:1rem}
+.avis-author{display:flex;align-items:center;gap:10px}
+.avis-avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#0d0c0b;font-family:'Playfair Display',serif}
+.avis-name{font-size:13px;font-weight:500;color:var(--text)}
+.avis-date{font-size:11px;color:var(--muted)}
+
+/* HORAIRES */
+.horaires-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border)}
+.horaire-card{background:var(--dark);padding:1.5rem;text-align:center}
+.horaire-day{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);margin-bottom:8px}
+.horaire-time{font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--text);line-height:1.8}
+.horaire-closed{font-style:italic;color:var(--muted);font-size:14px}
+
+/* CONTACT / MAP */
+.contact-section{background:var(--card);padding:5rem clamp(1.5rem,8vw,6rem)}
+.contact-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:1.25rem}
+.contact-item{display:flex;align-items:flex-start;gap:14px}
+.contact-item-icon{width:40px;height:40px;border:1px solid var(--border);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.contact-label{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);margin-bottom:4px}
+.contact-val{font-size:14px;color:var(--text);line-height:1.6}
+.map-placeholder{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:4px;height:320px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;color:var(--muted)}
+
+/* BUTTONS */
+.btn-gold{display:inline-block;padding:13px 32px;background:var(--gold);color:#0d0c0b;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;border-radius:2px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.btn-gold:hover{opacity:0.85}
+.btn-outline{display:inline-block;padding:13px 32px;border:1px solid rgba(244,239,230,0.25);color:var(--text);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;border-radius:2px;text-decoration:none;transition:all .2s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:4px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative}
+.modal-header{padding:1.75rem 2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold)}
+.modal-close{background:none;border:1px solid var(--border);width:32px;height:32px;border-radius:2px;color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:1.75rem 2rem;display:flex;flex-direction:column;gap:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
+.form-input{padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s;color-scheme:dark}
+select.form-input{background:#1a1510;color:var(--text)}
+select.form-input option{background:#1a1510;color:var(--text)}
+.form-input:focus{border-color:var(--gold)}
+.form-input::placeholder{color:var(--muted)}
+.alert{padding:12px 16px;border-radius:2px;font-size:13px;display:none}
+.alert-success{background:rgba(5,232,200,0.08);border:1px solid rgba(5,232,200,0.2);color:#05e8c8}
+.alert-error{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#ef4444}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:600;align-items:center;justify-content:center}
+.lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:4px}
+.lightbox-close{position:absolute;top:1.5rem;right:1.5rem;background:none;border:1px solid rgba(255,255,255,0.2);color:white;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px}
+
+/* FOOTER */
+footer{background:#080807;border-top:1px solid var(--border);padding:3rem clamp(1.5rem,8vw,6rem)}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem}
+.footer-brand .logo{display:block;margin-bottom:1rem}
+.footer-brand p{font-size:13px;color:var(--muted);max-width:280px;line-height:1.7}
+.footer-col h4{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);margin-bottom:1rem}
+.footer-col a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:8px;transition:color .2s}
+.footer-col a:hover{color:var(--text)}
+.footer-bottom{max-width:1200px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;font-size:11px;color:var(--muted)}
+.footer-bottom a{color:var(--gold);text-decoration:none}
+
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .chef-grid,.contact-inner,.footer-inner{grid-template-columns:1fr}
+  .chef-award{right:0;bottom:-10px}
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .gallery-item:first-child{grid-column:span 2;grid-row:span 1}
+  .distinctions{gap:1.5rem;padding:1.5rem}
+  .form-row{grid-template-columns:1fr}
+  .menu-grid{grid-template-columns:1fr}
+  .section{padding:4rem 1.25rem}
+}
+@media(max-width:480px){
+  .gallery-grid{grid-template-columns:1fr}
+  .gallery-item:first-child{grid-column:span 1;grid-row:span 1}
+  .hero-title{font-size:2.5rem}
+  .distinctions{flex-direction:column;align-items:flex-start;gap:1rem}
+  .footer-inner{gap:2rem}
+  .avis-grid{grid-template-columns:1fr}
+}
+select{background:var(--card)!important;color:var(--text)!important;color-scheme:dark;border:1px solid var(--border)!important;border-radius:8px}
+select option{background:var(--card)!important;color:var(--text)!important}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Restaurant","name":"Le Jardin Secret","description":"Restaurant gastronomique au cœur de Paris. Cuisine française contemporaine, produits du terroir.","address":{"@type":"PostalAddress","streetAddress":"14 rue des Abbesses","addressLocality":"Paris","postalCode":"75018","addressCountry":"FR"},"telephone":"+33142540000","url":"https://jeremiehenri.fr/demos/restaurant.html","servesCuisine":"Cuisine française gastronomique","priceRange":"€€€","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday"],"opens":"12:00","closes":"22:30"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Friday","Saturday"],"opens":"12:00","closes":"23:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Sunday"],"opens":"12:00","closes":"15:00"}]}
+</script>
+</head>
+<body>
+<a href="#hero" style="position:absolute;top:-100%;left:1rem;background:#c9a84c;color:#0d0c0b;padding:0.5rem 1rem;border-radius:0 0 8px 8px;font-size:14px;font-weight:600;text-decoration:none;z-index:9999;transition:top .2s" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Aller au contenu principal</a>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="logo">Le Jardin Secret</div>
+  <div class="nav-links">
+    <a href="#menu">Menu</a>
+    <a href="#galerie">Galerie</a>
+    <a href="#chef">Le Chef</a>
+    <a href="#avis">Avis</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <button class="btn-reserve" onclick="openModal()">Réserver une table</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Cuisine française contemporaine · Paris 18e</div>
+    <h1 class="hero-title">L'art de la<br><em>table française</em></h1>
+    <p class="hero-sub">Une expérience culinaire unique où tradition et modernité se rencontrent dans chaque assiette soignée.</p>
+    <div class="hero-ctas">
+      <button class="btn-gold" onclick="openModal()">Réserver une table</button>
+      <a href="#menu" class="btn-outline">Découvrir le menu</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Défiler</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+
+
+<!-- MENU -->
+<div class="section" id="menu">
+  <div class="eyebrow">Notre carte</div>
+  <h2 class="title">Une cuisine de <em>saison</em></h2>
+  <p class="desc">Des produits frais sélectionnés chaque matin auprès de nos producteurs partenaires de la région Île-de-France et au-delà.</p>
+  <div class="menu-tabs">
+    <button class="menu-tab active" onclick="switchTab(this,'entrees')">Entrées</button>
+    <button class="menu-tab" onclick="switchTab(this,'plats')">Plats</button>
+    <button class="menu-tab" onclick="switchTab(this,'desserts')">Desserts</button>
+    <button class="menu-tab" onclick="switchTab(this,'vins')">Accords vins</button>
+  </div>
+  <div id="menu-content" class="menu-grid"></div>
+</div>
+<hr class="divider">
+
+<!-- GALERIE -->
+<div class="section" id="galerie">
+  <div class="eyebrow">Notre univers</div>
+  <h2 class="title">Un cadre <em>d'exception</em></h2>
+  <p class="desc">Découvrez l'ambiance feutrée et élégante du Jardin Secret, entre pierre apparente et lumières dorées.</p>
+  <div class="gallery-grid" id="gallery-grid">
+    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=85')">
+      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Salle principale">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=85')">
+      <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80" alt="Foie gras">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1559847844-5315695dadae?w=800&q=85')">
+      <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80" alt="Sole meunière">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=800&q=85')">
+      <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&q=80" alt="Dessert">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=85')">
+      <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80" alt="Cuisine">
+      <div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>
+    </div>
+  </div>
+</div>
+<hr class="divider">
+
+<!-- CHEF -->
+<div class="section" id="chef">
+  <div class="chef-grid">
+    <div class="chef-img">
+      <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=700&q=80" alt="Chef Thomas Moreau">
+      <div class="chef-award">
+        <span class="chef-award-num">18</span>
+        <span class="chef-award-label">ans d'expérience</span>
+      </div>
+    </div>
+    <div class="chef-text">
+      <div class="eyebrow">Le chef</div>
+      <h2 class="title">Thomas <em>Moreau</em></h2>
+      <p>Formé à l'École Ferrandi puis auprès de Joël Robuchon et Alain Ducasse, Thomas Moreau a forgé son style dans les grandes maisons parisiennes avant de traverser l'Atlantique pour s'inspirer des cuisines du monde.</p>
+      <p>De retour à Paris en 2018, il ouvre Le Jardin Secret avec une vision claire : proposer une cuisine française sincère, généreuse, ancrée dans les saisons et le respect des producteurs.</p>
+      <p>Deux étoiles au Guide Michelin depuis 2021, Thomas continue d'explorer et de surprendre ses convives à chaque nouvelle carte.</p>
+      <em class="chef-sig">Thomas Moreau</em>
+    </div>
+  </div>
+</div>
+<hr class="divider">
+
+<!-- AVIS -->
+<div class="section" id="avis">
+  <div class="eyebrow">Témoignages</div>
+  <h2 class="title">Ce que disent<br>nos <em>convives</em></h2>
+  <p class="desc" style="margin-bottom:2.5rem">4.9/5 sur Google · 4.8/5 sur TripAdvisor · Plus de 1 200 avis</p>
+  <div class="avis-grid" id="avis-grid"></div>
+</div>
+<hr class="divider">
+
+<!-- HORAIRES -->
+<div class="section" id="horaires">
+  <div class="eyebrow">Horaires</div>
+  <h2 class="title">Quand nous<br><em>rendre visite</em></h2>
+  <p class="desc">Réservation fortement conseillée. Nous restons joignables par téléphone jusqu'à 21h.</p>
+  <div class="horaires-grid" id="horaires-grid">
+    <div class="horaire-card"><div class="horaire-day">Lundi</div><div class="horaire-closed">Fermé</div></div>
+    <div class="horaire-card"><div class="horaire-day">Mardi</div><div class="horaire-time">12h — 14h30<br>19h — 22h30</div></div>
+    <div class="horaire-card"><div class="horaire-day">Mercredi</div><div class="horaire-time">12h — 14h30<br>19h — 22h30</div></div>
+    <div class="horaire-card"><div class="horaire-day">Jeudi</div><div class="horaire-time">12h — 14h30<br>19h — 22h30</div></div>
+    <div class="horaire-card"><div class="horaire-day">Vendredi</div><div class="horaire-time">12h — 14h30<br>19h — 23h00</div></div>
+    <div class="horaire-card"><div class="horaire-day">Samedi</div><div class="horaire-time">12h — 14h30<br>19h — 23h00</div></div>
+    <div class="horaire-card"><div class="horaire-day">Dimanche</div><div class="horaire-time">12h — 15h00<br>Fermé le soir</div></div>
+  </div>
+</div>
+
+<!-- CONTACT & MAP -->
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div>
+      <div class="eyebrow">Nous trouver</div>
+      <h2 class="title" style="font-size:clamp(1.8rem,3vw,2.4rem)">Venez nous<br><em>rendre visite</em></h2>
+      <p style="color:var(--muted);font-weight:300;margin-bottom:2rem;line-height:1.8">Au cœur de Montmartre, à deux pas de la Place des Abbesses.</p>
+      <div class="contact-info">
+        <div class="contact-item"><div class="contact-item-icon">📍</div><div><div class="contact-label">Adresse</div><div class="contact-val">14 rue des Abbesses<br>75018 Paris — Métro Abbesses</div></div></div>
+        <div class="contact-item"><div class="contact-item-icon">📞</div><div><div class="contact-label">Téléphone</div><div class="contact-val">01 42 54 00 00<br><span style="font-size:12px;color:var(--muted)">Lun–Dim · 10h–21h</span></div></div></div>
+        <div class="contact-item"><div class="contact-item-icon">✉️</div><div><div class="contact-label">Email</div><div class="contact-val">contact@lejardinsecret.fr</div></div></div>
+        <div class="contact-item"><div class="contact-item-icon">🅿️</div><div><div class="contact-label">Stationnement</div><div class="contact-val">Parking Abbesses à 200m<br>Vélib' station devant le restaurant</div></div></div>
+      </div>
+      <button class="btn-gold" style="margin-top:2rem" onclick="openModal()">Réserver maintenant</button>
+    </div>
+    <div class="map-placeholder">
+      <span style="font-size:3rem">🗺️</span>
+      <p style="font-size:14px">14 rue des Abbesses, Paris 18e</p>
+      <a href="https://maps.google.com" target="_blank" style="color:var(--gold);font-size:12px;text-decoration:none;border:1px solid var(--border);padding:6px 16px;border-radius:2px">Ouvrir dans Google Maps →</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+
+<!-- SECTION INFOS -->
+<section id="infos" style="padding:4rem 2rem;max-width:1100px;margin:0 auto">
+  <div style="text-align:center;margin-bottom:2.5rem">
+    <p style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)">Services & Informations</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem">
+    <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.5rem">Privatisation</h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:.75rem">Réservez l'intégralité du restaurant pour vos événements privés, soirées d'entreprise ou célébrations.</p>
+      <p style="font-size:12px;color:var(--gold);font-weight:600">Jusqu'à 80 couverts · Dès 48h à l'avance</p>
+    </div>
+    <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.5rem">Menus groupes</h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:.75rem">Formules déjeuner et dîner spécialement conçues pour les groupes à partir de 10 personnes.</p>
+      <p style="font-size:12px;color:var(--gold);font-weight:600">À partir de 65€ / personne · Personnalisable</p>
+    </div>
+    <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.5rem">Carte des vins</h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:.75rem">Plus de 200 références, des grands crus aux vins naturels. Notre sommelier vous guide dans vos accords.</p>
+      <p style="font-size:12px;color:var(--gold);font-weight:600">Conseil sommelier · Accords mets-vins</p>
+    </div>
+    <div style="background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:16px;padding:1.5rem">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.5rem">Accessibilité PMR</h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:.75rem">Le restaurant est entièrement accessible aux personnes à mobilité réduite. Entrée de plain-pied, tables adaptées.</p>
+      <p style="font-size:12px;color:var(--gold);font-weight:600">Accès plain-pied · Sanitaires adaptés</p>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo">Le Jardin Secret</span>
+      <p>Restaurant gastronomique au cœur de Montmartre. Cuisine française contemporaine, produits du terroir.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <a href="#menu">Notre menu</a>
+      <a href="#galerie">Galerie</a>
+      <a href="#chef">Le chef</a>
+      <a href="#avis">Avis clients</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Informations</h4>
+      <a href="#">Privatisation</a>
+      <a href="#">Menus groupes</a>
+      <a href="#">Carte des vins</a>
+      <a href="#">Accessibilité PMR</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Le Jardin Secret · Tous droits réservés</p>
+    <p>Site réalisé par <a href="#">Jérémie Henri</a> · <strong style="color:var(--gold)">DÉMO — jeremiehenri.dev</strong></p>
+  </div>
+  <a href="admin-restaurant.html" style="display:flex;width:fit-content;margin:1.5rem auto 0;background:rgba(0,0,0,0.85);color:#fff;padding:9px 18px;font-size:11px;font-family:inherit;font-weight:600;border-radius:8px;text-decoration:none;align-items:center;gap:6px;border:1px solid rgba(255,255,255,0.1);letter-spacing:.05em">⚙️ Panel Admin</a>
+</footer>
+
+<!-- MODAL RÉSERVATION -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-heading">Réserver une table</span>
+      <button class="modal-close" onclick="closeModal()" aria-label="Fermer la fenêtre de réservation">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-success" id="res-success"></div>
+      <div class="alert alert-error" id="res-error"></div>
+      <form id="res-form" onsubmit="submitReservation(event)">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Prénom & Nom *</label><input name="name" class="form-input" placeholder="Thomas Dupont" required></div>
+          <div class="form-group"><label class="form-label">Email *</label><input name="email" type="email" class="form-input" placeholder="thomas@email.com" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Téléphone</label><input name="phone" class="form-input" placeholder="06 12 34 56 78"></div>
+          <div class="form-group"><label class="form-label">Couverts *</label>
+            <select name="guests" class="form-input" required>
+              <option value="">Sélectionner</option>
+              <option>1 personne</option><option>2 personnes</option><option>3 personnes</option>
+              <option>4 personnes</option><option>5 personnes</option><option>6 personnes</option><option>7+ personnes</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Date *</label><input name="date" type="date" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Heure *</label>
+            <select name="time" class="form-input" required>
+              <option value="">Sélectionner</option>
+              <option>12:00</option><option>12:30</option><option>13:00</option><option>13:30</option>
+              <option>19:00</option><option>19:30</option><option>20:00</option><option>20:30</option><option>21:00</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Occasion particulière</label>
+          <select name="occasion" class="form-input">
+            <option value="">Aucune</option>
+            <option>Anniversaire</option><option>Demande en mariage</option><option>Repas d'affaires</option>
+            <option>Repas de famille</option><option>Saint-Valentin</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Demandes particulières</label><textarea name="notes" class="form-input" rows="3" placeholder="Allergies, régimes spéciaux, chaise haute..." style="resize:vertical"></textarea></div>
+        <button type="submit" class="btn-gold" id="res-submit" style="width:100%;margin-top:0.5rem">Confirmer la réservation</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Galerie photo" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="Fermer la galerie photo">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+
+<script>
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60)
+  document.getElementById('hero-bg').style.transform = `scale(1.05) translateY(${window.scrollY * 0.15}px)`
+})
+
+// Menu data
+const MENU = {
+  entrees: [
+    {badge:'Signature',name:'Foie Gras Maison',desc:'Mi-cuit au torchon, chutney de figues, brioche toastée et fleur de sel de Guérande',price:'24 €'},
+    {badge:'Saison',name:'Velouté de Châtaignes',desc:'Espuma de lard fumé, noisettes torréfiées, huile de truffe blanche',price:'18 €'},
+    {badge:'Pêche du jour',name:'Carpaccio de Saint-Jacques',desc:'Noix de Saint-Jacques bretonnes, condiment yuzu-gingembre, caviar de hareng',price:'28 €'},
+    {badge:'',name:'Tartare de Bœuf Rossini',desc:'Filet de bœuf Charolais, copeaux de foie gras poêlé, frites gaufrettes',price:'26 €'},
+  ],
+  plats: [
+    {badge:'Chef',name:'Sole Meunière',desc:'Sole de ligne, beurre noisette aux câpres, purée de céleri et légumes du marché',price:'38 €'},
+    {badge:'Signature',name:'Pigeon de Bresse Rôti',desc:'Jus corsé à la betterave, gnocchi de pommes de terre, champignons des bois',price:'46 €'},
+    {badge:'Végétarien',name:'Risotto aux Cèpes',desc:'Riz Carnaroli, cèpes frais du Périgord, parmesan 24 mois, truffe noire râpée',price:'32 €'},
+    {badge:'Saison',name:'Côte de Veau de Lait',desc:'Rôtie à la fleur de thym, jus de persil, gratin dauphinois au comté',price:'42 €'},
+  ],
+  desserts: [
+    {badge:'Incontournable',name:'Soufflé au Grand Marnier',desc:'Soufflé chaud, crème anglaise à la vanille de Madagascar, sorbet mandarine',price:'16 €'},
+    {badge:'',name:'Tarte Tatin Revisitée',desc:'Pommes caramélisées, caramel au beurre salé, glace vanille-tonka',price:'14 €'},
+    {badge:'Chocolat',name:'Fondant Valrhona 72%',desc:'Fondant chaud au grand cru Guanaja, glace à la fleur de sel, tuile craquante',price:'15 €'},
+    {badge:'Léger',name:'Vacherin Exotique',desc:'Meringue française, cream cheese, fruits de la passion, mangue fraîche',price:'13 €'},
+  ],
+  vins: [
+    {badge:'Coup de cœur',name:'Chablis Premier Cru 2021',desc:'Domaine Raveneau — Fraîcheur minérale, notes d\'agrumes. Parfait avec les fruits de mer',price:'68 €'},
+    {badge:'Prestige',name:'Gevrey-Chambertin 2019',desc:'Domaine Drouhin-Laroze — Élégant, fruits rouges, tanins soyeux. Pour les viandes',price:'95 €'},
+    {badge:'Découverte',name:'Roussette de Savoie 2022',desc:'Domaine Dupasquier — Vif, floral, minéral. Superbe avec le foie gras',price:'42 €'},
+    {badge:'Naturel',name:'Muscadet Sèvre et Maine 2023',desc:'Domaine de la Pépière — Sur lie, cristallin. Accord parfait Saint-Jacques',price:'38 €'},
+  ]
+}
+
+const AVIS = [
+  {initials:'AM',name:'Anne-Marie G.',date:'Novembre 2025',stars:5,text:'"Une soirée inoubliable. Le foie gras est à tomber et le soufflé au Grand Marnier, une merveille. Service attentionné sans être intrusif."'},
+  {initials:'JF',name:'Jean-François L.',date:'Octobre 2025',stars:5,text:'"Nous fêtions nos 20 ans de mariage. L\'équipe avait préparé une surprise avec des pétales de rose. Magique. On reviendra sans faute."'},
+  {initials:'SC',name:'Sophie C.',date:'Septembre 2025',stars:5,text:'"La sole meunière est la meilleure que j\'aie jamais mangée. Le cadre est somptueux et l\'accord met en valeur chaque plat."'},
+  {initials:'PD',name:'Pierre D.',date:'Août 2025',stars:5,text:'"Déjeuner d\'affaires parfaitement réussi. Cadre élégant, service discret, cuisine de très haute tenue. Mes clients ont été impressionnés."'},
+  {initials:'ML',name:'Marie-Laure B.',date:'Juillet 2025',stars:4,text:'"Excellente adresse, cuisine raffinée et créative. Légèrement déçue par l\'attente entre les plats, mais le résultat en vaut la peine."'},
+  {initials:'TM',name:'Thomas M.',date:'Juin 2025',stars:5,text:'"Le pigeon de Bresse est tout simplement magistral. Et la cave est impressionnante. Un grand restaurant à Paris, enfin une vraie table."'},
+]
+
+function renderMenu(cat) {
+  document.getElementById('menu-content').innerHTML = MENU[cat].map(i => `
+    <div class="menu-item">
+      <div class="menu-item-info">
+        ${i.badge ? `<span class="menu-item-badge">${i.badge}</span>` : ''}
+        <h3>${i.name}</h3>
+        <p>${i.desc}</p>
+      </div>
+      <span class="menu-price">${i.price}</span>
+    </div>`).join('')
+}
+
+function renderAvis() {
+  document.getElementById('avis-grid').innerHTML = AVIS.map(a => `
+    <div class="avis-card">
+      <div class="avis-stars">${'★'.repeat(a.stars)}${'☆'.repeat(5-a.stars)}</div>
+      <p class="avis-text">${a.text}</p>
+      <div class="avis-author">
+        <div class="avis-avatar">${a.initials}</div>
+        <div><div class="avis-name">${a.name}</div><div class="avis-date">${a.date}</div></div>
+      </div>
+    </div>`).join('')
+}
+
+function switchTab(el, cat) {
+  document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+  renderMenu(cat)
+}
+
+// Modal
+function openModal() { document.getElementById('modal').style.display = 'flex' }
+function closeModal() { document.getElementById('modal').style.display = 'none' }
+function closeModalOutside(e) { if(e.target === document.getElementById('modal')) closeModal() }
+
+// Lightbox
+function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex' }
+function closeLightbox() { document.getElementById('lightbox').style.display = 'none' }
+
+// Submit
+async function submitReservation(e) {
+  e.preventDefault()
+  const btn = document.getElementById('res-submit')
+  const suc = document.getElementById('res-success')
+  const err = document.getElementById('res-error')
+  suc.style.display = 'none'; err.style.display = 'none'
+  btn.textContent = 'Envoi en cours...'; btn.disabled = true
+
+  const data = Object.fromEntries(new FormData(e.target).entries())
+
+  try {
+    let ref = null
+    try {
+      const res = await fetch('/api/reservation', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+      })
+      const ct = res.headers.get('content-type') || ''
+      if (ct.includes('application/json')) {
+        const json = await res.json()
+        if (res.ok) ref = json.ref
+      }
+    } catch(_) {}
+    // Fallback démo : générer une ref locale si le backend n'est pas disponible
+    if (!ref) {
+      ref = 'RES-' + Math.random().toString(36).slice(2,7).toUpperCase()
+    }
+    suc.style.display = 'block'
+    suc.innerHTML = `✅ <strong>Réservation confirmée !</strong><br>Référence : <strong style="color:var(--gold2)">${ref}</strong><br>Confirmation envoyée à ${data.email}.`
+    e.target.reset()
+  } catch(er) {
+    err.style.display = 'block'
+    err.textContent = '❌ ' + (er.message || 'Erreur. Appelez-nous au 01 42 54 00 00.')
+  } finally {
+    btn.textContent = 'Confirmer la réservation'; btn.disabled = false
+  }
+}
+
+// Scroll animation
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)' } })
+}, { threshold: 0.1 })
+document.querySelectorAll('.section > *:not(.eyebrow)').forEach(el => {
+  el.style.cssText += 'opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease'
+  observer.observe(el)
+})
+
+// Init
+renderMenu('entrees')
+renderAvis()
+
+// Min date = demain
+const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1)
+document.querySelector('input[type=date]').min = tomorrow.toISOString().split('T')[0]
+
+// ─── HORAIRES dynamiques (synchronisés depuis le panel admin) ───
+function syncHoraires() {
+  let data
+  try { data = JSON.parse(localStorage.getItem('js_admin_v2')) } catch { return }
+  if (!data || !Array.isArray(data.horaires)) return
+  const fmt = s => !s ? '' : s.split(/[–-]/).map(t => {
+    const m = t.trim().match(/(\d{1,2}):(\d{2})/)
+    if (!m) return t.trim()
+    return m[2] === '00' ? m[1] + 'h' : m[1] + 'h' + m[2]
+  }).join(' — ')
+  const grid = document.getElementById('horaires-grid')
+  if (!grid) return
+  grid.innerHTML = data.horaires.map(h => {
+    let inner
+    if (h.closed) inner = '<div class="horaire-closed">Fermé</div>'
+    else {
+      const parts = []
+      if (h.midi) parts.push(fmt(h.midi))
+      if (h.soir) parts.push(fmt(h.soir)); else if (h.midi) parts.push('Fermé le soir')
+      inner = parts.length ? '<div class="horaire-time">' + parts.join('<br>') + '</div>' : '<div class="horaire-closed">Fermé</div>'
+    }
+    return '<div class="horaire-card"><div class="horaire-day">' + h.day + '</div>' + inner + '</div>'
+  }).join('')
+}
+syncHoraires()
+
+// ─── GALERIE dynamique (synchronisée depuis le panel admin) ───
+function syncGallery() {
+  let data
+  try { data = JSON.parse(localStorage.getItem('js_admin_v2')) } catch { return }
+  if (!data || !Array.isArray(data.gallery)) return
+  const active = data.gallery.filter(g => g.active !== false && g.url)
+  if (!active.length) return
+  const grid = document.getElementById('gallery-grid')
+  if (!grid) return
+  grid.innerHTML = active.map(g => {
+    const big = g.url.replace(/w=\d+/, 'w=1200')
+    return '<div class="gallery-item" onclick="openLightbox(\'' + big + '\')">' +
+      '<img src="' + g.url + '" alt="' + (g.caption || '') + '">' +
+      '<div class="gallery-overlay"><span class="gallery-icon">🔍</span></div>' +
+    '</div>'
+  }).join('')
+}
+syncGallery()
+
+// Mise à jour live si l'admin modifie les données dans un autre onglet
+window.addEventListener('storage', e => { if (e.key === 'js_admin_v2') { syncHoraires(); syncGallery() } })
+</script>
+</body>
+</html>
