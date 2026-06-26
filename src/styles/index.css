@@ -6,15 +6,15 @@
 
 /* ─── DESIGN TOKENS ─────────────────────────── */
 :root {
-  --bg:     #080808;
-  --bg2:    #111111;
-  --bg3:    #1a1a1a;
-  --card:   #111111;
-  --accent: #ffffff;
-  --a2:     #a0a0a0;
-  --a3:     #d8d8d8;
-  --text:   #f5f5f5;
-  --muted:  #666666;
+  --bg:     #000000;
+  --bg2:    #0d0d0d;
+  --bg3:    #111111;
+  --card:   #0d0d0d;
+  --accent: #7c6af7;
+  --a2:     #9f91fa;
+  --a3:     #c4bbfc;
+  --text:   #ffffff;
+  --muted:  rgba(255,255,255,0.65);
   --border: rgba(255,255,255,0.08);
   --r:      0px;
 }
@@ -96,7 +96,6 @@ h1, h2, h3, h4 {
   position: fixed; top: 0; left: 0; right: 0;
   height: 2px; z-index: 1000;
   background: linear-gradient(90deg, #ffffff, #888888);
-  box-shadow: 0 0 10px rgba(255,255,255,0.25);
   transform-origin: left;
   transform: scaleX(0);
   transition: transform 0.1s linear;
@@ -111,37 +110,48 @@ h1, h2, h3, h4 {
 }
 .bg-aurora-fixed {
   position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
-  background: var(--bg);
+  background: #000000;
 }
-.bg-aurora-fixed span {
-  position: absolute; border-radius: 50%; filter: blur(90px);
-  will-change: transform, opacity;
-  animation: aurora-drift 20s ease-in-out infinite;
-}
-.bg-aurora-fixed span:nth-child(1) { top: -6%;  right: 2%;  width: 60vw; height: 60vw; max-width: 720px; max-height: 720px; background: radial-gradient(circle, rgba(255,255,255,0.07), transparent 65%); animation-delay: 0s; }
-.bg-aurora-fixed span:nth-child(2) { bottom: -8%; left: -4%; width: 55vw; height: 55vw; max-width: 640px; max-height: 640px; background: radial-gradient(circle, rgba(200,200,200,0.05), transparent 65%); animation-delay: -6s; }
-.bg-aurora-fixed span:nth-child(3) { top: 30%; left: 35%; width: 45vw; height: 45vw; max-width: 520px; max-height: 520px; background: radial-gradient(circle, rgba(255,255,255,0.04), transparent 65%); animation-delay: -11s; }
+.bg-aurora-fixed span { display: none; }
 
-/* Feuille opaque : couvre le fond aurore pour les sections du bas */
+/* Hero épinglé derrière la feuille */
+.hero-sticky-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100vh;
+}
+
+/* Feuille principale qui glisse par-dessus le hero */
+.overlap-sheet-main {
+  position: relative;
+  z-index: 1;
+  border-radius: 36px 36px 0 0;
+  background: transparent;
+  /* Ombre douce vers le haut pour le relief */
+  box-shadow: 0 -24px 60px rgba(0,0,0,0.55);
+}
+
+/* Feuille opaque noire — recouvre le réseau 3D à partir de cette section */
 .solid-sheet {
   position: relative; z-index: 1;
-  background: var(--bg);
+  background: #000000;
 }
 
 /* Curseur clignotant (effet machine à écrire) */
 .tw-caret {
   display: inline-block;
   margin-left: 0.06em;
-  color: #ffffff;
-  -webkit-text-fill-color: #ffffff;
+  color: #9f91fa;
+  -webkit-text-fill-color: #9f91fa;
   font-weight: 400;
   animation: tw-blink 1s steps(1) infinite;
 }
 @keyframes tw-blink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
 
-/* Texte-fenêtre : dégradé blanc → gris */
+/* Texte-fenêtre : blanc → violet subtil */
 .text-window {
-  background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 60%, #888888 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #d4d0ff 50%, #9f91fa 100%);
   background-attachment: fixed;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: transparent;
@@ -150,8 +160,8 @@ h1, h2, h3, h4 {
 /* Carte en verre dépoli : le fond animé transparaît derrière */
 .glass {
   background: rgba(20,20,34,0.55) !important;
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
 }
 
 /* Bande révélatrice : laisse voir le fond animé entre deux zones */

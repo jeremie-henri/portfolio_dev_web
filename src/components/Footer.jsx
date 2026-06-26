@@ -1,9 +1,9 @@
-import { FiGithub, FiLinkedin, FiMail, FiHeart } from 'react-icons/fi'
+import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
 
 const LINKS = [
-  { icon: FiGithub,   href: 'https://github.com/jeremie-henri',       label: 'GitHub'   },
-  { icon: FiLinkedin, href: 'https://linkedin.com/in/jeremiehenri',   label: 'LinkedIn' },
-  { icon: FiMail,     href: 'mailto:jeremiehenri99@gmail.com',        label: 'Email'    },
+  { icon: FiGithub,   href: 'https://github.com/jeremie-henri',                      label: 'GitHub'   },
+  { icon: FiLinkedin, href: 'https://www.linkedin.com/in/jeremie-henri-09a02b419/',  label: 'LinkedIn' },
+  { icon: FiMail,     href: 'mailto:jeremiehenri99@gmail.com',                       label: 'Email'    },
 ]
 
 export default function Footer() {
@@ -13,23 +13,23 @@ export default function Footer() {
       padding: '2rem clamp(1.5rem,8vw,6rem)',
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       flexWrap: 'wrap', gap: '1rem',
+      position: 'relative', zIndex: 2,
     }}>
-      <a href="#hero" aria-label="Retour en haut de page — Jérémie Henri" style={{
+      <a href="#hero" aria-label="Retour en haut de page - Jeremie Henri" style={{
         fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1.1rem',
         textDecoration: 'none',
         color: '#ffffff',
       }}>JH.</a>
 
-      <p style={{ fontSize: 12, color: '#6e6b8a', margin: 0, textAlign: 'center' }}>
-        © {new Date().getFullYear()} Jérémie Henri · Développeur web indépendant
+      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, textAlign: 'center' }}>
+        &copy; {new Date().getFullYear()} Jérémie Henri · Développeur web indépendant
       </p>
-
 
       <div style={{ display: 'flex', gap: 10 }}>
         {LINKS.map(({ icon: Icon, href, label }) => (
           <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-            className="flex items-center justify-center w-9 h-9 rounded-lg text-[#666666] no-underline transition-all duration-200 hover:text-[#e8e6f0] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#6d56fa]"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+            className="flex items-center justify-center w-9 h-9 rounded-lg text-[#aaaaaa] no-underline transition-all duration-200 hover:text-[#ffffff] hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-white"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}
           >
             <Icon size={15} />
           </a>

@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'
 import ScrollProgress from './components/ScrollProgress'
 import Navbar       from './components/Navbar'
 import Hero         from './components/Hero'
@@ -13,7 +14,7 @@ import Divider      from './components/Divider'
 
 export default function App() {
   return (
-    <div style={{ background: 'transparent', color: '#f0eeff', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', color: '#111111', minHeight: '100vh' }}>
       {/* Skip link accessibilité */}
       <a href="#main-content" className="skip-link">Aller au contenu principal</a>
 
@@ -26,24 +27,23 @@ export default function App() {
       <ScrollProgress />
       <Navbar />
 
-      {/* Zone transparente : le fond animé transparaît */}
-      <Hero />
-      <main id="main-content">
-      <div className="reveal-band" aria-hidden="true" />
-      <Services />
-      <TrustBar />
-      <div className="reveal-band" aria-hidden="true" />
+      {/* Hero épinglé en fond */}
+      <div className="hero-sticky-wrap">
+        <Hero />
+      </div>
 
-      {/* Feuille opaque : le reste du site couvre le fond animé */}
-      <div className="solid-sheet">
+      {/* Feuille de contenu qui glisse par-dessus le hero */}
+      <main id="main-content" className="overlap-sheet-main solid-sheet">
+        <Services />
+        <TrustBar />
         <About />
         <Divider />
         <Skills />
         <Divider />
         <Contact />
-      </div>
       </main>
       <Footer />
+      <Analytics />
     </div>
   )
 }

@@ -22,7 +22,6 @@ export default function App() {
       <Divider />
       <Services />
       <Divider />
-      <ROICalculator />
       <Divider />
       <About />
       <Divider />

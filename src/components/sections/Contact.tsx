@@ -1,4 +1,4 @@
-// src/components/sections/Contact.tsx
+﻿// src/components/sections/Contact.tsx
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,7 +9,7 @@ import { useReducedMotion } from '../../hooks/useMediaQuery'
 import { sendContactForm } from '../../utils/api/email'
 import type { ContactFormData } from '../../types'
 
-// ─── Schéma Zod ───────────────────────────────────────────────
+// ─── Schéma Zod ───────────────────────────────────────────────────
 const schema = z.object({
   name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
   email: z.string().email('Email invalide'),
@@ -17,12 +17,12 @@ const schema = z.object({
   message: z.string().min(10, 'Le message doit contenir au moins 10 caractères'),
 })
 
-// ─── Données statiques ────────────────────────────────────────
+// ─── Données statiques ────────────────────────────────────────────
 const INFOS = [
   { icon: FiMail,     label: 'Email',        value: 'jeremiehenri99@gmail.com',     href: 'mailto:jeremiehenri99@gmail.com' },
   { icon: FiMapPin,   label: 'Localisation', value: 'St Mandrier — 100% Remote',    href: null },
   { icon: FiGithub,   label: 'GitHub',       value: 'github.com/jeremie-henri',      href: 'https://github.com/jeremie-henri' },
-  { icon: FiLinkedin, label: 'LinkedIn',     value: 'linkedin.com/in/jeremiehenri', href: 'https://linkedin.com/in/jeremiehenri' },
+  { icon: FiLinkedin, label: 'LinkedIn',     value: 'linkedin.com/in/jeremiehenri', href: 'https://www.linkedin.com/in/jeremie-henri-09a02b419/' },
 ] as const
 
 const item = {
@@ -39,7 +39,7 @@ const INPUT_BASE = `
   focus-visible:ring-2 focus-visible:ring-[#6d56fa] focus-visible:ring-offset-2 focus-visible:ring-offset-[#080810]
 `
 
-// ─── Composant ────────────────────────────────────────────────
+// â”€â”€â”€ Composant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function Contact() {
   const reduceMotion = useReducedMotion()
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -80,7 +80,7 @@ export default function Contact() {
         transition={{ staggerChildren: reduceMotion ? 0 : 0.1 }}
       >
         {/* Header */}
-        <motion.p variants={item} style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#6d56fa', marginBottom: '0.75rem' }}>
+        <motion.p variants={item} style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#aaaaaa', marginBottom: '0.75rem' }}>
           Contact
         </motion.p>
         <motion.h2
@@ -89,7 +89,7 @@ export default function Contact() {
           style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '1rem', color: '#f0eeff' }}
         >
           Parlons de votre{' '}
-          <span style={{ fontFamily: "'Fraunces',serif", fontStyle: 'italic', fontWeight: 300, background: 'linear-gradient(135deg,#6d56fa,#f059da)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span style={{ fontFamily: "'Fraunces',serif", fontStyle: 'italic', fontWeight: 300, color: '#ffffff' }}>
             projet
           </span>
         </motion.h2>
@@ -220,9 +220,9 @@ export default function Contact() {
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 padding: '13px 24px', borderRadius: 0, border: 'none',
                 cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                fontSize: 14, fontWeight: 600, color: '#fff', fontFamily: 'inherit',
-                background: isSubmitting ? 'rgba(109,86,250,0.4)' : 'linear-gradient(135deg,#6d56fa,#f059da)',
-                boxShadow: isSubmitting ? 'none' : '0 0 24px rgba(109,86,250,0.35)',
+                fontSize: 14, fontWeight: 600, color: isSubmitting ? '#888' : '#080808', fontFamily: 'inherit',
+                background: isSubmitting ? 'rgba(200,200,200,0.15)' : '#ffffff',
+                boxShadow: 'none',
                 transition: 'all 0.2s', width: 'fit-content',
               }}
             >
@@ -239,14 +239,14 @@ export default function Contact() {
                 style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14 }}
               >
                 <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(109,86,250,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Icon size={16} color="#a592ff" aria-hidden="true" />
+                  <Icon size={16} color="#ffffff" aria-hidden="true" />
                 </div>
                 <div>
                   <p style={{ fontSize: 11, color: '#6e6b8a', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>
                     {label}
                   </p>
                   {href
-                    ? <a href={href} style={{ fontSize: 13, color: '#f0eeff', textDecoration: 'none' }} className="hover:text-[#a592ff] focus-visible:ring-2 focus-visible:ring-[#6d56fa]">{value}</a>
+                    ? <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined} style={{ fontSize: 13, color: '#f0eeff', textDecoration: 'none' }} className="hover:text-[#a592ff] focus-visible:ring-2 focus-visible:ring-[#6d56fa]">{value}</a>
                     : <span style={{ fontSize: 13, color: '#f0eeff' }}>{value}</span>
                   }
                 </div>
@@ -254,7 +254,7 @@ export default function Contact() {
             ))}
 
             <div style={{ padding: '1rem 1.25rem', background: 'rgba(109,86,250,0.06)', border: '1px solid rgba(109,86,250,0.18)', borderRadius: 14, marginTop: 4 }}>
-              <p style={{ fontSize: 13, color: '#a592ff', fontWeight: 600, marginBottom: 4 }}>⚡ Réponse garantie sous 24h</p>
+              <p style={{ fontSize: 13, color: '#ffffff', fontWeight: 600, marginBottom: 4 }}>⚡ Réponse garantie sous 24h</p>
               <p style={{ fontSize: 12, color: '#6e6b8a', lineHeight: 1.6 }}>
                 Sites vitrines · Apps web · E-commerce · Dashboards<br />
                 Devis gratuit et sans engagement.

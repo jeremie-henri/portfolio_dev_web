@@ -246,8 +246,8 @@ select option{background:var(--card)!important;color:var(--text)!important}
     <a href="#avis">Avis</a>
   </div>
   <div class="nav-right">
-    <button class="wishlist-btn" onclick="openWishlist()" id="wish-btn" title="Ma liste de souhaits">🤍 <span id="wish-count" style="font-size:11px;font-weight:700;display:none;color:var(--warm)">0</span></button>
-    <button class="cart-btn" onclick="openCart()">🛒 Panier<span class="cart-count" id="cart-count">0</span></button>
+    <button class="wishlist-btn" onclick="openWishlist()" id="wish-btn" title="Ma liste de souhaits">♡ <span id="wish-count" style="font-size:11px;font-weight:700;display:none;color:var(--warm)">0</span></button>
+    <button class="cart-btn" onclick="openCart()">Panier<span class="cart-count" id="cart-count">0</span></button>
   </div>
 </nav>
 
@@ -266,7 +266,6 @@ select option{background:var(--card)!important;color:var(--text)!important}
   </div>
   <div class="hero-right" id="hero-slideshow">
     <div class="hero-slide active"><img src="../photos/hero.webp" alt="Produits artisanaux de Provence"></div>
-    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=900&q=88" alt="Huile d'olive" style="object-position:center 60%"></div>
     <div class="hero-slide"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&q=88" alt="Miel artisanal"></div>
     <div class="hero-slide"><img src="https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?w=900&q=88" alt="Épices provençales"></div>
   </div>
@@ -274,10 +273,10 @@ select option{background:var(--card)!important;color:var(--text)!important}
 
 <!-- TRUST BAR -->
 <div class="trust-bar">
-  <div class="trust-item">🚚 <strong>Livraison offerte dès 40€</strong></div>
-  <div class="trust-item">🌿 <strong>Bio & naturel</strong> · certifié AB</div>
-  <div class="trust-item">🤝 <strong>Producteurs locaux</strong> · Provence</div>
-  <div class="trust-item">↩️ <strong>Retour 30 jours</strong> · satisfait ou remboursé</div>
+  <div class="trust-item"><strong>Livraison offerte dès 40€</strong></div>
+  <div class="trust-item"><strong>Bio & naturel</strong> · certifié AB</div>
+  <div class="trust-item"><strong>Producteurs locaux</strong> · Provence</div>
+  <div class="trust-item"><strong>Retour 30 jours</strong> · satisfait ou remboursé</div>
 </div>
 
 <!-- PRODUITS -->
@@ -409,6 +408,23 @@ const BUNDLES = [
   {name:"Duo d'Huiles Premium",items:["Huile extra vierge","Huile pimentée"],prix:31.90,oldPrix:34.40,saving:'7%',badge:'Livraison offerte',emoji:'🫒'},
 ]
 
+// ─── ICÔNES SVG ARTISANALES ─────────────────────────────────
+const S='stroke="#74d4a1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"'
+const ICONS={
+  '🫒':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect fill="#74d4a1" opacity=".1" x="13" y="12" width="14" height="22" rx="5"/><line ${S} x1="20" y1="6" x2="20" y2="12"/><rect ${S} x="15" y="8" width="10" height="5" rx="2"/><path ${S} d="M13,18 Q11,26 13,34 Q13,36 16,36 L24,36 Q27,36 27,34 Q29,26 27,18 Q27,14 24,13 L16,13 Q13,14 13,18Z"/><path ${S} d="M16,22 Q20,18 24,22 Q20,26 16,22Z"/></svg>`,
+  '🍯':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect fill="#74d4a1" opacity=".1" x="10" y="16" width="20" height="20" rx="3"/><path ${S} d="M10,16 L10,34 Q10,38 14,38 L26,38 Q30,38 30,34 L30,16Z"/><rect ${S} x="8" y="10" width="24" height="8" rx="3"/><path ${S} d="M16,22 L18,20 L20,22 L20,25 L18,27 L16,25Z"/><path ${S} d="M20,22 L22,20 L24,22 L24,25 L22,27 L20,25Z"/><path ${S} d="M20,10 Q21,6 20,3 Q19,6 20,10Z"/></svg>`,
+  '🌿':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><line ${S} x1="20" y1="36" x2="20" y2="8"/><path ${S} d="M20,14 Q12,10 7,5"/><path ${S} d="M20,14 Q28,10 33,5"/><path ${S} d="M20,22 Q11,18 5,14"/><path ${S} d="M20,22 Q29,18 35,14"/><path ${S} d="M20,30 Q13,26 8,22"/><path ${S} d="M20,30 Q27,26 32,22"/><ellipse ${S} cx="7" cy="5" rx="4" ry="2.5" transform="rotate(-30,7,5)"/><ellipse ${S} cx="33" cy="5" rx="4" ry="2.5" transform="rotate(30,33,5)"/></svg>`,
+  '🎁':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect fill="#74d4a1" opacity=".1" x="8" y="18" width="24" height="20" rx="2"/><rect ${S} x="8" y="18" width="24" height="20" rx="2"/><rect ${S} x="6" y="12" width="28" height="8" rx="2"/><line ${S} x1="20" y1="12" x2="20" y2="38"/><path ${S} d="M20,12 Q15,8 12,5 Q15,8 20,10 Q25,8 28,5 Q25,8 20,12Z"/></svg>`,
+  '🌸':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><circle ${S} cx="20" cy="20" r="5"/><ellipse ${S} cx="20" cy="8" rx="4" ry="7"/><ellipse ${S} cx="20" cy="32" rx="4" ry="7"/><ellipse ${S} cx="8" cy="20" rx="7" ry="4"/><ellipse ${S} cx="32" cy="20" rx="7" ry="4"/><ellipse ${S} cx="11" cy="11" rx="4" ry="7" transform="rotate(45,11,11)"/><ellipse ${S} cx="29" cy="29" rx="4" ry="7" transform="rotate(45,29,29)"/><ellipse ${S} cx="29" cy="11" rx="4" ry="7" transform="rotate(-45,29,11)"/><ellipse ${S} cx="11" cy="29" rx="4" ry="7" transform="rotate(-45,11,29)"/></svg>`,
+  '🌶️':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect fill="#74d4a1" opacity=".1" x="14" y="12" width="12" height="24" rx="6"/><path ${S} d="M20,36 Q13,28 14,18 Q15,10 20,7 Q25,10 26,18 Q27,28 20,36Z"/><line ${S} x1="20" y1="7" x2="21" y2="3"/><path ${S} d="M21,3 Q27,-1 30,3 Q25,3 21,3Z"/><path ${S} d="M17,18 Q16,15 17,12" stroke-width="1" opacity=".7"/></svg>`,
+  '🌶':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect fill="#74d4a1" opacity=".1" x="14" y="12" width="12" height="24" rx="6"/><path ${S} d="M20,36 Q13,28 14,18 Q15,10 20,7 Q25,10 26,18 Q27,28 20,36Z"/><line ${S} x1="20" y1="7" x2="21" y2="3"/><path ${S} d="M21,3 Q27,-1 30,3 Q25,3 21,3Z"/></svg>`,
+  '🎀':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect fill="#74d4a1" opacity=".1" x="8" y="16" width="24" height="20" rx="2"/><rect ${S} x="8" y="16" width="24" height="20" rx="2"/><rect ${S} x="6" y="10" width="28" height="8" rx="2"/><line ${S} x1="20" y1="10" x2="20" y2="36"/><path ${S} d="M20,10 Q15,6 11,3 Q13,7 20,10Z"/><path ${S} d="M20,10 Q25,6 29,3 Q27,7 20,10Z"/><path ${S} d="M20,10 Q15,14 11,17 Q13,13 20,10Z"/><path ${S} d="M20,10 Q25,14 29,17 Q27,13 20,10Z"/></svg>`,
+  '🧄':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><path fill="#74d4a1" opacity=".1" d="M20,8 Q9,10 8,22 Q7,34 20,36 Q33,34 32,22 Q31,10 20,8Z"/><path ${S} d="M20,8 Q9,10 8,22 Q7,34 20,36 Q33,34 32,22 Q31,10 20,8Z"/><line ${S} x1="20" y1="8" x2="20" y2="4"/><path ${S} d="M20,4 Q17,2 15,4 Q18,3 20,4Z"/><path ${S} d="M14,16 Q13,20 14,26 Q14,30 17,31 Q14,26 14,16Z"/><path ${S} d="M26,16 Q27,20 26,26 Q26,30 23,31 Q26,26 26,16Z"/><line ${S} x1="20" y1="13" x2="20" y2="32" stroke-width="0.8" opacity=".6"/></svg>`,
+  '🫙':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><rect fill="#74d4a1" opacity=".1" x="10" y="14" width="20" height="24" rx="4"/><path ${S} d="M10,20 L10,34 Q10,38 14,38 L26,38 Q30,38 30,34 L30,20Z"/><rect ${S} x="8" y="8" width="24" height="10" rx="3"/><ellipse ${S} cx="20" cy="29" rx="6" ry="4"/><line ${S} x1="14" y1="26" x2="26" y2="26"/></svg>`,
+  '🌰':`<svg viewBox="0 0 40 40" width="36" height="36" xmlns="http://www.w3.org/2000/svg"><path fill="#74d4a1" opacity=".1" d="M20,10 Q8,12 8,24 Q8,36 20,36 Q32,36 32,24 Q32,12 20,10Z"/><path ${S} d="M20,10 Q8,12 8,24 Q8,36 20,36 Q32,36 32,24 Q32,12 20,10Z"/><path ${S} d="M9,16 Q20,10 31,16"/><path ${S} d="M20,10 Q16,4 12,4 Q16,4 20,10Z"/><line ${S} x1="20" y1="18" x2="20" y2="34" opacity=".5"/></svg>`,
+}
+function getIcon(emoji,size){const s=size||36;const svg=ICONS[emoji];if(!svg)return'<span style="font-size:'+s+'px">'+emoji+'</span>';return svg.replace(/width="\d+"/,'width="'+s+'"').replace(/height="\d+"/,'height="'+s+'"')}
+
 const REVIEWS = [
   {initials:"ML",name:"Marie-Laure B.",stars:5,text:"Huile excellente, livraison rapide.",product:"Huile d'olive extra vierge"},
   {initials:"JD",name:"Jean-Paul D.",stars:5,text:"Coffret parfait en cadeau. Produits authentiques.",product:"Coffret Saveurs du Sud"},
@@ -497,7 +513,7 @@ function renderBundles(){
     const card=document.createElement('div')
     card.className='bundle-card'
     card.innerHTML='<span class="bundle-badge">'+b.saving+' économisé</span>'
-      +'<div style="font-size:2rem;margin-bottom:.5rem">'+b.emoji+'</div>'
+      +'<div style="margin-bottom:.75rem;display:flex;justify-content:center">'+getIcon(b.emoji,44)+'</div>'
       +'<div style="font-size:1.05rem;font-weight:800;margin-bottom:.25rem">'+b.name+'</div>'
       +'<div style="font-size:12px;color:var(--muted);margin-bottom:.5rem">'+b.badge+'</div>'
       +'<div class="bundle-items">'+b.items.map(function(i){return'<div class="bundle-item">✓ '+i+'</div>'}).join('')+'</div>'
@@ -603,7 +619,7 @@ function updateCart(){
   // Cart items
   document.getElementById('cart-items-list').innerHTML=cart.map(i=>`
     <div class="cart-item">
-      <div class="cart-thumb" style="font-size:1.5rem;display:flex;align-items:center;justify-content:center">${i.emoji||'📦'}</div>
+      <div class="cart-thumb" style="display:flex;align-items:center;justify-content:center">${getIcon(i.emoji||'🎁',32)}</div>
       <div style="flex:1">
         <div class="cart-item-name">${i.name}</div>
         <div class="cart-item-price">${(i.price*i.qty).toFixed(2)} €</div>
@@ -700,6 +716,39 @@ function subscribeNewsletter(){
 renderProducts()
 renderBundles()
 renderReviews()
+
+// ─── TRACKING AVANCÉ ──────────────────────────────────────────
+;(function(){
+  const KEY='stats_ecommerce'
+  const d=JSON.parse(localStorage.getItem(KEY)||'{"visits":[],"sections":{},"conversions":{},"sources":{},"countries":{},"pages":{},"products":{}}')
+  const now=Date.now()
+  const device=window.innerWidth<768?'mobile':(window.innerWidth<1200?'tablette':'desktop')
+  const ref=document.referrer
+  const src=!ref?'direct':ref.includes('google')?'Google':ref.includes('linkedin')?'LinkedIn':ref.includes('facebook')||ref.includes('instagram')?'Réseaux sociaux':'Autre'
+  const visit={ts:now,device,src,dur:0,page:location.pathname,country:'—',city:'—'}
+  d.visits.push(visit)
+  if(d.visits.length>1000)d.visits=d.visits.slice(-1000)
+  d.sources[src]=(d.sources[src]||0)+1
+  d.pages[location.pathname]=(d.pages[location.pathname]||0)+1
+  localStorage.setItem(KEY,JSON.stringify(d))
+  window.addEventListener('beforeunload',()=>{visit.dur=Math.round((Date.now()-now)/1000);localStorage.setItem(KEY,JSON.stringify(d))})
+  // Produits ajoutés au panier
+  const origAdd=window.addToCart
+  if(origAdd)window.addToCart=function(id){
+    const p=PRODUCTS.find(x=>x.id===id)
+    if(p){d.products[p.name]=(d.products[p.name]||0)+1;d.conversions['Ajout panier']=(d.conversions['Ajout panier']||0)+1;localStorage.setItem(KEY,JSON.stringify(d))}
+    origAdd(id)
+  }
+  // Checkout
+  document.querySelectorAll('.checkout-btn,button[onclick*="checkout"]').forEach(el=>{
+    el.addEventListener('click',()=>{d.conversions['Commande']=(d.conversions['Commande']||0)+1;localStorage.setItem(KEY,JSON.stringify(d))})
+  })
+  fetch('https://ipapi.co/json/').then(r=>r.json()).then(g=>{
+    visit.country=g.country_name||'—';visit.city=g.city||'—'
+    d.countries[g.country_name||'Inconnu']=(d.countries[g.country_name||'Inconnu']||0)+1
+    localStorage.setItem(KEY,JSON.stringify(d))
+  }).catch(()=>{})
+})()
 
 // ─── HERO SLIDESHOW ───────────────────────────────────────────
 ;(function(){

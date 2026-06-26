@@ -7,6 +7,7 @@ const ITEMS = [
   { label: 'Référencement SEO', detail: 'Balises, structure et performance optimisées' },
   { label: 'Responsive garanti', detail: 'Mobile, tablette & desktop' },
   { label: 'HTTPS & sécurité', detail: 'Certificat SSL + headers sécurisés' },
+  { label: 'Statistiques embarquées', detail: 'Sans cookies · 100% RGPD · données chez vous', highlight: true },
 ]
 
 export default function TrustBar() {
@@ -37,26 +38,32 @@ export default function TrustBar() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
+              whileHover={{ y: -5, borderColor: 'rgba(255,255,255,0.22)', boxShadow: '0 14px 36px rgba(0,0,0,0.35)' }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 10,
-                background: 'rgba(20,20,34,0.6)',
+                background: item.highlight ? 'rgba(34,197,94,0.07)' : 'rgba(20,20,34,0.6)',
                 backdropFilter: 'blur(12px)',
                 WebkitBackdropFilter: 'blur(12px)',
-                border: '1px solid rgba(165,146,255,0.15)',
+                border: item.highlight ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(165,146,255,0.15)',
                 borderRadius: 12,
                 padding: '0.75rem 1.25rem',
+                cursor: 'default',
               }}
             >
               <span style={{
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                 width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                background: 'rgba(109,86,250,0.2)', border: '1px solid rgba(109,86,250,0.4)',
+                background: item.highlight ? 'rgba(34,197,94,0.2)' : 'rgba(109,86,250,0.2)',
+                border: item.highlight ? '1px solid rgba(34,197,94,0.5)' : '1px solid rgba(109,86,250,0.4)',
               }}>
-                <FiCheck size={12} color="#a592ff" />
+                <FiCheck size={12} color={item.highlight ? '#22c55e' : '#a592ff'} />
               </span>
               <span>
-                <span style={{ fontSize: 13, fontWeight: 600, color: '#e8e6f0', display: 'block', lineHeight: 1.3 }}>{item.label}</span>
-                <span style={{ fontSize: 11, color: '#7a7890', lineHeight: 1.4 }}>{item.detail}</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#e8e6f0', display: 'block', lineHeight: 1.3 }}>
+                  {item.label}
+                  {item.highlight && <span style={{ marginLeft: 6, fontSize: 10, fontWeight: 700, color: '#22c55e', background: 'rgba(34,197,94,0.1)', padding: '1px 7px', borderRadius: 100, letterSpacing: '0.04em' }}>NOUVEAU</span>}
+                </span>
+                <span style={{ fontSize: 11, color: item.highlight ? 'rgba(34,197,94,0.7)' : 'rgba(255,255,255,0.65)', lineHeight: 1.4 }}>{item.detail}</span>
               </span>
             </motion.div>
           ))}

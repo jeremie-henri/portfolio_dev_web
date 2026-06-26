@@ -128,6 +128,7 @@ select option{background:white!important;color:var(--text)!important}
   <button class="nav-item active" onclick="showPage('dashboard',this)"><span>📊</span> Vue d'ensemble</button>
   <button class="nav-item" onclick="showPage('agenda',this)"><span>📅</span> Agenda semaine</button>
   <button class="nav-item" onclick="showPage('rdv',this)"><span>🗓️</span> Rendez-vous <span class="nav-badge" id="rdv-badge">0</span></button>
+  <button class="nav-item" onclick="showPage('stats',this)"><span>📈</span> Statistiques</button>
   <div class="nav-section">Gestion</div>
   <button class="nav-item" onclick="showPage('equipe',this)"><span>👩</span> Équipe</button>
   <button class="nav-item" onclick="showPage('services',this)"><span>✂️</span> Prestations</button>
@@ -228,12 +229,13 @@ function topbarAction(){
   else openAddRdv()
 }
 function renderPage(p){
-  const t={dashboard:'Vue d\'ensemble',agenda:'Agenda semaine',rdv:'Rendez-vous',equipe:'Mon équipe',services:'Prestations',horaires:'Horaires d\'ouverture'}
+  const t={dashboard:'Vue d\'ensemble',agenda:'Agenda semaine',rdv:'Rendez-vous',equipe:'Mon équipe',services:'Prestations',horaires:'Horaires d\'ouverture',stats:'Statistiques du site'}
   const a={rdv:'+ Nouveau RDV',agenda:'+ Nouveau RDV',equipe:'+ Ajouter membre',services:'+ Nouveau service',horaires:'Sauvegarder'}
   document.getElementById('page-title').textContent=t[p]||p
   const btn=document.getElementById('topbar-action')
   btn.textContent=a[p]||'+ Nouveau RDV'
-  const pages={dashboard:renderDashboard,agenda:renderAgenda,rdv:renderRdv,equipe:renderEquipe,services:renderServices,horaires:renderHoraires}
+  btn.style.display=p==='stats'?'none':'inline-flex'
+  const pages={dashboard:renderDashboard,agenda:renderAgenda,rdv:renderRdv,equipe:renderEquipe,services:renderServices,horaires:renderHoraires,stats:renderStats}
   if(pages[p])pages[p]()
 }
 
@@ -529,6 +531,84 @@ function renderHoraires(){
 function toggleFerme(i,v){DB.horaires[i].ferme=v;document.getElementById('hh-'+i).style.display=v?'none':'flex'}
 function updateH(i,f,v){DB.horaires[i][f]=v}
 function saveHoraires(){save(DB);toast('Horaires sauvegardés ✅','success')}
+
+function renderStats(){
+  const raw=JSON.parse(localStorage.getItem('stats_rdv')||'{}')
+  const visits=raw.visits||[], sources=raw.sources||{}, countries=raw.countries||{}, sections=raw.sections||{}, conversions=raw.conversions||{}
+  const now=Date.now(),day=86400000,total=visits.length
+  const today=visits.filter(v=>now-v.ts<day).length
+  const week=visits.filter(v=>now-v.ts<7*day).length
+  const devices={mobile:0,tablette:0,desktop:0};visits.forEach(v=>devices[v.device||'desktop']++)
+  const avgDur=visits.filter(v=>v.dur>0).reduce((a,v,_,arr)=>a+v.dur/arr.length,0)
+  const days7=Array.from({length:7},(_,i)=>{const d=new Date(now-i*day);return{label:d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric'}),count:visits.filter(v=>v.ts>now-(i+1)*day&&v.ts<=now-i*day).length}}).reverse()
+  const maxDay=Math.max(...days7.map(d=>d.count),1)
+  const topSrc=Object.entries(sources).sort((a,b)=>b[1]-a[1])
+  const topCountries=Object.entries(countries).sort((a,b)=>b[1]-a[1]).slice(0,5)
+  const topSections=Object.entries(sections).sort((a,b)=>b[1]-a[1]).slice(0,5)
+  const topConv=Object.entries(conversions).sort((a,b)=>b[1]-a[1])
+  document.getElementById('page-content').innerHTML=`
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+      <button class="btn btn-outline btn-sm" onclick="renderStats()">🔄 Actualiser</button>
+      <button class="btn btn-sm btn-danger" style="margin-left:6px" onclick="if(confirm('Effacer ?')){localStorage.removeItem('stats_rdv');renderStats()}">🗑️ Réinitialiser</button>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total visites</div><div class="kpi-value" style="color:var(--accent)">${total}</div></div>
+      <div class="kpi"><div class="kpi-label">Aujourd'hui</div><div class="kpi-value" style="color:var(--accent)">${today}</div></div>
+      <div class="kpi"><div class="kpi-label">Cette semaine</div><div class="kpi-value" style="color:var(--accent)">${week}</div></div>
+      <div class="kpi"><div class="kpi-label">Durée moy.</div><div class="kpi-value" style="color:var(--accent)">${avgDur?Math.round(avgDur)+'s':'—'}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px">
+      <div class="table-card"><div class="table-header"><span class="table-title">📈 Visites — 7 derniers jours</span></div>
+        <div style="padding:1.25rem;display:flex;align-items:flex-end;gap:6px;height:160px">
+          ${days7.map(d=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <span style="font-size:10px;font-weight:700">${d.count||''}</span>
+            <div style="flex:1;width:100%;display:flex;align-items:flex-end"><div style="width:100%;background:var(--accent);opacity:.8;border-radius:3px 3px 0 0;height:${Math.round((d.count/maxDay)*100)}%;min-height:${d.count?4:0}px"></div></div>
+            <span style="font-size:9px;color:var(--muted);text-align:center;white-space:nowrap">${d.label}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="table-card"><div class="table-header"><span class="table-title">🌍 Sources de trafic</span></div>
+        <div style="padding:1rem;display:flex;flex-direction:column;gap:10px">
+          ${topSrc.length?topSrc.map(([s,c])=>`<div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${s}</span><strong>${c} (${Math.round(c/total*100)}%)</strong></div>
+            <div style="height:6px;background:var(--border);border-radius:3px"><div style="height:100%;width:${Math.round(c/total*100)}%;background:var(--accent);border-radius:3px"></div></div>
+          </div>`).join(''):'<p style="color:var(--muted);font-size:12px">Aucune donnée</p>'}
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div class="table-card"><div class="table-header"><span class="table-title">📱 Appareils</span></div>
+        <div style="padding:1rem;display:flex;flex-direction:column;gap:10px">
+          ${total?[['📱 Mobile',devices.mobile],['💻 Tablette',devices.tablette],['🖥️ Desktop',devices.desktop]].filter(([,c])=>c>0).map(([l,c])=>`<div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${l}</span><strong>${c} (${Math.round(c/total*100)}%)</strong></div>
+            <div style="height:6px;background:var(--border);border-radius:3px"><div style="height:100%;width:${Math.round(c/total*100)}%;background:var(--accent);border-radius:3px"></div></div>
+          </div>`).join(''):'<p style="color:var(--muted);font-size:12px">Aucune donnée</p>'}
+        </div>
+      </div>
+      <div class="table-card"><div class="table-header"><span class="table-title">🌐 Pays</span></div>
+        <div style="padding:1rem;display:flex;flex-direction:column;gap:10px">
+          ${topCountries.length?topCountries.map(([c,n])=>`<div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${c}</span><strong>${n}</strong></div>
+            <div style="height:6px;background:var(--border);border-radius:3px"><div style="height:100%;width:${Math.round(n/total*100)}%;background:var(--accent);opacity:.7;border-radius:3px"></div></div>
+          </div>`).join(''):'<p style="color:var(--muted);font-size:12px">Données en cours…</p>'}
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="table-card"><div class="table-header"><span class="table-title">🎯 Conversions</span></div>
+        ${topConv.length?`<table><thead><tr><th>Action</th><th>Clics</th><th>Taux</th></tr></thead><tbody>
+        ${topConv.map(([k,c])=>`<tr><td>${k}</td><td><strong style="color:var(--accent)">${c}</strong></td><td style="color:var(--muted)">${total?Math.round(c/total*100)+'%':'—'}</td></tr>`).join('')}
+        </tbody></table>`:'<div class="empty-state" style="padding:1.5rem"><div>🎯</div>Les conversions s\'afficheront après les premiers clics.</div>'}
+      </div>
+      <div class="table-card"><div class="table-header"><span class="table-title">👁️ Sections les plus vues</span></div>
+        ${topSections.length?`<table><thead><tr><th>Section</th><th>Vues</th></tr></thead><tbody>
+        ${topSections.map(([s,c])=>`<tr><td>${s}</td><td><strong style="color:var(--accent)">${c}</strong></td></tr>`).join('')}
+        </tbody></table>`:'<div class="empty-state" style="padding:1.5rem"><div>👁️</div>Données en cours de collecte.</div>'}
+      </div>
+    </div>
+    ${!total?'<div class="empty-state" style="margin-top:14px"><div>📊</div>Les statistiques apparaîtront ici dès la première visite du salon.</div>':''}
+  `
+}
 
 // ─── EXPORT PDF ────────────────────────────────────────────────
 function exportAdminPDF(){

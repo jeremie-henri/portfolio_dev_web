@@ -5,28 +5,29 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22,1,0.36,1] } },
 }
 
+const CDN = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons'
+
 const SKILLS = [
-  { icon: '⚛️',  name: 'React',     level: 80, cat: 'Frontend' },
-  { icon: '🐘',  name: 'PHP',       level: 75, cat: 'Backend'  },
-  { icon: '🐍',  name: 'Python',    level: 85, cat: 'Backend'  },
-  { icon: '🗄️',  name: 'SQL',       level: 80, cat: 'Data'     },
-  { icon: '🟩',  name: 'Node.js',   level: 60, cat: 'Backend'  },
-  { icon: '💨',  name: 'Tailwind',  level: 75, cat: 'Frontend' },
-  { icon: '☕',  name: 'Java',      level: 65, cat: 'Backend'  },
-  { icon: '🔷',  name: 'TypeScript',level: 55, cat: 'Frontend' },
-  { icon: '🔧',  name: 'Git',       level: 80, cat: 'Outils'   },
-  { icon: '🤖',  name: 'C++',  level: 70, cat: 'IA'       },
-  { icon: '📊',  name: 'Pandas',    level: 70, cat: 'Data'     },
-  { icon: '🌐',  name: 'HTML/CSS',  level: 90, cat: 'Frontend' },
+  { icon: `${CDN}/react/react-original.svg`,           name: 'React',      level: 80, cat: 'Frontend' },
+  { icon: `${CDN}/php/php-original.svg`,               name: 'PHP',        level: 75, cat: 'Backend'  },
+  { icon: `${CDN}/python/python-original.svg`,         name: 'Python',     level: 85, cat: 'Backend'  },
+  { icon: `${CDN}/mysql/mysql-original.svg`,           name: 'SQL',        level: 80, cat: 'Data'     },
+  { icon: `${CDN}/nodejs/nodejs-original.svg`,         name: 'Node.js',    level: 60, cat: 'Backend'  },
+  { icon: `${CDN}/tailwindcss/tailwindcss-original.svg`, name: 'Tailwind', level: 75, cat: 'Frontend' },
+  { icon: `${CDN}/java/java-original.svg`,             name: 'Java',       level: 65, cat: 'Backend'  },
+  { icon: `${CDN}/typescript/typescript-original.svg`, name: 'TypeScript', level: 55, cat: 'Frontend' },
+  { icon: `${CDN}/git/git-original.svg`,               name: 'Git',        level: 80, cat: 'Outils'   },
+  { icon: `${CDN}/cplusplus/cplusplus-original.svg`,   name: 'C++',        level: 70, cat: 'Systèmes' },
+  { icon: `${CDN}/pandas/pandas-original.svg`,         name: 'Pandas',     level: 70, cat: 'Data'     },
+  { icon: `${CDN}/html5/html5-original.svg`,           name: 'HTML/CSS',   level: 90, cat: 'Frontend' },
 ]
 
 const TOOLS = [
-  { icon: '🐙', name: 'GitHub'   },
-  { icon: '📦', name: 'Vite'     },
-  { icon: '🚀', name: 'Vercel'   },
-  { icon: '🐋', name: 'Docker'   },
-  { icon: '📬', name: 'Postman'  },
-  { icon: '🗒️', name: 'VS Code'  },
+  { icon: `${CDN}/github/github-original.svg`,   name: 'GitHub'  },
+  { icon: `${CDN}/vitejs/vitejs-original.svg`,   name: 'Vite'    },
+  { icon: `${CDN}/docker/docker-original.svg`,   name: 'Docker'  },
+  { icon: `${CDN}/postman/postman-original.svg`, name: 'Postman' },
+  { icon: `${CDN}/vscode/vscode-original.svg`,   name: 'VS Code' },
 ]
 
 export default function Skills() {
@@ -41,7 +42,7 @@ export default function Skills() {
         <motion.h2 variants={itemVariants} style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '1rem', color: '#e8e6f0' }}>
           Ma stack technique
         </motion.h2>
-        <motion.p variants={itemVariants} style={{ color: '#7a7890', fontWeight: 300, marginBottom: '3rem', maxWidth: 480 }}>
+        <motion.p variants={itemVariants} style={{ color: 'rgba(255,255,255,0.65)', fontWeight: 300, marginBottom: '3rem', maxWidth: 480 }}>
           Des technologies choisies pour leur efficacité et leur demande sur le marché freelance.
         </motion.p>
 
@@ -56,18 +57,18 @@ export default function Skills() {
               transition={{ delay: i * 0.05, duration: 0.4 }}
               whileHover={{ borderColor: 'rgba(124,106,247,0.35)', y: -2 }}
               style={{
-                background: '#111118', border: '1px solid rgba(255,255,255,0.07)',
+                background: '#0d0d0d', border: '1px solid rgba(255,255,255,0.07)',
                 borderRadius: 12, padding: '1rem 1.1rem',
                 transition: 'border-color 0.2s, transform 0.2s',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: '1.2rem' }}>{s.icon}</span>
+                  <img src={s.icon} alt={s.name} width={22} height={22} style={{ objectFit: 'contain', flexShrink: 0 }} />
                   <span style={{ fontSize: 13, fontWeight: 500, color: '#e8e6f0' }}>{s.name}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ fontSize: 10, color: '#7a7890', background: '#1a1a24', padding: '2px 7px', borderRadius: 4 }}>{s.cat}</span>
+                  <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', background: '#0d0d0d', padding: '2px 7px', borderRadius: 4 }}>{s.cat}</span>
                   <span style={{ fontSize: 12, color: '#7c6af7', fontWeight: 600 }}>{s.level}%</span>
                 </div>
               </div>
@@ -90,7 +91,7 @@ export default function Skills() {
 
         {/* Outils */}
         <motion.div variants={itemVariants}>
-          <p style={{ fontSize: 12, color: '#7a7890', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', fontWeight: 500 }}>Outils du quotidien</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', fontWeight: 500 }}>Outils du quotidien</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {TOOLS.map(t => (
               <motion.span
@@ -98,12 +99,12 @@ export default function Skills() {
                 whileHover={{ y: -2, borderColor: 'rgba(124,106,247,0.4)' }}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
-                  background: '#111118', border: '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: 8, padding: '6px 14px', fontSize: 13, color: '#7a7890',
+                  background: '#0d0d0d', border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: 8, padding: '6px 14px', fontSize: 13, color: 'rgba(255,255,255,0.65)',
                   cursor: 'default', transition: 'all 0.2s',
                 }}
               >
-                <span>{t.icon}</span> {t.name}
+                <img src={t.icon} alt={t.name} width={18} height={18} style={{ objectFit: 'contain', flexShrink: 0 }} /> {t.name}
               </motion.span>
             ))}
           </div>

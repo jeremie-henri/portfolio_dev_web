@@ -23,10 +23,11 @@ export default function Navbar() {
     <header style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
       padding: scrolled ? '0.75rem clamp(1.5rem,5vw,3rem)' : '1.25rem clamp(1.5rem,5vw,3rem)',
-      background: scrolled ? 'rgba(8,8,16,0.88)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(16px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent',
-      transition: 'all 0.3s ease',
+      background: scrolled ? 'rgba(0,0,0,0.88)' : 'transparent',
+      backdropFilter: scrolled ? 'blur(20px)' : 'none',
+      borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
+      opacity: scrolled ? 1 : 1,
+      transition: 'padding 0.5s ease, background 0.6s ease, backdrop-filter 0.6s ease, border-color 0.6s ease',
       display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center',
     }}>
       {/* Logo */}
@@ -43,10 +44,10 @@ export default function Navbar() {
           <a key={l.href} href={l.href} style={{
             padding: '8px 18px', borderRadius: 8, fontSize: 15, fontWeight: 600,
             textTransform: 'uppercase', letterSpacing: '0.08em',
-            color: '#6e6b8a', textDecoration: 'none', transition: 'all 0.2s',
+            color: '#ffffff', textDecoration: 'none', transition: 'all 0.2s',
           }}
-            onMouseEnter={e => { e.currentTarget.style.color='#f0eeff'; e.currentTarget.style.background='rgba(255,255,255,0.05)' }}
-            onMouseLeave={e => { e.currentTarget.style.color='#6e6b8a'; e.currentTarget.style.background='transparent' }}
+            onMouseEnter={e => { e.currentTarget.style.color='#ffffff'; e.currentTarget.style.background='rgba(255,255,255,0.08)' }}
+            onMouseLeave={e => { e.currentTarget.style.color='#ffffff'; e.currentTarget.style.background='transparent' }}
           >{l.label}</a>
         ))}
       </nav>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Salon Éclat — Beauté & Bien-être</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✂️</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -15,8 +16,10 @@ nav{background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1p
 .logo{font-family:'Playfair Display',serif;font-weight:700;font-size:1.3rem;color:var(--text);letter-spacing:-.01em}
 .logo span{font-style:italic}
 .nav-links{display:flex;gap:2rem}
-.nav-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color .2s;letter-spacing:.06em;text-transform:uppercase}
+.nav-links a{font-size:12px;color:var(--muted);text-decoration:none;transition:color .3s;letter-spacing:.06em;text-transform:uppercase;position:relative;padding-bottom:3px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--text);transition:width .35s cubic-bezier(.22,1,.36,1)}
 .nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
 .nav-cta{padding:10px 24px;background:var(--text);color:white;font-size:12px;font-weight:600;text-decoration:none;border:none;cursor:pointer;font-family:inherit;letter-spacing:.06em;text-transform:uppercase;transition:opacity .2s}
 .nav-cta:hover{opacity:.8}
 
@@ -760,7 +763,7 @@ async function submitBooking(e){
     const data={ref}
     const suc=document.getElementById('bk-success')
     suc.style.display='block'
-    suc.innerHTML=`✅ <strong>RDV confirmé !</strong> Réf. <strong>${data.ref}</strong><br>${s.name} le ${body.date} à ${selSlot}<br>Email envoyé · Acompte de ${Math.round(s.price*.2)} € sera prélevé.`
+    suc.innerHTML=`✅ <strong>RDV confirmé !</strong> Réf. <strong>${ref}</strong><br>${s.nom} le ${body.date} à ${selSlot}<br>Email envoyé · Acompte de ${Math.round(s.prix*.2)} € sera prélevé.`
     e.target.reset();selDate=null;selSlot=null;renderCal();document.getElementById('slots-sec').style.display='none'
   }catch(er){showError(er.message||'Erreur. Réessayez ou appelez le 01 42 00 00 00.')}
   finally{btn.textContent='✅ Confirmer et payer l\'acompte';btn.disabled=false}
@@ -772,6 +775,37 @@ document.getElementById('cal-prev').onclick=()=>{curDate.setMonth(curDate.getMon
 document.getElementById('cal-next').onclick=()=>{curDate.setMonth(curDate.getMonth()+1);renderCal()}
 
 renderSoins();renderCal();renderBA();renderTeam();renderAvis();renderFAQ()
+
+// ─── TRACKING AVANCÉ ──────────────────────────────────────────
+;(function(){
+  const KEY='stats_rdv'
+  const d=JSON.parse(localStorage.getItem(KEY)||'{"visits":[],"sections":{},"conversions":{},"sources":{},"countries":{},"pages":{}}')
+  const now=Date.now()
+  const device=window.innerWidth<768?'mobile':(window.innerWidth<1200?'tablette':'desktop')
+  const ref=document.referrer
+  const src=!ref?'direct':ref.includes('google')?'Google':ref.includes('linkedin')?'LinkedIn':ref.includes('facebook')||ref.includes('instagram')?'Réseaux sociaux':'Autre'
+  const visit={ts:now,device,src,dur:0,page:location.pathname,country:'—',city:'—'}
+  d.visits.push(visit)
+  if(d.visits.length>1000)d.visits=d.visits.slice(-1000)
+  d.sources[src]=(d.sources[src]||0)+1
+  d.pages[location.pathname]=(d.pages[location.pathname]||0)+1
+  const sections=['avant-apres','services','packs','booking','equipe','avis','faq']
+  const observer=new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting&&e.target.id&&sections.includes(e.target.id)){d.sections[e.target.id]=(d.sections[e.target.id]||0)+1;localStorage.setItem(KEY,JSON.stringify(d))}
+  }),{threshold:0.3})
+  document.querySelectorAll('[id]').forEach(el=>observer.observe(el))
+  // Conversions : prise de RDV
+  document.querySelectorAll('.nav-cta,.hero-cta,a[href="#booking"],button[onclick*="booking"],button[onclick*="scrollToBooking"]').forEach(el=>{
+    el.addEventListener('click',()=>{const k='Réserver RDV';d.conversions[k]=(d.conversions[k]||0)+1;localStorage.setItem(KEY,JSON.stringify(d))})
+  })
+  localStorage.setItem(KEY,JSON.stringify(d))
+  window.addEventListener('beforeunload',()=>{visit.dur=Math.round((Date.now()-now)/1000);localStorage.setItem(KEY,JSON.stringify(d))})
+  fetch('https://ipapi.co/json/').then(r=>r.json()).then(g=>{
+    visit.country=g.country_name||'—';visit.city=g.city||'—'
+    d.countries[g.country_name||'Inconnu']=(d.countries[g.country_name||'Inconnu']||0)+1
+    localStorage.setItem(KEY,JSON.stringify(d))
+  }).catch(()=>{})
+})()
 
 // ─── ANIMATIONS AU SCROLL ─────────────────────────────────────
 ;(function(){

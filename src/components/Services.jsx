@@ -131,11 +131,11 @@ export default function Services() {
 
         {/* Header */}
         <div style={{ padding: '0 clamp(1.5rem,4vw,3rem)', marginBottom: '2.5rem' }}>
-          <motion.p variants={itemVariants} style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#aaaaaa', marginBottom: '0.75rem' }}>Services</motion.p>
+          <motion.p variants={itemVariants} style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7c6af7', marginBottom: '0.75rem' }}>Services</motion.p>
           <motion.h2 variants={itemVariants} style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '1rem', color: '#f5f5f5' }}>
             Ce que je réalise<br />pour vous
           </motion.h2>
-          <motion.p variants={itemVariants} style={{ color: '#888888', fontWeight: 300, maxWidth: 500 }}>
+          <motion.p variants={itemVariants} style={{ color: 'rgba(255,255,255,0.65)', fontWeight: 300, maxWidth: 500 }}>
             Naviguez avec les flèches — cliquez sur la carte active pour voir les détails.
           </motion.p>
         </div>
@@ -174,9 +174,6 @@ export default function Services() {
                         style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
                       />
                       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(10,10,15,0.7) 0%,transparent 50%)', pointerEvents: 'none' }} />
-                      {card.badge && (
-                        <span style={{ position: 'absolute', top: 10, right: 10, background: card.accentColor, color: '#080808', fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 100 }}>{card.badge}</span>
-                      )}
                       <span style={{ position: 'absolute', bottom: 10, left: 10, fontSize: '1.5rem' }}>{card.emoji}</span>
                       {isActive && (
                         <div style={{ position: 'absolute', bottom: 10, right: 10, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)', borderRadius: 6, padding: '4px 10px', fontSize: 11, color: '#ccc', pointerEvents: 'none' }}>
@@ -189,7 +186,7 @@ export default function Services() {
                     <div style={{ padding: '1.25rem' }}>
                       <h3 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: '1rem', color: '#f5f5f5', marginBottom: 3 }}>{card.title}</h3>
                       <p style={{ fontSize: 12, color: card.accentColor, fontWeight: 500, marginBottom: '0.6rem' }}>{card.subtitle}</p>
-                      <p style={{ fontSize: 13, color: '#888888', lineHeight: 1.6, marginBottom: '1rem' }}>{card.desc}</p>
+                      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, marginBottom: '1rem' }}>{card.desc}</p>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: 15, fontWeight: 700, color: card.accentColor, fontFamily: "'Syne',sans-serif" }}>{card.price}</span>
                         <a
@@ -219,10 +216,10 @@ export default function Services() {
                 style={{ overflow: 'hidden', padding: '0 clamp(1.5rem,4vw,3rem)' }}
               >
                 <div className="glass" style={{ background: '#111111', border: `1px solid ${activeCard.accentColor}35`, borderRadius: 14, padding: '1.5rem', marginTop: 12 }}>
-                  <p style={{ fontSize: 11, color: '#888888', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem', fontWeight: 600 }}>Inclus :</p>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem', fontWeight: 600 }}>Inclus :</p>
                   <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: '6px 16px', marginBottom: '1.25rem' }}>
                     {activeCard.features.map(f => (
-                      <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#aaaaaa', lineHeight: 1.4 }}>
+                      <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#7c6af7', lineHeight: 1.4 }}>
                         <FiCheck size={13} style={{ color: activeCard.accentColor, flexShrink: 0, marginTop: 2 }} />{f}
                       </li>
                     ))}
@@ -232,7 +229,7 @@ export default function Services() {
                       <span key={c} style={{ fontSize: 11, padding: '3px 10px', borderRadius: 4, background: activeCard.accentColor + '15', border: `1px solid ${activeCard.accentColor}30`, color: activeCard.accentColor }}>{c}</span>
                     ))}
                   </div>
-                  <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 20px', borderRadius: 8, textDecoration: 'none', fontSize: 13, fontWeight: 600, color: '#080808', background: activeCard.accentColor }}>
+                  <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 20px', borderRadius: 0, textDecoration: 'none', fontSize: 13, fontWeight: 600, color: '#0d0d0d', background: '#ffffff' }}>
                     Demander un devis <FiArrowRight size={12} />
                   </a>
                 </div>
@@ -243,18 +240,22 @@ export default function Services() {
           {/* Flèches uniquement */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 24, padding: '0 clamp(1.5rem,4vw,3rem)' }}>
             <button
+              type="button"
+              aria-label="Carte précédente"
               onClick={() => navigate(-1)}
-              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#aaaaaa', transition: 'all 0.2s' }}
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#7c6af7', transition: 'all 0.2s' }}
               onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.color='#f5f5f5' }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.05)'; e.currentTarget.style.color='#aaaaaa' }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.05)'; e.currentTarget.style.color='#7c6af7' }}
             >
               <FiChevronLeft size={18} />
             </button>
             <button
+              type="button"
+              aria-label="Carte suivante"
               onClick={() => navigate(1)}
-              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#aaaaaa', transition: 'all 0.2s' }}
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#7c6af7', transition: 'all 0.2s' }}
               onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.color='#f5f5f5' }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.05)'; e.currentTarget.style.color='#aaaaaa' }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.05)'; e.currentTarget.style.color='#7c6af7' }}
             >
               <FiChevronRight size={18} />
             </button>
@@ -263,7 +264,7 @@ export default function Services() {
 
         {/* Process */}
         <motion.div variants={itemVariants} style={{ marginTop: '5rem', padding: '0 clamp(1.5rem,4vw,3rem)' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#aaaaaa', marginBottom: '0.75rem' }}>Comment ça marche</p>
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7c6af7', marginBottom: '0.75rem' }}>Comment ça marche</p>
           <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(1.4rem,2.5vw,1.8rem)', fontWeight: 700, color: '#f5f5f5', marginBottom: '2rem', letterSpacing: '-0.02em' }}>
             De l'idée à la mise en ligne
           </h3>
@@ -274,12 +275,13 @@ export default function Services() {
                 className="glass"
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }}
-                style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '1.25rem', position: 'relative', overflow: 'hidden' }}
+                whileHover={{ y: -6, borderColor: 'rgba(255,255,255,0.2)', boxShadow: '0 16px 40px rgba(0,0,0,0.4)' }}
+                style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '1.25rem', position: 'relative', overflow: 'hidden', cursor: 'default' }}
               >
-                <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '3rem', fontWeight: 800, color: 'rgba(124,106,247,0.07)', position: 'absolute', top: -4, right: 12, lineHeight: 1 }}>{p.num}</span>
-                <span style={{ display: 'inline-block', fontFamily: "'Syne',sans-serif", fontSize: 11, fontWeight: 700, color: '#aaaaaa', background: 'rgba(124,106,247,0.1)', padding: '2px 10px', borderRadius: 100, marginBottom: 10 }}>{p.num}</span>
+                <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '3rem', fontWeight: 800, color: 'rgba(255,255,255,0.05)', position: 'absolute', top: -4, right: 12, lineHeight: 1 }}>{p.num}</span>
+                <span style={{ display: 'inline-block', fontFamily: "'Syne',sans-serif", fontSize: 11, fontWeight: 700, color: '#7c6af7', background: 'rgba(255,255,255,0.06)', padding: '2px 10px', borderRadius: 100, marginBottom: 10 }}>{p.num}</span>
                 <h4 style={{ color: '#f5f5f5', fontSize: 14, fontWeight: 600, marginBottom: 6 }}>{p.title}</h4>
-                <p style={{ color: '#888888', fontSize: 12, lineHeight: 1.6, margin: 0 }}>{p.desc}</p>
+                <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, lineHeight: 1.6, margin: 0 }}>{p.desc}</p>
               </motion.div>
             ))}
           </div>

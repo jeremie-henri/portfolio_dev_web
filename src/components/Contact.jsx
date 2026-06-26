@@ -16,15 +16,15 @@ const INPUT_STYLE = {
 }
 
 const INFOS = [
-  { icon: FiMail,    label: 'Email',     value: 'jeremiehenri99@gmail.com', href: 'mailto:jeremiehenri99@gmail.com' },
-  { icon: FiMapPin,  label: 'Localisation', value: 'St Mandrier — 100% Remote', href: null },
-  { icon: FiGithub,  label: 'GitHub',    value: 'github.com/jeremiehenri',   href: 'https://github.com/jeremiehenri' },
-  { icon: FiLinkedin,label: 'LinkedIn',  value: 'linkedin.com/in/jeremiehenri', href: 'https://linkedin.com/in/jeremiehenri' },
+  { icon: FiMail,    label: 'Email',        value: 'jeremiehenri99@gmail.com',     href: 'mailto:jeremiehenri99@gmail.com' },
+  { icon: FiMapPin,  label: 'Localisation', value: 'St Mandrier — 100% Remote',    href: null },
+  { icon: FiGithub,  label: 'GitHub',       value: 'github.com/jeremie-henri',     href: 'https://github.com/jeremie-henri' },
+  { icon: FiLinkedin,label: 'LinkedIn',     value: 'linkedin.com/in/jeremie-henri', href: 'https://www.linkedin.com/in/jeremie-henri-09a02b419/' },
 ]
 
 export default function Contact() {
   const formRef = useRef()
-  const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [status, setStatus] = useState('idle')
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
@@ -58,7 +58,7 @@ export default function Contact() {
           Travaillons ensemble
         </motion.h2>
         <motion.p variants={itemVariants} style={{ color: '#7a7890', fontWeight: 300, marginBottom: '3rem', maxWidth: 480 }}>
-          Un projet en tête ? Décris-le moi, je réponds sous 24h. Devis gratuit.
+          Un projet en tête ? Décris-le moi, je réponds sous 24h.
         </motion.p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px,1fr))', gap: '3rem', alignItems: 'start' }}>
@@ -88,13 +88,12 @@ export default function Contact() {
             />
             <textarea
               name="message" value={form.message} onChange={handleChange}
-              placeholder="Décrivez votre projet..." required rows={5}
+              placeholder="Demandez votre devis gratuit." required rows={5}
               style={{ ...INPUT_STYLE, resize: 'vertical', minHeight: 120 }}
               onFocus={e => e.target.style.borderColor='rgba(124,106,247,0.5)'}
               onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.08)'}
             />
 
-            {/* Bouton envoi */}
             <motion.button
               type="submit"
               disabled={status === 'sending'}
@@ -113,7 +112,6 @@ export default function Contact() {
               {status === 'sending' ? 'Envoi en cours...' : 'Envoyer le message'}
             </motion.button>
 
-            {/* Feedback */}
             {status === 'success' && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -127,7 +125,7 @@ export default function Contact() {
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                 style={{ color: '#f87171', fontSize: 13, marginTop: 4 }}
               >
-                Erreur d'envoi. Contactez-moi directement par email.
+                Erreur d&apos;envoi. Contactez-moi directement par email.
               </motion.div>
             )}
           </motion.form>
@@ -146,14 +144,13 @@ export default function Contact() {
                 <div>
                   <p style={{ fontSize: 11, color: '#7a7890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>{label}</p>
                   {href
-                    ? <a href={href} style={{ fontSize: 13, color: '#e8e6f0', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color='#7c6af7'} onMouseLeave={e => e.currentTarget.style.color='#e8e6f0'}>{value}</a>
+                    ? <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined} style={{ fontSize: 13, color: '#e8e6f0', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color='#7c6af7'} onMouseLeave={e => e.currentTarget.style.color='#e8e6f0'}>{value}</a>
                     : <span style={{ fontSize: 13, color: '#e8e6f0' }}>{value}</span>
                   }
                 </div>
               </div>
             ))}
 
-            {/* Encart disponibilité */}
             <div style={{ padding: '1rem 1.25rem', background: 'rgba(124,106,247,0.08)', border: '1px solid rgba(124,106,247,0.2)', borderRadius: 12, marginTop: 4 }}>
               <p style={{ fontSize: 13, color: '#7c6af7', fontWeight: 500, marginBottom: 4 }}>⚡ Réponse garantie sous 24h</p>
               <p style={{ fontSize: 12, color: '#7a7890', lineHeight: 1.6 }}>Sites vitrines · Apps web · Bots Python · Dashboards · Devis gratuit et sans engagement.</p>
