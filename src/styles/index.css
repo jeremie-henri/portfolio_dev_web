@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Polices chargées via <link> dans index.html (perf + évite le warning @import) */
+/* Pas de police web chargée : les font-family (Syne, DM Sans) retombent sur la
+   police système du navigateur — rendu voulu + zéro téléchargement. */
 
 /* ─── DESIGN TOKENS ─────────────────────────── */
 :root {
