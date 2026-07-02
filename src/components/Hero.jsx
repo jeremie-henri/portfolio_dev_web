@@ -184,7 +184,7 @@ export default function Hero() {
         {/* Titre machine à écrire */}
         <motion.h1
           style={{
-            fontFamily: "'Syne',sans-serif",
+            fontFamily: "'Inter',sans-serif",
             fontWeight: 800,
             lineHeight: 1.12,
             fontSize: 'clamp(1.4rem,3.8vw,3.6rem)',

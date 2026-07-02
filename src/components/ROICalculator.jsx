@@ -63,7 +63,7 @@ export default function ROICalculator() {
               <p className="section-eyebrow">Calculateur ROI</p>
               <h2
                 style={{
-                  fontFamily: "'Syne',sans-serif",
+                  fontFamily: "'Inter',sans-serif",
                   fontSize: 'clamp(1.6rem,3vw,2.2rem)',
                   fontWeight: 700,
                   lineHeight: 1.1,
@@ -76,7 +76,7 @@ export default function ROICalculator() {
                 <br />
                 <span
                   style={{
-                    fontFamily: "'Fraunces',serif",
+                    fontFamily: "'Inter',serif",
                     fontStyle: 'italic',
                     fontWeight: 300,
                     background: 'linear-gradient(135deg,#ef4444,#f97316)',
@@ -191,7 +191,7 @@ export default function ROICalculator() {
                 </p>
                 <p
                   style={{
-                    fontFamily: "'Syne',sans-serif",
+                    fontFamily: "'Inter',sans-serif",
                     fontSize: '2rem',
                     fontWeight: 700,
                     color: '#ef4444',
@@ -221,7 +221,7 @@ export default function ROICalculator() {
                 </p>
                 <p
                   style={{
-                    fontFamily: "'Syne',sans-serif",
+                    fontFamily: "'Inter',sans-serif",
                     fontSize: '2rem',
                     fontWeight: 700,
                     color: '#f97316',
@@ -252,7 +252,7 @@ export default function ROICalculator() {
                 </p>
                 <p
                   style={{
-                    fontFamily: "'Syne',sans-serif",
+                    fontFamily: "'Inter',sans-serif",
                     fontSize: '2rem',
                     fontWeight: 700,
                     color: '#05e8c8',

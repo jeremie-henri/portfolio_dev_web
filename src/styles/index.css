@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pas de police web chargée : les font-family (Syne, DM Sans) retombent sur la
-   police système du navigateur — rendu voulu + zéro téléchargement. */
+/* Police unique : Inter (chargée via <link> dans index.html).
+   Proche des polices système mais identique sur tous les appareils. */
 
 /* ─── DESIGN TOKENS ─────────────────────────── */
 :root {
@@ -35,7 +35,7 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 15px;
   line-height: 1.65;
   overflow-x: hidden;
@@ -253,10 +253,10 @@ body::after {
 
 /* ─── TYPOGRAPHIE ────────────────────────────── */
 .font-display {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 .font-serif {
-  font-family: 'Fraunces', serif;
+  font-family: 'Inter', serif;
 }
 .text-gradient {
   background: linear-gradient(135deg, var(--accent) 0%, var(--a2) 50%, var(--a3) 100%);
@@ -335,7 +335,7 @@ body::after {
     background: var(--bg3);
     border: 1px solid var(--border);
     color: var(--text);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     transition:
       border-color 0.2s,
       box-shadow 0.2s;

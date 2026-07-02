@@ -29,7 +29,7 @@ export default function Footer() {
         href="#hero"
         aria-label="Retour en haut de page - Jeremie Henri"
         style={{
-          fontFamily: "'Syne',sans-serif",
+          fontFamily: "'Inter',sans-serif",
           fontWeight: 800,
           fontSize: '1.1rem',
           textDecoration: 'none',

@@ -148,7 +148,7 @@ export default function Testimonials() {
         <p className="section-eyebrow">Témoignages</p>
         <h2
           style={{
-            fontFamily: "'Syne',sans-serif",
+            fontFamily: "'Inter',sans-serif",
             fontSize: 'clamp(1.8rem,3.5vw,2.6rem)',
             fontWeight: 700,
             letterSpacing: '-0.03em',
@@ -159,7 +159,7 @@ export default function Testimonials() {
           Ils m'ont fait confiance,{' '}
           <span
             style={{
-              fontFamily: "'Fraunces',serif",
+              fontFamily: "'Inter',serif",
               fontStyle: 'italic',
               fontWeight: 300,
               background: 'linear-gradient(135deg,#6d56fa,#f059da)',

@@ -124,7 +124,7 @@ export default function Contact() {
           id="contact-heading"
           variants={item}
           style={{
-            fontFamily: "'Syne',sans-serif",
+            fontFamily: "'Inter',sans-serif",
             fontSize: 'clamp(1.8rem,3.5vw,2.6rem)',
             fontWeight: 700,
             letterSpacing: '-0.03em',
@@ -136,7 +136,7 @@ export default function Contact() {
           Parlons de votre{' '}
           <span
             style={{
-              fontFamily: "'Fraunces',serif",
+              fontFamily: "'Inter',serif",
               fontStyle: 'italic',
               fontWeight: 300,
               color: '#ffffff',

@@ -54,7 +54,7 @@ export default function Projects() {
         <motion.h2
           variants={itemVariants}
           style={{
-            fontFamily: "'Syne',sans-serif",
+            fontFamily: "'Inter',sans-serif",
             fontSize: 'clamp(1.8rem,3.5vw,2.6rem)',
             fontWeight: 700,
             letterSpacing: '-0.02em',
@@ -167,7 +167,7 @@ export default function Projects() {
                   <h3
                     style={{
                       color: '#e8e6f0',
-                      fontFamily: "'Syne',sans-serif",
+                      fontFamily: "'Inter',sans-serif",
                       fontSize: '1rem',
                       fontWeight: 600,
                       marginBottom: 6,

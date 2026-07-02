@@ -46,7 +46,7 @@ export default function Navbar() {
         style={{
           gridColumn: '1',
           justifySelf: 'start',
-          fontFamily: "'Syne',sans-serif",
+          fontFamily: "'Inter',sans-serif",
           fontWeight: 800,
           fontSize: '1.25rem',
           textDecoration: 'none',

@@ -221,7 +221,7 @@ export default function Services() {
           <motion.h2
             variants={itemVariants}
             style={{
-              fontFamily: "'Syne',sans-serif",
+              fontFamily: "'Inter',sans-serif",
               fontSize: 'clamp(1.8rem,3.5vw,2.6rem)',
               fontWeight: 700,
               letterSpacing: '-0.02em',
@@ -327,7 +327,7 @@ export default function Services() {
                     <div style={{ padding: '1.25rem' }}>
                       <h3
                         style={{
-                          fontFamily: "'Syne',sans-serif",
+                          fontFamily: "'Inter',sans-serif",
                           fontWeight: 700,
                           fontSize: '1rem',
                           color: '#f5f5f5',
@@ -368,7 +368,7 @@ export default function Services() {
                             fontSize: 15,
                             fontWeight: 700,
                             color: card.accentColor,
-                            fontFamily: "'Syne',sans-serif",
+                            fontFamily: "'Inter',sans-serif",
                           }}
                         >
                           {card.price}
@@ -594,7 +594,7 @@ export default function Services() {
           </p>
           <h3
             style={{
-              fontFamily: "'Syne',sans-serif",
+              fontFamily: "'Inter',sans-serif",
               fontSize: 'clamp(1.4rem,2.5vw,1.8rem)',
               fontWeight: 700,
               color: '#f5f5f5',
@@ -636,7 +636,7 @@ export default function Services() {
               >
                 <span
                   style={{
-                    fontFamily: "'Syne',sans-serif",
+                    fontFamily: "'Inter',sans-serif",
                     fontSize: '3rem',
                     fontWeight: 800,
                     color: 'rgba(255,255,255,0.05)',
@@ -651,7 +651,7 @@ export default function Services() {
                 <span
                   style={{
                     display: 'inline-block',
-                    fontFamily: "'Syne',sans-serif",
+                    fontFamily: "'Inter',sans-serif",
                     fontSize: 11,
                     fontWeight: 700,
                     color: '#7c6af7',
