@@ -195,6 +195,8 @@ function load(){
   }catch{return initData()}
 }
 function save(d){sessionStorage.setItem(KEY,JSON.stringify(d))}
+// Échappe le HTML des données utilisateur avant insertion via innerHTML (anti-XSS)
+function esc(v){const d=document.createElement('div');d.textContent=String(v??'');return d.innerHTML}
 
 function initData(){
   return {
@@ -317,7 +319,7 @@ function renderDashboard(){
       <tbody>${DB.commandes.slice(-5).reverse().map(c=>`
         <tr>
           <td style="color:var(--accent);font-weight:700">${c.id}</td>
-          <td>${c.client}</td><td>${c.date}</td>
+          <td>${esc(c.client)}</td><td>${esc(c.date)}</td>
           <td style="font-weight:700">${c.montant.toFixed(2)} €</td>
           <td><span class="badge badge-${c.statut==='livré'?'green':c.statut==='en attente'?'red':c.statut==='expédié'?'blue':'yellow'}">${c.statut}</span></td>
         </tr>`).join('')}</tbody></table>
@@ -347,7 +349,7 @@ function renderCmdRows(list){
   return list.map(c=>`
     <tr>
       <td style="color:var(--accent);font-weight:700;font-size:12px">${c.id}</td>
-      <td><strong>${c.client}</strong><br><span style="color:var(--muted);font-size:11px">${c.email}</span></td>
+      <td><strong>${esc(c.client)}</strong><br><span style="color:var(--muted);font-size:11px">${esc(c.email)}</span></td>
       <td>${c.date}</td>
       <td style="font-size:12px">${c.items.map(i=>`${i.nom} ×${i.qty}`).join(', ')}</td>
       <td style="font-weight:700;color:var(--accent)">${c.montant.toFixed(2)} €</td>
@@ -559,7 +561,7 @@ function renderFinances(){
       <tbody>${DB.commandes.map(c=>`
         <tr>
           <td style="color:var(--accent);font-weight:700">${c.id}</td>
-          <td>${c.client}</td><td>${c.date}</td>
+          <td>${esc(c.client)}</td><td>${esc(c.date)}</td>
           <td style="font-weight:700">${c.montant.toFixed(2)} €</td>
           <td><span class="badge badge-${c.statut==='livré'?'green':c.statut==='annulé'?'red':'yellow'}">${c.statut}</span></td>
           <td style="color:${c.statut==='annulé'?'var(--red)':'var(--accent)'};font-weight:600">${c.statut==='annulé'?'−':'+'}${c.montant.toFixed(2)} €</td>
@@ -692,7 +694,7 @@ function renderConfig(){
     <div style="max-width:600px">
       <div class="table-card"><div class="modal-body" style="padding:1.5rem">
         <div class="fg"><label class="fl">Nom de la boutique</label><input id="cnom" class="fi" value="${c.nom}"></div>
-        <div class="fg"><label class="fl">Email de contact</label><input id="cemail" class="fi" value="${c.email}"></div>
+        <div class="fg"><label class="fl">Email de contact</label><input id="cemail" class="fi" value="${esc(c.email)}"></div>
         <div class="form-row">
           <div class="fg"><label class="fl">Frais de livraison (€)</label><input id="cfrais" class="fi" type="number" step="0.1" value="${c.fraisLivraison}"></div>
           <div class="fg"><label class="fl">Livraison gratuite dès (€)</label><input id="cgratuite" class="fi" type="number" value="${c.livraisonGratuite}"></div>

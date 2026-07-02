@@ -1,5 +1,5 @@
 // api/order.js — Commande e-commerce + Stripe Checkout (démo)
-const { getTransporter, emailTemplate } = require('./_mailer')
+const { getTransporter, emailTemplate, escapeHtml, checkRateLimit } = require('./_mailer')
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -8,13 +8,38 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
+  if (!checkRateLimit(req, { max: 10, windowMs: 60_000 })) {
+    return res.status(429).json({ error: 'Trop de requêtes. Réessayez dans une minute.' })
+  }
+
   const { action } = req.body || {}
 
   // ─── ACTION 1 : Créer une session Stripe Checkout ─────────────────────────
   if (action === 'create-checkout') {
     const { items, customerEmail } = req.body
 
-    if (!items?.length) return res.status(400).json({ error: 'Panier vide' })
+    if (!Array.isArray(items) || !items.length || items.length > 50) {
+      return res.status(400).json({ error: 'Panier invalide' })
+    }
+    if (customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+      return res.status(400).json({ error: 'Email invalide' })
+    }
+
+    // Validation stricte : prix et quantités bornés côté serveur.
+    // Un client malveillant ne peut pas envoyer un prix négatif/nul ou une quantité absurde.
+    for (const item of items) {
+      const price = Number(item.price)
+      const qty = Number(item.qty)
+      if (typeof item.name !== 'string' || !item.name.trim() || item.name.length > 120) {
+        return res.status(400).json({ error: 'Nom de produit invalide' })
+      }
+      if (!Number.isFinite(price) || price < 0.5 || price > 10000) {
+        return res.status(400).json({ error: 'Prix invalide' })
+      }
+      if (!Number.isInteger(qty) || qty < 1 || qty > 100) {
+        return res.status(400).json({ error: 'Quantité invalide' })
+      }
+    }
 
     try {
       const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
@@ -23,12 +48,12 @@ module.exports = async (req, res) => {
         price_data: {
           currency: 'eur',
           product_data: {
-            name: item.name,
-            description: item.desc || undefined,
+            name: item.name.slice(0, 120),
+            description: item.desc ? String(item.desc).slice(0, 300) : undefined,
           },
-          unit_amount: Math.round(item.price * 100),
+          unit_amount: Math.round(Number(item.price) * 100),
         },
-        quantity: item.qty,
+        quantity: Number(item.qty),
       }))
 
       const session = await stripe.checkout.sessions.create({
@@ -46,7 +71,8 @@ module.exports = async (req, res) => {
 
     } catch (err) {
       console.error('Stripe error:', err)
-      return res.status(500).json({ error: 'Erreur Stripe : ' + err.message })
+      // Message générique : ne pas divulguer les détails internes Stripe au client
+      return res.status(500).json({ error: 'Erreur lors de la création du paiement. Réessayez.' })
     }
   }
 
@@ -54,10 +80,15 @@ module.exports = async (req, res) => {
   if (action === 'confirm') {
     const { sessionId, email, items, total } = req.body
 
-    const refNumber = 'CMD-' + Date.now().toString(36).toUpperCase().slice(-7)
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'Email invalide' })
+    }
 
-    const itemsHtml = (items || []).map(i =>
-      `<tr><td style="padding:8px 16px;color:#c0bdd8;background:#1a1a28;border-bottom:1px solid #16162a">${i.name} ×${i.qty}</td><td style="padding:8px 16px;color:#f0eeff;background:#1a1a28;border-bottom:1px solid #16162a;text-align:right">${(i.price * i.qty).toFixed(2)} €</td></tr>`
+    const refNumber = 'CMD-' + Date.now().toString(36).toUpperCase().slice(-7)
+    const safeTotal = escapeHtml(String(total || '').slice(0, 20))
+
+    const itemsHtml = (items || []).slice(0, 50).map(i =>
+      `<tr><td style="padding:8px 16px;color:#c0bdd8;background:#1a1a28;border-bottom:1px solid #16162a">${escapeHtml(String(i.name).slice(0, 120))} ×${escapeHtml(String(i.qty).slice(0, 5))}</td><td style="padding:8px 16px;color:#f0eeff;background:#1a1a28;border-bottom:1px solid #16162a;text-align:right">${(Number(i.price) * Number(i.qty) || 0).toFixed(2)} €</td></tr>`
     ).join('')
 
     try {
@@ -66,15 +97,15 @@ module.exports = async (req, res) => {
       await transporter.sendMail({
         from: `"Maison Provence" <${process.env.GMAIL_USER}>`,
         to: process.env.GMAIL_USER,
-        subject: `🛒 Nouvelle commande ${refNumber} — ${total ? total + ' €' : ''}`,
+        subject: `🛒 Nouvelle commande ${refNumber} — ${total ? String(total).slice(0, 20) + ' €' : ''}`,
         html: emailTemplate({
           title: '🛒 Nouvelle commande reçue',
           subtitle: `Réf : <strong style="color:#10b981">${refNumber}</strong>`,
           rows: [
             ['Réf.',   refNumber],
             ['Email',  email || '—'],
-            ['Total',  total ? `<strong style="color:#10b981">${total} €</strong>` : '—'],
-            ['Stripe', sessionId ? `Session ${sessionId.slice(0,20)}...` : '—'],
+            ['Total',  total ? `<strong style="color:#10b981">${safeTotal} €</strong>` : '—'],
+            ['Stripe', sessionId ? `Session ${escapeHtml(String(sessionId).slice(0, 20))}...` : '—'],
           ],
           footer: `Commande reçue le ${new Date().toLocaleString('fr-FR')} · Démo Maison Provence`,
         }),
@@ -99,7 +130,7 @@ module.exports = async (req, res) => {
                     <table style="width:100%;border-collapse:collapse">${itemsHtml}</table>
                     <div style="margin-top:12px;padding:12px 16px;background:#1a1a28;border-radius:8px;display:flex;justify-content:space-between">
                       <span style="color:#f0eeff;font-weight:700">Total payé</span>
-                      <span style="color:#10b981;font-weight:700">${total || '—'} €</span>
+                      <span style="color:#10b981;font-weight:700">${safeTotal || '—'} €</span>
                     </div>
                     <p style="color:#6e6b8a;font-size:13px;margin-top:16px;line-height:1.6">
                       ⏱ Livraison estimée : <strong style="color:#f0eeff">3 à 5 jours ouvrés</strong><br>

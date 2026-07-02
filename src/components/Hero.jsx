@@ -99,13 +99,15 @@ export default function Hero() {
 
         {/* Titre machine à écrire */}
         <motion.h1 style={{
-          fontFamily: "'Syne',sans-serif", fontWeight: 800, lineHeight: 1.08,
-          fontSize: 'clamp(1.4rem,5vw,5.2rem)', letterSpacing: '-0.03em',
-          marginBottom: '2rem', paddingBottom: '0.12em',
+          fontFamily: "'Syne',sans-serif", fontWeight: 800, lineHeight: 1.12,
+          fontSize: 'clamp(1.4rem,3.8vw,3.6rem)', letterSpacing: '-0.03em',
+          marginBottom: '1.5rem', paddingBottom: '0.12em',
           whiteSpace: 'normal', textAlign: 'center', wordBreak: 'break-word',
           width: '100%', maxWidth: '100%',
-          display: 'flex', alignItems: 'baseline', justifyContent: 'center', flexWrap: 'wrap',
-          minHeight: '1.3em', padding: '0 clamp(1rem,5vw,3rem)',
+          /* Hauteur fixe de 2 lignes : le contenu en dessous ne bouge jamais pendant la frappe */
+          height: '2.5em', overflow: 'hidden',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap',
+          alignContent: 'center', padding: '0 clamp(1rem,5vw,3rem)',
         }}>
           <Typewriter />
         </motion.h1>

@@ -1,5 +1,5 @@
 // api/booking.js — Prise de RDV salon (démo)
-const { getTransporter, emailTemplate } = require('./_mailer')
+const { getTransporter, emailTemplate, escapeHtml, checkRateLimit } = require('./_mailer')
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -8,11 +8,30 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { name, email, phone, service, duration, price, date, time, practitioner } = req.body || {}
+  if (!checkRateLimit(req, { max: 5, windowMs: 60_000 })) {
+    return res.status(429).json({ error: 'Trop de requêtes. Réessayez dans une minute.' })
+  }
 
-  if (!name || !email || !service || !date || !time) {
+  const body = req.body || {}
+  const rawName = String(body.name || '').slice(0, 100)
+
+  if (!body.name || !body.email || !body.service || !body.date || !body.time) {
     return res.status(400).json({ error: 'Champs requis manquants' })
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+    return res.status(400).json({ error: 'Email invalide' })
+  }
+
+  // Échappement HTML de toutes les données utilisateur (anti-injection email)
+  const name         = escapeHtml(rawName)
+  const email        = escapeHtml(String(body.email).slice(0, 200))
+  const phone        = escapeHtml(String(body.phone || '').slice(0, 30))
+  const service      = escapeHtml(String(body.service).slice(0, 100))
+  const duration     = body.duration
+  const price        = escapeHtml(String(body.price || '').slice(0, 12))
+  const date         = escapeHtml(String(body.date).slice(0, 40))
+  const time         = escapeHtml(String(body.time).slice(0, 10))
+  const practitioner = escapeHtml(String(body.practitioner || '').slice(0, 60))
 
   const refNumber = 'RDV-' + Date.now().toString(36).toUpperCase().slice(-6)
 

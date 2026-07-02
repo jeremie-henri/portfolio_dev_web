@@ -1,6 +1,31 @@
 // api/_mailer.js — Utilitaire Nodemailer partagé
 const nodemailer = require('nodemailer')
 
+// Échappe les caractères HTML des données utilisateur avant insertion
+// dans les templates d'email (anti-injection HTML/phishing)
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+// Limite de débit en mémoire par IP (par instance serverless : suffisant
+// contre les boucles de spam simples ; pour du trafic réel, préférer Upstash/KV)
+const hits = new Map()
+function checkRateLimit(req, { max = 5, windowMs = 60_000 } = {}) {
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown'
+  const now = Date.now()
+  const entry = hits.get(ip) || { count: 0, start: now }
+  if (now - entry.start > windowMs) { entry.count = 0; entry.start = now }
+  entry.count++
+  hits.set(ip, entry)
+  if (hits.size > 5000) hits.clear() // borne mémoire
+  return entry.count <= max
+}
+
 function getTransporter() {
   return nodemailer.createTransport({
     service: 'gmail',
@@ -51,4 +76,4 @@ function emailTemplate({ title, subtitle, rows = [], cta = null, footer = '' }) 
 </html>`
 }
 
-module.exports = { getTransporter, emailTemplate }
+module.exports = { getTransporter, emailTemplate, escapeHtml, checkRateLimit }

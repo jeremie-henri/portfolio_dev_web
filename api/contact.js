@@ -1,5 +1,5 @@
 // api/contact.js — Formulaire de contact du portfolio
-const { getTransporter, emailTemplate } = require('./_mailer')
+const { getTransporter, emailTemplate, escapeHtml, checkRateLimit } = require('./_mailer')
 
 module.exports = async (req, res) => {
   // CORS
@@ -9,15 +9,29 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { name, email, subject, message } = req.body || {}
+  if (!checkRateLimit(req, { max: 5, windowMs: 60_000 })) {
+    return res.status(429).json({ error: 'Trop de requêtes. Réessayez dans une minute.' })
+  }
+
+  let { name, email, subject, message } = req.body || {}
 
   // Validation
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Champs requis manquants (name, email, message)' })
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (typeof name !== 'string' || typeof email !== 'string' || typeof message !== 'string') {
+    return res.status(400).json({ error: 'Format invalide' })
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 200) {
     return res.status(400).json({ error: 'Email invalide' })
   }
+  // Bornes de longueur + échappement HTML (anti-injection dans les emails)
+  const rawName    = name.slice(0, 100)               // version texte brut pour les objets d'email
+  const rawSubject = String(subject || '').slice(0, 150)
+  name    = escapeHtml(rawName)
+  subject = escapeHtml(rawSubject)
+  message = escapeHtml(message.slice(0, 5000))
+  email   = escapeHtml(email) // regex déjà passée, ceinture + bretelles
 
   try {
     const transporter = getTransporter()
@@ -27,7 +41,7 @@ module.exports = async (req, res) => {
       from: `"Portfolio JH" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
       replyTo: email,
-      subject: `📩 Nouveau message — ${subject || 'Contact portfolio'}`,
+      subject: `📩 Nouveau message — ${rawSubject || 'Contact portfolio'}`,
       html: emailTemplate({
         title: '📩 Nouveau message de contact',
         subtitle: `Reçu depuis ton portfolio jeremiehenri.dev`,
@@ -35,7 +49,7 @@ module.exports = async (req, res) => {
           ['Nom',     name],
           ['Email',   `<a href="mailto:${email}" style="color:#a592ff">${email}</a>`],
           ['Sujet',   subject || '—'],
-          ['Message', message.replace(/\n/g, '<br>')],
+          ['Message', message.replace(/\n/g, '<br>')], // name/subject/message déjà échappés plus haut
         ],
         cta: { label: `Répondre à ${name}`, url: `mailto:${email}` },
         footer: `Message reçu le ${new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' })}`,
@@ -46,7 +60,7 @@ module.exports = async (req, res) => {
     await transporter.sendMail({
       from: `"Jérémie Henri" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: `✅ Bien reçu, ${name.split(' ')[0]} !`,
+      subject: `✅ Bien reçu, ${rawName.split(' ')[0]} !`,
       html: emailTemplate({
         title: `Merci pour votre message !`,
         subtitle: `Je reviens vers vous sous 24h maximum.`,

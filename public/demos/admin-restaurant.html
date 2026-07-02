@@ -221,6 +221,8 @@ function load() {
   return d
 }
 function save(d) { sessionStorage.setItem(KEY, JSON.stringify(d)) }
+// Échappe le HTML des données utilisateur avant insertion via innerHTML (anti-XSS)
+function esc(v){const d=document.createElement('div');d.textContent=String(v??'');return d.innerHTML}
 
 function initData() {
   return {
@@ -338,7 +340,7 @@ function renderReservations() {
       <tbody>${pending.map(r => `
         <tr>
           <td style="color:var(--gold);font-weight:600;font-size:12px">${r.id}</td>
-          <td><strong>${r.name}</strong><br><span style="color:var(--muted);font-size:11px">${r.email||r.phone||''}</span></td>
+          <td><strong>${esc(r.name)}</strong><br><span style="color:var(--muted);font-size:11px">${esc(r.email||r.phone||'')}</span></td>
           <td>${r.date}</td><td>${r.time}</td><td>${r.guests}</td>
           <td>${r.occasion||'—'}</td>
           <td style="white-space:nowrap">
@@ -398,7 +400,7 @@ function renderDayPanel() {
     <tbody>${dayRes.map(r => `
       <tr>
         <td style="color:var(--gold);font-weight:600;font-size:12px">${r.id}</td>
-        <td><strong>${r.name}</strong><br><span style="color:var(--muted);font-size:11px">${r.email||r.phone||''}</span></td>
+        <td><strong>${esc(r.name)}</strong><br><span style="color:var(--muted);font-size:11px">${esc(r.email||r.phone||'')}</span></td>
         <td>${r.time}</td><td>${r.guests}</td><td>${r.occasion||'—'}</td>
         <td style="max-width:150px;font-size:12px;color:var(--muted)">${r.notes||'—'}</td>
         <td><span class="badge badge-${r.status==='confirmé'?'green':r.status==='annulé'?'red':'yellow'}">${r.status}</span></td>
@@ -425,7 +427,7 @@ function renderResRows(list) {
   return list.map(r => `
     <tr>
       <td style="color:var(--gold);font-weight:600;font-size:12px">${r.id}</td>
-      <td><strong>${r.name}</strong><br><span style="color:var(--muted);font-size:11px">${r.email}</span></td>
+      <td><strong>${esc(r.name)}</strong><br><span style="color:var(--muted);font-size:11px">${esc(r.email)}</span></td>
       <td>${r.date}</td><td>${r.time}</td><td>${r.guests}</td>
       <td>${r.occasion||'—'}</td>
       <td style="max-width:150px;font-size:12px;color:var(--muted)">${r.notes||'—'}</td>

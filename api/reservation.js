@@ -1,5 +1,5 @@
 // api/reservation.js — Réservation restaurant (démo)
-const { getTransporter, emailTemplate } = require('./_mailer')
+const { getTransporter, emailTemplate, escapeHtml, checkRateLimit } = require('./_mailer')
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -8,11 +8,28 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { name, email, phone, date, time, guests, notes } = req.body || {}
+  if (!checkRateLimit(req, { max: 5, windowMs: 60_000 })) {
+    return res.status(429).json({ error: 'Trop de requêtes. Réessayez dans une minute.' })
+  }
 
-  if (!name || !email || !date || !time || !guests) {
+  const body = req.body || {}
+  const rawName = String(body.name || '').slice(0, 100)
+
+  if (!body.name || !body.email || !body.date || !body.time || !body.guests) {
     return res.status(400).json({ error: 'Champs requis manquants' })
   }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+    return res.status(400).json({ error: 'Email invalide' })
+  }
+
+  // Échappement HTML de toutes les données utilisateur (anti-injection email)
+  const name   = escapeHtml(rawName)
+  const email  = escapeHtml(String(body.email).slice(0, 200))
+  const phone  = escapeHtml(String(body.phone || '').slice(0, 30))
+  const date   = escapeHtml(String(body.date).slice(0, 40))
+  const time   = escapeHtml(String(body.time).slice(0, 10))
+  const guests = escapeHtml(String(body.guests).slice(0, 5))
+  const notes  = escapeHtml(String(body.notes || '').slice(0, 500))
 
   // Numéro de réservation unique
   const refNumber = 'RES-' + Date.now().toString(36).toUpperCase().slice(-6)

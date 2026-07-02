@@ -5,7 +5,7 @@
 <title>Admin — Salon Éclat</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f8f8f8;--sidebar:#ffffff;--card:#ffffff;--accent:#111111;--accent2:#f2f2f2;--text:#111111;--muted:#888888;--border:#e5e5e5;--green:#2d6a4f;--red:#9b2226;--gold:#b5804a}
@@ -162,6 +162,8 @@ select option{background:white!important;color:var(--text)!important}
 const KEY='se_admin_v2'
 function load(){try{return JSON.parse(sessionStorage.getItem(KEY))||initData()}catch{return initData()}}
 function save(d){sessionStorage.setItem(KEY,JSON.stringify(d))}
+// Échappe le HTML des données utilisateur avant insertion via innerHTML (anti-XSS)
+function esc(v){const d=document.createElement('div');d.textContent=String(v??'');return d.innerHTML}
 function initData(){
   return{
     loggedIn:false,nextId:100,
@@ -256,7 +258,7 @@ function renderDashboard(){
       <table><thead><tr><th>Client</th><th>Service</th><th>Date</th><th>Heure</th><th>Actions</th></tr></thead>
       <tbody>${DB.rdvs.filter(r=>r.statut==='en attente').map(r=>`
         <tr>
-          <td><strong>${r.client}</strong></td><td>${r.service}</td><td>${r.date}</td><td>${r.time}</td>
+          <td><strong>${esc(r.client)}</strong></td><td>${esc(r.service)}</td><td>${esc(r.date)}</td><td>${esc(r.time)}</td>
           <td>
             <button class="btn btn-sm" style="background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2)" onclick="updateRdvStatus('${r.id}','confirmé',true)">✅ Confirmer</button>
             <button class="btn btn-sm btn-danger" style="margin-left:4px" onclick="updateRdvStatus('${r.id}','annulé',true)">✕</button>
@@ -269,7 +271,7 @@ function renderDashboard(){
       <tbody>${DB.rdvs.slice(-5).reverse().map(r=>`
         <tr>
           <td style="color:var(--accent);font-weight:700;font-size:11px">${r.id}</td>
-          <td>${r.client}</td><td>${r.service}</td><td>${r.date}</td><td>${r.time}</td>
+          <td>${esc(r.client)}</td><td>${esc(r.service)}</td><td>${esc(r.date)}</td><td>${esc(r.time)}</td>
           <td>${r.praticienne}</td>
           <td><span class="badge b-${r.statut==='confirmé'?'green':r.statut==='annulé'?'red':'yellow'}">${r.statut}</span></td>
         </tr>`).join('')}</tbody>
@@ -318,7 +320,7 @@ function renderRdvRows(list){
   return list.map(r=>`
     <tr>
       <td style="color:var(--accent);font-weight:700;font-size:11px">${r.id}</td>
-      <td><strong>${r.client}</strong><br><span style="color:var(--muted);font-size:11px">${r.email}</span></td>
+      <td><strong>${esc(r.client)}</strong><br><span style="color:var(--muted);font-size:11px">${esc(r.email)}</span></td>
       <td>${r.service}</td><td>${r.date}</td><td>${r.time}</td>
       <td>${r.praticienne}</td>
       <td style="font-weight:600;color:var(--accent)">${r.prix} €</td>
@@ -346,7 +348,7 @@ function viewRdv(id){
   document.getElementById('modal-title').textContent='RDV — '+r.client
   document.getElementById('modal-body').innerHTML=`
     ${[['Réf.',r.id],['Service',r.service],['Durée',r.duration+' min'],['Prix',r.prix+' €'],['Date',r.date],['Heure',r.time],['Praticienne',r.praticienne],['Email',r.email],['Téléphone',r.phone||'—'],['Notes',r.notes||'—']].map(([l,v])=>`
-      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">${l}</span><span style="font-weight:500">${v}</span></div>`).join('')}
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--muted)">${l}</span><span style="font-weight:500">${esc(v)}</span></div>`).join('')}
     <div style="margin-top:8px;display:flex;gap:8px">
       <button class="btn btn-primary btn-sm" onclick="updateRdvStatus('${r.id}','confirmé',true);closeModal()">✅ Confirmer</button>
       <button class="btn btn-sm btn-danger" onclick="updateRdvStatus('${r.id}','annulé',true);closeModal()">✕ Annuler</button>
