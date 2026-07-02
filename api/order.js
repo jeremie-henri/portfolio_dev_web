@@ -1,7 +1,8 @@
 // api/order.js — Commande e-commerce + Stripe Checkout (démo)
-const { getTransporter, emailTemplate, escapeHtml, checkRateLimit } = require('./_mailer')
+import Stripe from 'stripe'
+import { getTransporter, emailTemplate, escapeHtml, checkRateLimit } from './_mailer.js'
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
@@ -42,7 +43,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
       const lineItems = items.map(item => ({
         price_data: {

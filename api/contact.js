@@ -1,7 +1,7 @@
 // api/contact.js — Formulaire de contact du portfolio
-const { getTransporter, emailTemplate, escapeHtml, checkRateLimit } = require('./_mailer')
+import { getTransporter, emailTemplate, escapeHtml, checkRateLimit } from './_mailer.js'
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')

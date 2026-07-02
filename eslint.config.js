@@ -49,11 +49,11 @@ export default tseslint.config(
     },
   },
   {
-    // Fonctions serverless Vercel (CommonJS)
+    // Fonctions serverless Vercel (ESM — package.json a "type": "module")
     files: ['api/**/*.js'],
     languageOptions: {
       globals: { ...globals.node },
-      sourceType: 'commonjs',
+      sourceType: 'module',
     },
   },
   {

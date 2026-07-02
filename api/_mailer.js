@@ -1,5 +1,5 @@
 // api/_mailer.js — Utilitaire Nodemailer partagé
-const nodemailer = require('nodemailer')
+import nodemailer from 'nodemailer'
 
 // Échappe les caractères HTML des données utilisateur avant insertion
 // dans les templates d'email (anti-injection HTML/phishing)
@@ -76,4 +76,4 @@ function emailTemplate({ title, subtitle, rows = [], cta = null, footer = '' }) 
 </html>`
 }
 
-module.exports = { getTransporter, emailTemplate, escapeHtml, checkRateLimit }
+export { getTransporter, emailTemplate, escapeHtml, checkRateLimit }
