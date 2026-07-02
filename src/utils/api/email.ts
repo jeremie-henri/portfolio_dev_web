@@ -7,9 +7,7 @@ import type { ContactFormData, ApiResponse } from '../../types'
  * Envoie le formulaire de contact via notre API Vercel
  * (jamais via EmailJS directement depuis le client — clé protégée côté serveur)
  */
-export async function sendContactForm(
-  data: ContactFormData
-): Promise<ApiResponse> {
+export async function sendContactForm(data: ContactFormData): Promise<ApiResponse> {
   const res = await fetch('/api/contact', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -33,12 +33,12 @@ export default function HeroBackground3D() {
       positions.push(
         (Math.random() - 0.5) * W * 1.2,
         (Math.random() - 0.5) * H * 1.2,
-        (Math.random() - 0.5) * DEPTH,
+        (Math.random() - 0.5) * DEPTH
       )
       velocities.push(
         (Math.random() - 0.5) * 0.3,
         (Math.random() - 0.5) * 0.3,
-        (Math.random() - 0.5) * 0.1,
+        (Math.random() - 0.5) * 0.1
       )
     }
 
@@ -71,13 +71,13 @@ export default function HeroBackground3D() {
 
     // ─── Souris ───────────────────────────────────────────────────
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 }
-    const onMove = (e) => {
-      mouse.tx = (e.clientX / window.innerWidth  - 0.5) * 80
+    const onMove = e => {
+      mouse.tx = (e.clientX / window.innerWidth - 0.5) * 80
       mouse.ty = (e.clientY / window.innerHeight - 0.5) * -40
     }
-    const onTouch = (e) => {
+    const onTouch = e => {
       if (!e.touches[0]) return
-      mouse.tx = (e.touches[0].clientX / window.innerWidth  - 0.5) * 80
+      mouse.tx = (e.touches[0].clientX / window.innerWidth - 0.5) * 80
       mouse.ty = (e.touches[0].clientY / window.innerHeight - 0.5) * -40
     }
     window.addEventListener('mousemove', onMove)
@@ -85,7 +85,8 @@ export default function HeroBackground3D() {
 
     // ─── Resize ───────────────────────────────────────────────────
     const onResize = () => {
-      const w = el.clientWidth, h = el.clientHeight
+      const w = el.clientWidth,
+        h = el.clientHeight
       camera.aspect = w / h
       camera.updateProjectionMatrix()
       renderer.setSize(w, h)
@@ -107,12 +108,12 @@ export default function HeroBackground3D() {
       const pos = geo.attributes.position.array
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const i3 = i * 3
-        pos[i3]     += velocities[i3]
+        pos[i3] += velocities[i3]
         pos[i3 + 1] += velocities[i3 + 1]
         pos[i3 + 2] += velocities[i3 + 2]
         // Rebond sur les bords
-        if (Math.abs(pos[i3])     > W * 0.7)  velocities[i3]     *= -1
-        if (Math.abs(pos[i3 + 1]) > H * 0.7)  velocities[i3 + 1] *= -1
+        if (Math.abs(pos[i3]) > W * 0.7) velocities[i3] *= -1
+        if (Math.abs(pos[i3 + 1]) > H * 0.7) velocities[i3 + 1] *= -1
         if (Math.abs(pos[i3 + 2]) > DEPTH / 2) velocities[i3 + 2] *= -1
       }
       geo.attributes.position.needsUpdate = true
@@ -121,12 +122,20 @@ export default function HeroBackground3D() {
       let lIdx = 0
       for (let a = 0; a < PARTICLE_COUNT; a++) {
         for (let b = a + 1; b < PARTICLE_COUNT; b++) {
-          const ax = pos[a * 3], ay = pos[a * 3 + 1], az = pos[a * 3 + 2]
-          const bx = pos[b * 3], by = pos[b * 3 + 1], bz = pos[b * 3 + 2]
-          const dist = Math.sqrt((ax-bx)**2 + (ay-by)**2 + (az-bz)**2)
+          const ax = pos[a * 3],
+            ay = pos[a * 3 + 1],
+            az = pos[a * 3 + 2]
+          const bx = pos[b * 3],
+            by = pos[b * 3 + 1],
+            bz = pos[b * 3 + 2]
+          const dist = Math.sqrt((ax - bx) ** 2 + (ay - by) ** 2 + (az - bz) ** 2)
           if (dist < CONNECTION_DISTANCE) {
-            linePos[lIdx++] = ax; linePos[lIdx++] = ay; linePos[lIdx++] = az
-            linePos[lIdx++] = bx; linePos[lIdx++] = by; linePos[lIdx++] = bz
+            linePos[lIdx++] = ax
+            linePos[lIdx++] = ay
+            linePos[lIdx++] = az
+            linePos[lIdx++] = bx
+            linePos[lIdx++] = by
+            linePos[lIdx++] = bz
           }
         }
       }
@@ -159,8 +168,12 @@ export default function HeroBackground3D() {
       ref={mountRef}
       aria-hidden="true"
       style={{
-        position: 'absolute', inset: 0, zIndex: 0,
-        width: '100%', height: '100%', pointerEvents: 'none',
+        position: 'absolute',
+        inset: 0,
+        zIndex: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
       }}
     />
   )
