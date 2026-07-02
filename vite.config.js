@@ -17,5 +17,8 @@ export default defineConfig({
     rollupOptions: {
       input: resolve(__dirname, 'index.html'),
     },
+    // Three.js (fond 3D du hero) pèse ~511KB : chunk isolé et chargé en différé,
+    // donc sans impact sur le chargement initial. On relève le seuil d'alerte.
+    chunkSizeWarningLimit: 600,
   },
 })
