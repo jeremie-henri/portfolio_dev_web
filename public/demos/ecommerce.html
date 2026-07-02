@@ -758,7 +758,7 @@ async function checkout(){
         <strong style="color:var(--text)">Mode démo</strong><br>
         En production, le client serait redirigé vers la page Stripe sécurisée pour payer par CB, Apple Pay ou Google Pay.
       </div>
-      <button onclick="cart=[];updateCart();closeCart()" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-weight:600;width:100%">Continuer mes achats</button>
+      <button onclick="finishOrder()" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-weight:600;width:100%">Continuer mes achats</button>
     </div>`
   document.getElementById('overlay').classList.add('show')
 }
@@ -776,7 +776,7 @@ async function checkout(){
           <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.3rem;color:var(--text)">Paiement réussi !</h3>
           <p style="font-size:13px;color:var(--muted)">Merci pour votre commande.<br>Un email de confirmation vous a été envoyé.</p>
           <p style="font-size:11px;color:var(--muted);opacity:.6">Ref. Stripe : ${sessionId.slice(0,20)}...</p>
-          <button onclick="closeCart();history.replaceState({},'',location.pathname)" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-weight:600;width:100%">Continuer mes achats</button>
+          <button onclick="finishOrder()" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-weight:600;width:100%">Continuer mes achats</button>
         </div>`
     }, 500)
   }
@@ -788,6 +788,17 @@ async function checkout(){
 
 function openCart(){document.getElementById('cart-sidebar').classList.add('open');document.getElementById('overlay').classList.add('show')}
 function closeCart(){document.getElementById('cart-sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+
+// Sauvegarde du HTML d'origine du panier : la confirmation de commande remplace
+// tout son contenu, il faut pouvoir le restaurer pour continuer les achats
+const CART_SIDEBAR_HTML=document.getElementById('cart-sidebar').innerHTML
+function finishOrder(){
+  cart=[]
+  document.getElementById('cart-sidebar').innerHTML=CART_SIDEBAR_HTML
+  updateCart()
+  closeCart()
+  history.replaceState({},'',location.pathname)
+}
 function openWishlist(){document.getElementById('wishlist-panel').classList.add('open');document.getElementById('overlay').classList.add('show')}
 function closeWishlist(){document.getElementById('wishlist-panel').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
 function closeAll(){closeCart();closeWishlist()}

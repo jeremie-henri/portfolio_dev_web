@@ -301,8 +301,6 @@ select option{background:white!important;color:var(--text)!important}
     <div>
       <div class="booking-block">
         <div class="block-title">📝 Vos informations</div>
-        <div class="alert alert-success" id="bk-success"></div>
-        <div class="alert alert-error" id="bk-error"></div>
         <form id="bk-form" onsubmit="submitBooking(event)">
           <div class="form-group"><label class="form-label">Prénom & Nom *</label><input name="name" class="form-input" placeholder="Marie Dupont" required></div>
           <div class="form-group"><label class="form-label">Email *</label><input name="email" type="email" class="form-input" placeholder="marie@email.com" required></div>
@@ -326,6 +324,9 @@ select option{background:white!important;color:var(--text)!important}
           <div class="deposit-notice">🔒 <strong>Acompte de 20% requis</strong> à la réservation (via Stripe sécurisé). Remboursé intégralement en cas d'annulation 24h avant. Réduit les no-show de 70%.</div>
           <button type="submit" class="btn-confirm" id="bk-submit">✅ Confirmer et payer l'acompte</button>
         </form>
+        <!-- Alertes affichées sous le bouton, directement visibles -->
+        <div class="alert alert-success" id="bk-success" role="status" aria-live="polite"></div>
+        <div class="alert alert-error" id="bk-error" role="alert"></div>
       </div>
     </div>
   </div>
@@ -775,11 +776,12 @@ async function submitBooking(e){
     const suc=document.getElementById('bk-success')
     suc.style.display='block'
     suc.innerHTML=`✅ <strong>RDV confirmé !</strong> Réf. <strong>${ref}</strong><br>${s.nom} le ${body.date} à ${selSlot}<br>Email envoyé · Acompte de ${Math.round(s.prix*.2)} € sera prélevé.`
+    suc.scrollIntoView({behavior:'smooth',block:'center'})
     e.target.reset();selDate=null;selSlot=null;renderCal();document.getElementById('slots-sec').style.display='none'
   }catch(er){showError(er.message||'Erreur. Réessayez ou appelez le 01 42 00 00 00.')}
   finally{btn.textContent='✅ Confirmer et payer l\'acompte';btn.disabled=false}
 }
-function showError(m){const el=document.getElementById('bk-error');el.style.display='block';el.textContent='❌ '+m}
+function showError(m){const el=document.getElementById('bk-error');el.style.display='block';el.textContent='❌ '+m;el.scrollIntoView({behavior:'smooth',block:'center'})}
 function hideAlerts(){document.getElementById('bk-success').style.display='none';document.getElementById('bk-error').style.display='none'}
 
 document.getElementById('cal-prev').onclick=()=>{curDate.setMonth(curDate.getMonth()-1);renderCal()}
