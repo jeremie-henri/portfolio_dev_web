@@ -67,19 +67,6 @@ jobs:
           path: dist/
           retention-days: 1
 
-  # ── Deploy Vercel (main uniquement) ────────────
-  deploy:
-    name: Déploiement Vercel
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+  # Le déploiement est géré par l'intégration Git native de Vercel
+  # (Vercel → Settings → Git) : chaque push sur main déclenche un déploiement.
+  # Ce CI sert de contrôle qualité (lint, types, format, build).
