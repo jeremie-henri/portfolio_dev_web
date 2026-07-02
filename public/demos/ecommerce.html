@@ -2,13 +2,24 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Maison Provence — Boutique artisanale</title>
+<link rel="canonical" href="https://jeremiehenri.fr/demos/ecommerce.html">
+<meta name="robots" content="noindex, nofollow">
+<title>Maison Provence — Huiles, Miels & Épices artisanaux</title>
+<meta name="description" content="Boutique artisanale provençale : huiles d'olive AOP, miels de lavande, épices et coffrets cadeaux. Producteurs locaux, livraison offerte dès 40€.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Maison Provence — Boutique artisanale">
+<meta property="og:description" content="Huiles d'olive AOP, miels et épices sélectionnés auprès de producteurs provençaux. Livraison offerte dès 40€.">
+<meta property="og:url" content="https://jeremiehenri.fr/demos/ecommerce.html">
+<meta property="og:locale" content="fr_FR">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"OnlineStore","name":"Maison Provence","description":"Boutique en ligne de produits artisanaux provençaux : huiles d'olive, miels, épices et coffrets cadeaux.","url":"https://jeremiehenri.fr/demos/ecommerce.html","address":{"@type":"PostalAddress","addressRegion":"Provence","addressCountry":"FR"},"hasOfferCatalog":{"@type":"OfferCatalog","name":"Produits artisanaux","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Product","name":"Huile d'olive extra vierge AOP","description":"Pressée à froid, récolte 2025"},"price":"18.90","priceCurrency":"EUR"},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Miel de lavande AOP","description":"Fleurs de lavande fine de Haute-Provence"},"price":"12.50","priceCurrency":"EUR"}]}}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f4ede0;--card:#fffdf6;--accent:#2d6a4f;--accent2:#c8dfd0;--text:#1a0f00;--muted:#6b5840;--border:#cec4b0;--warm:#c1440e;--red:#c0392b;--gold:#8b6d14}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:#f4ede0}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden}
 
 /* SHIPPING BAR */
@@ -18,21 +29,25 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;lin
 .shipping-progress-fill{height:100%;background:#74d4a1;border-radius:2px;transition:width .5s}
 
 /* NAV */
-nav{background:var(--card);border-bottom:2px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.35rem;color:var(--text);font-style:italic;letter-spacing:.01em}
+nav{background:var(--card);border-bottom:2px solid var(--border);padding:0.9rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 rgba(139,109,20,.06)}
+.logo{display:flex;align-items:center;gap:9px;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.4rem;color:var(--text);font-style:italic;letter-spacing:.01em}
+.logo-mark{flex-shrink:0;color:var(--accent)}
 .logo span{color:var(--accent);font-style:normal;font-weight:800}
-.nav-links{display:flex;gap:2rem}
-.nav-links a{font-size:11px;color:var(--muted);text-decoration:none;transition:color .2s;text-transform:uppercase;font-weight:600;letter-spacing:.1em}
+.nav-links{display:flex;gap:2.25rem}
+.nav-links a{position:relative;font-size:11px;color:var(--muted);text-decoration:none;transition:color .2s;text-transform:uppercase;font-weight:600;letter-spacing:.1em;padding-bottom:4px}
+.nav-links a::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:1.5px;background:var(--accent);transition:right .25s ease}
 .nav-links a:hover{color:var(--accent)}
-.nav-right{display:flex;align-items:center;gap:8px}
-.cart-btn{position:relative;background:var(--accent);color:white;border:none;padding:9px 18px;border-radius:5px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;letter-spacing:.02em}
-.cart-btn:hover{background:#1d4a31}
-.cart-count{position:absolute;top:-6px;right:-6px;background:var(--warm);color:white;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.wishlist-btn{background:none;border:1.5px solid var(--border);width:38px;height:38px;border-radius:5px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.wishlist-btn:hover{border-color:var(--warm)}
+.nav-links a:hover::after{right:0}
+.nav-right{display:flex;align-items:center;gap:10px}
+.cart-btn{position:relative;background:var(--accent);color:white;border:none;padding:10px 20px;border-radius:6px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:background .2s,transform .2s,box-shadow .2s;letter-spacing:.02em;box-shadow:0 2px 8px rgba(45,106,79,.25)}
+.cart-btn:hover{background:#1d4a31;transform:translateY(-1px);box-shadow:0 4px 12px rgba(45,106,79,.35)}
+.cart-count{position:absolute;top:-6px;right:-6px;background:var(--warm);color:white;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--card)}
+.wishlist-btn{position:relative;background:none;border:1.5px solid var(--border);width:40px;height:40px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.wishlist-btn:hover{border-color:var(--warm);color:var(--warm);transform:translateY(-1px)}
 
 /* HERO */
-.hero{height:760px;display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden}
+.above-fold{display:flex;flex-direction:column;min-height:480px}
+.hero{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden}
 .hero-left{background:linear-gradient(160deg,#1c3828 0%,#0d2016 55%,#1c2d20 100%);padding:2.5rem 3.5rem 2.5rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;overflow:hidden}
 .hero-left::after{content:'';position:absolute;bottom:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:60px solid rgba(116,212,161,.04);pointer-events:none}
 .hero-left::before{content:'';position:absolute;top:-40px;left:-40px;width:200px;height:200px;border-radius:50%;border:40px solid rgba(116,212,161,.03);pointer-events:none}
@@ -54,7 +69,7 @@ nav{background:var(--card);border-bottom:2px solid var(--border);padding:1rem 2r
 .hero-stat span{font-size:10px;color:rgba(244,237,224,.45);text-transform:uppercase;letter-spacing:.1em}
 
 /* TRUST BAR */
-.trust-bar{background:var(--text);color:rgba(244,237,224,.65);padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.trust-bar{background:var(--text);color:rgba(244,237,224,.65);padding:.9rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;flex:0 0 auto}
 .trust-item{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.02em}
 .trust-item strong{color:#74d4a1}
 
@@ -205,7 +220,8 @@ footer strong{color:var(--accent)}
 
 @media(max-width:900px){
   .hero,.qv-modal{grid-template-columns:1fr}
-  .hero-right,.qv-img{display:none}
+  .hero-right{display:none}
+  .qv-img{min-height:220px}
   .hero-left{padding:3rem 1.5rem}
   .nav-links,.trust-bar{display:none}
   nav{padding:1rem 1.25rem}
@@ -239,7 +255,15 @@ select option{background:var(--card)!important;color:var(--text)!important}
 </div>
 
 <nav>
-  <div class="logo">Maison <span>Provence</span></div>
+  <div class="logo">
+    <svg class="logo-mark" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 21c0-5 1.5-8 5-11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      <ellipse cx="15.2" cy="7.3" rx="2.1" ry="3.1" transform="rotate(40 15.2 7.3)" fill="currentColor" opacity=".85"/>
+      <ellipse cx="11.5" cy="11.5" rx="1.9" ry="2.8" transform="rotate(35 11.5 11.5)" fill="currentColor" opacity=".7"/>
+      <ellipse cx="8.5" cy="15.8" rx="1.7" ry="2.5" transform="rotate(30 8.5 15.8)" fill="currentColor" opacity=".55"/>
+    </svg>
+    Maison <span>Provence</span>
+  </div>
   <div class="nav-links">
     <a href="#produits">Produits</a>
     <a href="#bundles">Coffrets</a>
@@ -251,33 +275,53 @@ select option{background:var(--card)!important;color:var(--text)!important}
   </div>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-left">
-  
-    <h1>Les saveurs de <em>Provence</em><br>livrées chez vous</h1>
-    <p>Huiles d'olive, miels et épices sélectionnés directement auprès de nos producteurs partenaires. Qualité artisanale garantie.</p>
-    <button class="hero-cta" onclick="document.getElementById('produits').scrollIntoView({behavior:'smooth'})">Découvrir la boutique →</button>
-    <div class="hero-stats">
-      <div class="hero-stat"><strong>247+</strong><span>Avis clients</span></div>
-      <div class="hero-stat"><strong>40+</strong><span>Producteurs</span></div>
-      <div class="hero-stat"><strong>4.9★</strong><span>Note moyenne</span></div>
+<!-- HERO + TRUST BAR : occupe exactement l'écran restant sous le header -->
+<div class="above-fold" id="above-fold">
+  <div class="hero">
+    <div class="hero-left">
+
+      <h1>Les saveurs de <em>Provence</em><br>livrées chez vous</h1>
+      <p>Huiles d'olive, miels et épices sélectionnés directement auprès de nos producteurs partenaires. Qualité artisanale garantie.</p>
+      <button class="hero-cta" onclick="document.getElementById('produits').scrollIntoView({behavior:'smooth'})">Découvrir la boutique →</button>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>247+</strong><span>Avis clients</span></div>
+        <div class="hero-stat"><strong>40+</strong><span>Producteurs</span></div>
+        <div class="hero-stat"><strong>4.9★</strong><span>Note moyenne</span></div>
+      </div>
+    </div>
+    <div class="hero-right" id="hero-slideshow">
+      <div class="hero-slide active"><img src="../photos/hero.webp" alt="Produits artisanaux de Provence"></div>
+      <div class="hero-slide"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&q=88" alt="Miel artisanal"></div>
+      <div class="hero-slide"><img src="https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?w=900&q=88" alt="Épices provençales"></div>
     </div>
   </div>
-  <div class="hero-right" id="hero-slideshow">
-    <div class="hero-slide active"><img src="../photos/hero.webp" alt="Produits artisanaux de Provence"></div>
-    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&q=88" alt="Miel artisanal"></div>
-    <div class="hero-slide"><img src="https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?w=900&q=88" alt="Épices provençales"></div>
+
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="trust-item"><strong>Livraison offerte dès 40€</strong></div>
+    <div class="trust-item"><strong>Bio & naturel</strong> · certifié AB</div>
+    <div class="trust-item"><strong>Producteurs locaux</strong> · Provence</div>
+    <div class="trust-item"><strong>Retour 30 jours</strong> · satisfait ou remboursé</div>
   </div>
 </div>
-
-<!-- TRUST BAR -->
-<div class="trust-bar">
-  <div class="trust-item"><strong>Livraison offerte dès 40€</strong></div>
-  <div class="trust-item"><strong>Bio & naturel</strong> · certifié AB</div>
-  <div class="trust-item"><strong>Producteurs locaux</strong> · Provence</div>
-  <div class="trust-item"><strong>Retour 30 jours</strong> · satisfait ou remboursé</div>
-</div>
+<script>
+// Fait correspondre le hero+trustbar exactement à l'écran restant sous le header,
+// quelle que soit la hauteur réelle rendue (police, zoom, DPI) — sans valeur codée en dur.
+(function(){
+  var aboveFold = document.getElementById('above-fold')
+  var shippingBar = document.getElementById('shipping-bar')
+  var nav = document.querySelector('nav')
+  function fit(){
+    var headerH = shippingBar.getBoundingClientRect().height + nav.getBoundingClientRect().height
+    var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight
+    aboveFold.style.height = Math.max(420, vh - headerH) + 'px'
+  }
+  fit()
+  window.addEventListener('resize', fit)
+  window.addEventListener('orientationchange', fit)
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fit)
+})()
+</script>
 
 <!-- PRODUITS -->
 <div class="section" id="produits">
@@ -355,7 +399,9 @@ select option{background:var(--card)!important;color:var(--text)!important}
     <div class="cart-total-row"><span>Sous-total</span><span id="cart-subtotal">0 €</span></div>
     <div class="cart-total-row"><span id="cart-ship-label">Livraison</span><span id="cart-ship-cost">5.90 €</span></div>
     <div class="cart-total-row" style="font-weight:700;font-size:15px;border-top:1px solid var(--border);padding-top:8px"><span>Total</span><span id="cart-total-price" style="color:var(--accent)">0 €</span></div>
-    <button class="checkout-btn" onclick="checkout()">Commander — Payer en ligne 🔒</button>
+    <input id="checkout-email" type="email" placeholder="Votre email pour la confirmation" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:5px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);outline:none;margin-bottom:8px;box-sizing:border-box" required>
+    <button class="checkout-btn" id="checkout-btn" onclick="checkout()">Payer en ligne — Sécurisé 🔒</button>
+    <p style="text-align:center;font-size:11px;color:var(--muted);margin:6px 0 0">Paiement sécurisé par <strong>Stripe</strong> · CB, Apple Pay, Google Pay</p>
   </div>
 </div>
 
@@ -675,28 +721,70 @@ function updateWishlistUI(){
 }
 
 async function checkout(){
+  const emailInput=document.getElementById('checkout-email')
+  const btn=document.getElementById('checkout-btn')
+  const email=(emailInput?.value||'').trim()
+  if(!email||!email.includes('@')){
+    if(emailInput){emailInput.focus();emailInput.style.borderColor='#dc2626'}
+    showToast('Veuillez saisir votre email');return
+  }
+  if(emailInput)emailInput.style.borderColor='var(--border)'
   const subtotal=cart.reduce((a,i)=>a+i.price*i.qty,0)
-  const email=prompt('Votre email pour la confirmation :')
-  if(!email||!email.includes('@'))return
   const items=cart.map(i=>({name:i.name,price:i.price,qty:i.qty}))
+
+  // État chargement
+  if(btn){btn.disabled=true;btn.textContent='Chargement...'}
+
   try{
-    const res=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create-checkout',items,customerEmail:email})})
+    const res=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'create-checkout',items,customerEmail:email})})
     const data=await res.json()
-    if(data.url){window.location.href=data.url;return}
-  }catch(e){}
-  // Fallback demo
-  try{await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'confirm',email,items,total:subtotal.toFixed(2)+' €'})})}catch(e){}
+    if(data.url){window.location.href=data.url;return} // → Stripe Checkout
+  }catch(e){console.warn('API Stripe non disponible, mode démo')}
+
+  // ─── Mode démo (sans clés Stripe) ───────────────────────────────────────
+  if(btn){btn.disabled=false;btn.textContent='Payer en ligne — Sécurisé 🔒'}
+  try{await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'confirm',email,items,total:subtotal.toFixed(2)+' €'})})}catch(e){}
+
+  // Affichage confirmation démo
   document.getElementById('cart-sidebar').innerHTML=`
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;text-align:center;gap:1rem">
-      <div style="font-size:3.5rem">🎉</div>
-      <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.25rem">Commande confirmée !</h3>
-      <p style="font-size:13px;color:var(--muted)">Total payé : <strong style="color:var(--accent)">${subtotal.toFixed(2)} €</strong></p>
-      <p style="font-size:12px;color:var(--muted)">Confirmation envoyée à <strong>${email}</strong></p>
-      <p style="font-size:12px;color:var(--muted);background:var(--bg);padding:10px;border-radius:8px">🚚 Livraison estimée : 48-72h</p>
-      <button onclick="cart=[];updateCart();closeCart()" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:600">Continuer mes achats</button>
+      <div style="width:64px;height:64px;background:rgba(16,185,129,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem">✓</div>
+      <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.25rem;color:var(--text)">Commande confirmée !</h3>
+      <p style="font-size:13px;color:var(--muted)">Total : <strong style="color:var(--accent)">${subtotal.toFixed(2)} €</strong></p>
+      <p style="font-size:12px;color:var(--muted)">Confirmation envoyée à <strong style="color:var(--text)">${email}</strong></p>
+      <div style="font-size:12px;color:var(--muted);background:var(--bg);padding:12px 16px;border-radius:8px;border:1px solid var(--border);line-height:1.8;width:100%;text-align:left">
+        <strong style="color:var(--text)">Mode démo</strong><br>
+        En production, le client serait redirigé vers la page Stripe sécurisée pour payer par CB, Apple Pay ou Google Pay.
+      </div>
+      <button onclick="cart=[];updateCart();closeCart()" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-weight:600;width:100%">Continuer mes achats</button>
     </div>`
   document.getElementById('overlay').classList.add('show')
 }
+
+// ─── Gestion retour Stripe (après paiement réel) ─────────────────────────
+;(function handleStripeReturn(){
+  const params=new URLSearchParams(location.search)
+  if(params.get('order')==='success'){
+    const sessionId=params.get('session_id')||''
+    setTimeout(()=>{
+      openCart()
+      document.getElementById('cart-sidebar').innerHTML=`
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;text-align:center;gap:1rem">
+          <div style="width:64px;height:64px;background:rgba(16,185,129,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem">✓</div>
+          <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.3rem;color:var(--text)">Paiement réussi !</h3>
+          <p style="font-size:13px;color:var(--muted)">Merci pour votre commande.<br>Un email de confirmation vous a été envoyé.</p>
+          <p style="font-size:11px;color:var(--muted);opacity:.6">Ref. Stripe : ${sessionId.slice(0,20)}...</p>
+          <button onclick="closeCart();history.replaceState({},'',location.pathname)" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-weight:600;width:100%">Continuer mes achats</button>
+        </div>`
+    }, 500)
+  }
+  if(params.get('order')==='cancelled'){
+    setTimeout(()=>showToast('Paiement annulé — votre panier est conservé'), 800)
+    history.replaceState({},'',location.pathname)
+  }
+})()
 
 function openCart(){document.getElementById('cart-sidebar').classList.add('open');document.getElementById('overlay').classList.add('show')}
 function closeCart(){document.getElementById('cart-sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}

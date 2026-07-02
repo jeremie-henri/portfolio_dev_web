@@ -37,7 +37,7 @@ export interface Service {
 export interface ContactFormData {
   name: string
   email: string
-  subject: string
+  subject?: string
   message: string
 }
 

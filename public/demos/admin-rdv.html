@@ -160,8 +160,8 @@ select option{background:white!important;color:var(--text)!important}
 
 <script>
 const KEY='se_admin_v2'
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||initData()}catch{return initData()}}
-function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+function load(){try{return JSON.parse(sessionStorage.getItem(KEY))||initData()}catch{return initData()}}
+function save(d){sessionStorage.setItem(KEY,JSON.stringify(d))}
 function initData(){
   return{
     loggedIn:false,nextId:100,
@@ -533,7 +533,7 @@ function updateH(i,f,v){DB.horaires[i][f]=v}
 function saveHoraires(){save(DB);toast('Horaires sauvegardés ✅','success')}
 
 function renderStats(){
-  const raw=JSON.parse(localStorage.getItem('stats_rdv')||'{}')
+  const raw=JSON.parse(sessionStorage.getItem('stats_rdv')||'{}')
   const visits=raw.visits||[], sources=raw.sources||{}, countries=raw.countries||{}, sections=raw.sections||{}, conversions=raw.conversions||{}
   const now=Date.now(),day=86400000,total=visits.length
   const today=visits.filter(v=>now-v.ts<day).length
@@ -549,7 +549,7 @@ function renderStats(){
   document.getElementById('page-content').innerHTML=`
     <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
       <button class="btn btn-outline btn-sm" onclick="renderStats()">🔄 Actualiser</button>
-      <button class="btn btn-sm btn-danger" style="margin-left:6px" onclick="if(confirm('Effacer ?')){localStorage.removeItem('stats_rdv');renderStats()}">🗑️ Réinitialiser</button>
+      <button class="btn btn-sm btn-danger" style="margin-left:6px" onclick="if(confirm('Effacer ?')){sessionStorage.removeItem('stats_rdv');renderStats()}">🗑️ Réinitialiser</button>
     </div>
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-label">Total visites</div><div class="kpi-value" style="color:var(--accent)">${total}</div></div>

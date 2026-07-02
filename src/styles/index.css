@@ -152,7 +152,6 @@ h1, h2, h3, h4 {
 /* Texte-fenêtre : blanc → violet subtil */
 .text-window {
   background: linear-gradient(135deg, #ffffff 0%, #d4d0ff 50%, #9f91fa 100%);
-  background-attachment: fixed;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: transparent;
 }

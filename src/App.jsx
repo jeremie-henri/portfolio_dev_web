@@ -4,10 +4,8 @@ import Navbar       from './components/Navbar'
 import Hero         from './components/Hero'
 import Services     from './components/Services'
 import TrustBar     from './components/TrustBar'
-import Testimonials from './components/Testimonials'
 import About        from './components/About'
 import Skills       from './components/Skills'
-import Projects     from './components/Projects'
 import Contact      from './components/sections/Contact'
 import Footer       from './components/Footer'
 import Divider      from './components/Divider'
@@ -47,9 +45,3 @@ export default function App() {
     </div>
   )
 }
-/*
-      <Projects />
-      <Divider />
-
-      <Testimonials />
-      <Divider />*/

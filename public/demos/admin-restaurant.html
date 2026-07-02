@@ -211,16 +211,16 @@ select option{background:var(--card)!important;color:var(--text)!important}
 const KEY = 'js_admin_v2'
 function load() {
   let d
-  try { d = JSON.parse(localStorage.getItem(KEY)) } catch { return initData() }
+  try { d = JSON.parse(sessionStorage.getItem(KEY)) } catch { return initData() }
   if (!d) return initData()
   // Migration : ancienne galerie par défaut (photo du chef) → resynchroniser sur la galerie du site
   if (Array.isArray(d.gallery) && d.gallery.some(g => g.url && g.url.includes('1577219491135'))) {
     d.gallery = initData().gallery
-    localStorage.setItem(KEY, JSON.stringify(d))
+    sessionStorage.setItem(KEY, JSON.stringify(d))
   }
   return d
 }
-function save(d) { localStorage.setItem(KEY, JSON.stringify(d)) }
+function save(d) { sessionStorage.setItem(KEY, JSON.stringify(d)) }
 
 function initData() {
   return {
@@ -686,7 +686,7 @@ function saveInfos() {
 
 // ─── MODAL ─────────────────────────────────────────────────────
 function renderStats(){
-  const raw=JSON.parse(localStorage.getItem('stats_restaurant')||'{}')
+  const raw=JSON.parse(sessionStorage.getItem('stats_restaurant')||'{}')
   const visits=raw.visits||[], sources=raw.sources||{}, countries=raw.countries||{}, sections=raw.sections||{}, conversions=raw.conversions||{}
   const now=Date.now(), day=86400000, total=visits.length
   const today=visits.filter(v=>now-v.ts<day).length
@@ -704,7 +704,7 @@ function renderStats(){
   document.getElementById('page-content').innerHTML=`
     <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
       <button class="btn btn-outline btn-sm" onclick="renderStats()">🔄 Actualiser</button>
-      <button class="btn btn-sm btn-danger" style="margin-left:6px" onclick="if(confirm('Effacer toutes les stats ?')){localStorage.removeItem('stats_restaurant');renderStats()}">🗑️ Réinitialiser</button>
+      <button class="btn btn-sm btn-danger" style="margin-left:6px" onclick="if(confirm('Effacer toutes les stats ?')){sessionStorage.removeItem('stats_restaurant');renderStats()}">🗑️ Réinitialiser</button>
     </div>
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-label">Total visites</div><div class="kpi-value" style="color:var(--gold)">${total}</div></div>

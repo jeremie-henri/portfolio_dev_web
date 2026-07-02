@@ -83,12 +83,14 @@ export default function Services() {
   const [instant, setInstant] = useState(false)
   const [showDetail, setShowDetail] = useState(false)
   const [cardWidth, setCardWidth] = useState(320)
+  const [containerWidth, setContainerWidth] = useState(0)
   const containerRef = useRef(null)
   const jumpTimer = useRef(null)
 
   const updateCardWidth = useCallback(() => {
     if (!containerRef.current) return
     const w = containerRef.current.offsetWidth
+    setContainerWidth(w)
     setCardWidth(Math.min(Math.round(w * 0.78), 400))
   }, [])
 
@@ -119,11 +121,26 @@ export default function Services() {
     }, 380)
   }
 
-  const containerWidth = containerRef.current?.offsetWidth ?? 0
   const centerOffset = (containerWidth - cardWidth) / 2
   const xPos = centerOffset - idx * (cardWidth + GAP)
 
   const activeCard = TRIPLE[idx]
+
+  // ─── Swipe tactile ────────────────────────────────────────────
+  const touchStart = useRef(null)
+  const onTouchStart = (e) => {
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+  }
+  const onTouchEnd = (e) => {
+    if (!touchStart.current) return
+    const dx = e.changedTouches[0].clientX - touchStart.current.x
+    const dy = e.changedTouches[0].clientY - touchStart.current.y
+    touchStart.current = null
+    // Swipe horizontal > 40px et plus horizontal que vertical
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      navigate(dx < 0 ? 1 : -1)
+    }
+  }
 
   return (
     <section id="services" style={{ padding: 'clamp(4rem,8vw,6rem) 0', maxWidth: 1400, margin: '0 auto' }}>
@@ -142,7 +159,7 @@ export default function Services() {
 
         {/* Carrousel */}
         <motion.div variants={itemVariants}>
-          <div ref={containerRef} style={{ overflow: 'hidden', position: 'relative' }}>
+          <div ref={containerRef} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ overflow: 'hidden', position: 'relative', touchAction: 'pan-y' }}>
             <motion.div
               animate={{ x: xPos }}
               transition={instant ? { duration: 0 } : { type: 'spring', stiffness: 320, damping: 32 }}

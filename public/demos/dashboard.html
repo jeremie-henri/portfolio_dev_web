@@ -2,7 +2,15 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ClientSpace — Espace Client</title>
+<link rel="canonical" href="https://jeremiehenri.fr/demos/dashboard.html">
+<meta name="robots" content="noindex, nofollow">
+<title>ClientSpace — Espace client sécurisé</title>
+<meta name="description" content="Espace client sécurisé ClientSpace. Suivez vos commandes, consultez vos factures et échangez avec votre prestataire en temps réel.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ClientSpace — Espace client sécurisé">
+<meta property="og:description" content="Tableau de bord client : suivi commandes, factures, documents et messagerie sécurisée.">
+<meta property="og:url" content="https://jeremiehenri.fr/demos/dashboard.html">
+<meta property="og:locale" content="fr_FR">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -190,7 +198,7 @@ select option{background:var(--card)!important;color:var(--text)!important}
 
   <div class="main">
     <div class="topbar">
-      <span class="topbar-title" id="page-title">Tableau de bord</span>
+      <h1 class="topbar-title" id="page-title" style="margin:0;font-size:1.05rem">Tableau de bord</h1>
       <div class="tbr">
         <span id="tbdate" style="font-size:12px;color:var(--muted)"></span>
         <div class="nob" onclick="nav('notifications',null)">🔔<span class="nd" id="nd"></span></div>

@@ -71,7 +71,7 @@ Aujourd'hui, je me consacre pleinement au développement web et j'accompagne mes
 
         {/* Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 12 }}>
-          {CARDS.map((c, i) => (
+          {CARDS.map((c) => (
             <motion.div
               key={c.title}
               variants={itemVariants}

@@ -188,13 +188,13 @@ select option{background:white!important;color:var(--dark)!important}
 const KEY = 'mp_admin_v3'
 function load(){
   try{
-    const d=JSON.parse(localStorage.getItem(KEY))
+    const d=JSON.parse(sessionStorage.getItem(KEY))
     // Migration : si moins de 11 produits, réinitialiser
-    if(d&&d.produits&&d.produits.length<11){localStorage.removeItem(KEY);return initData()}
+    if(d&&d.produits&&d.produits.length<11){sessionStorage.removeItem(KEY);return initData()}
     return d||initData()
   }catch{return initData()}
 }
-function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+function save(d){sessionStorage.setItem(KEY,JSON.stringify(d))}
 
 function initData(){
   return {
@@ -609,7 +609,7 @@ function savePromo(){
 
 // ─── CONFIG ────────────────────────────────────────────────────
 function renderStats(){
-  const raw=JSON.parse(localStorage.getItem('stats_ecommerce')||'{}')
+  const raw=JSON.parse(sessionStorage.getItem('stats_ecommerce')||'{}')
   const visits=raw.visits||[], sources=raw.sources||{}, countries=raw.countries||{}, conversions=raw.conversions||{}, prods=raw.products||{}
   const now=Date.now(),day=86400000,total=visits.length
   const today=visits.filter(v=>now-v.ts<day).length
@@ -625,7 +625,7 @@ function renderStats(){
   document.getElementById('page-content').innerHTML=`
     <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
       <button class="btn btn-outline btn-sm" onclick="renderStats()">🔄 Actualiser</button>
-      <button class="btn btn-sm btn-danger" style="margin-left:6px" onclick="if(confirm('Effacer ?')){localStorage.removeItem('stats_ecommerce');renderStats()}">🗑️ Réinitialiser</button>
+      <button class="btn btn-sm btn-danger" style="margin-left:6px" onclick="if(confirm('Effacer ?')){sessionStorage.removeItem('stats_ecommerce');renderStats()}">🗑️ Réinitialiser</button>
     </div>
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-label">Total visites</div><div class="kpi-value" style="color:var(--accent)">${total}</div></div>

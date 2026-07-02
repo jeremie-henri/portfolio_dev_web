@@ -23,6 +23,11 @@ export default function Footer() {
 
       <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, textAlign: 'center' }}>
         &copy; {new Date().getFullYear()} Jérémie Henri · Développeur web indépendant
+        <span style={{ display: 'block', marginTop: 4 }}>
+          <a href="/mentions-legales.html" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}>Mentions légales</a>
+          {' · '}
+          <a href="/politique-confidentialite.html" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}>Confidentialité</a>
+        </span>
       </p>
 
       <div style={{ display: 'flex', gap: 10 }}>
