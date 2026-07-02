@@ -1,138 +1,138 @@
-# 🚀 Guide de déploiement d'un site client
+# 🚀 Déployer un site pour un client — procédure complète
 
-> Checklist réutilisable pour chaque nouveau projet client.
-> Basée sur le déploiement de jeremiehenri.fr (juillet 2026).
+> Mode d'emploi à dérouler dans l'ordre pour chaque nouveau projet client.
+> Temps estimé une fois rodé : 2-3h (hors développement du site).
 
 ---
 
-## 1. Avant le déploiement — audit du code
+## Phase 0 — Informations à collecter auprès du client (AVANT tout)
+
+À demander dès la signature du devis, sinon tu seras bloqué en cours de route :
+
+| Info | Pourquoi |
+|---|---|
+| Raison sociale, SIRET, adresse du siège | Mentions légales (obligatoire) |
+| Nom de domaine souhaité (ou existant + accès registrar) | Connexion du site |
+| Email professionnel du client | Réception des formulaires de contact / commandes |
+| Textes : présentation, services, tarifs, photos | Contenu du site |
+| Compte Stripe (si paiement en ligne) | Le compte doit être AU NOM DU CLIENT, jamais au tien |
+| Numéro de téléphone, horaires, adresse physique | JSON-LD LocalBusiness + page contact |
+
+**Règle d'or : tout ce qui touche à l'argent et à l'identité légale (domaine, Stripe,
+compte email pro) appartient au client.** Toi tu configures, lui il possède.
+Ça t'évite d'être responsable juridiquement et de devoir gérer ses accès à vie.
+
+---
+
+## Phase 1 — Préparer le code
 
 ```bash
-npm run validate     # typecheck + lint → doit passer à 0 erreur
-npm run build        # doit réussir, surveiller la taille des chunks (<500KB idéal)
+npm run validate     # 0 erreur exigé (typecheck + lint)
+npm run build        # doit réussir, chunks < 500KB (sinon lazy-load les grosses libs)
 ```
 
-**Checklist code :**
-- [ ] Aucun fichier mort / doublon (composants non importés, anciens fichiers `.bak`)
-- [ ] Aucune clé API ou secret en dur dans le code (chercher `sk_`, `password`, `secret`)
-- [ ] Les grosses libs (Three.js, charts...) sont en `lazy(() => import(...))`
-- [ ] Images optimisées en WebP (< 200KB chacune idéalement)
-- [ ] `console.log` de debug supprimés
-
-**Checklist SEO (dans le `<head>` de chaque page) :**
-- [ ] `<title>` unique, 50-60 caractères
-- [ ] `<meta name="description">` 150-160 caractères
-- [ ] `<link rel="canonical">` avec l'URL finale du client
-- [ ] Open Graph : `og:title`, `og:description`, `og:image` (l'image doit EXISTER, 1200×630px), `og:url`, `og:locale`
-- [ ] JSON-LD adapté au métier : `LocalBusiness`, `Restaurant`, `HairSalon`, `Store`...
-- [ ] `<html lang="fr">`, favicon, un seul `<h1>` par page
-- [ ] `loading="lazy"` sur les images hors écran d'accueil
-- [ ] `sitemap.xml` + `robots.txt` avec le bon domaine
-
-**Checklist légal (OBLIGATOIRE France) :**
-- [ ] Page mentions légales : nom/raison sociale, SIRET, adresse, contact, hébergeur
-- [ ] Politique de confidentialité si formulaire de contact ou tracking (RGPD)
-- [ ] CGV si vente en ligne
-- [ ] Bannière cookies UNIQUEMENT si cookies tiers (analytics sans cookies = pas de bannière)
-- [ ] Liens vers ces pages dans le footer
+- [ ] Aucun secret/clé API en dur dans le code
+- [ ] Images optimisées (WebP, < 200KB)
+- [ ] SEO de chaque page : title (50-60 car.), meta description (150-160 car.),
+      canonical avec le domaine du client, Open Graph avec une og:image qui existe (1200×630)
+- [ ] JSON-LD adapté au métier du client (`LocalBusiness`, `Restaurant`, `Store`...)
+- [ ] `sitemap.xml` et `robots.txt` avec le domaine du client
+- [ ] Mentions légales + politique de confidentialité avec les infos du client, liées au footer
+- [ ] Push sur un repo GitHub dédié au projet
 
 ---
 
-## 2. Vercel — mise en ligne
+## Phase 2 — Mettre en ligne sur Vercel
 
-1. Push le code sur GitHub (repo du client ou le tien)
-2. [vercel.com](https://vercel.com) → **Add New Project** → importer le repo
-3. Framework auto-détecté (Vite/Next...) → **Deploy**
-4. Le site est en ligne sur `xxx.vercel.app`
+1. Vercel → **Add New Project** → importer le repo → **Deploy**
+2. Le site est accessible sur `xxx.vercel.app` → montre-le au client pour validation finale
 
-### Variables d'environnement
+### Variables d'environnement (Settings → Environment Variables)
 
-**Settings → Environment Variables**, pour chaque variable :
-Key exacte + Value + environnements "Production and Preview" → Save.
+- Secrets serveur (mots de passe email, `STRIPE_SECRET_KEY`) : **sans** préfixe `VITE_`
+- Valeurs publiques (clés publiques) : **avec** préfixe `VITE_`
+- `SITE_URL` : d'abord l'URL `.vercel.app`, à changer une fois le domaine actif
 
-| Variable type | Exemple | Règle |
-|---|---|---|
-| Secrets serveur | `GMAIL_PASS`, `STRIPE_SECRET_KEY` | JAMAIS de préfixe `VITE_` — reste côté serveur |
-| Valeurs publiques | `VITE_EMAILJS_PUBLIC_KEY` | Préfixe `VITE_` = visible par les visiteurs |
-| URL du site | `SITE_URL=https://domaine.fr` | Sans `/` final, à mettre à jour après le domaine |
-
-**⚠️ Piège Gmail :** `GMAIL_PASS` = un **mot de passe d'application**
-(myaccount.google.com/apppasswords, nécessite la validation 2 étapes), PAS le mot de passe du compte.
-
-**⚠️ Après tout changement de variable → Deployments → ⋯ → Redeploy** (sinon rien ne s'applique).
+**Pièges :**
+- Email d'envoi via Gmail → utiliser un **mot de passe d'application**
+  (myaccount.google.com/apppasswords, exige la validation 2 étapes), jamais le mot de passe du compte
+- Toute modification de variable → **Redeploy** obligatoire pour prendre effet
 
 ---
 
-## 3. Nom de domaine — connexion à Vercel
+## Phase 3 — Connecter le domaine du client
 
-1. Acheter le domaine (OVH ~7-10€/an) — ou le client l'a déjà
-2. Vercel → Settings → **Domains** → Add → taper `domaine.fr` ET `www.domaine.fr`
-3. Vercel affiche les enregistrements DNS requis
+1. Vercel → Settings → **Domains** → ajouter `domaine.fr` ET `www.domaine.fr`
+2. Vercel affiche les enregistrements DNS à créer
+3. Aller dans la **zone DNS** chez le registrar du client (souvent OVH)
 
-### Chez OVH (zone DNS du domaine)
+### ⚠️ Le piège classique chez OVH : le "parking"
 
-**⚠️ Règle d'or : SUPPRIMER les enregistrements en conflit AVANT d'ajouter les nouveaux.**
-OVH pré-remplit la zone avec des enregistrements de "parking" qui bloquent tout.
+OVH pré-remplit la zone avec des enregistrements qui BLOQUENT la configuration.
+**Toujours supprimer avant d'ajouter :**
 
 | Action | Enregistrement |
 |---|---|
 | ❌ Supprimer | `@` A `213.186.33.5` (parking OVH) |
-| ❌ Supprimer | `www` A `213.186.33.5` + `www` TXT `"3\|welcome"` (parking) |
-| ✅ Ajouter | `@` A → l'IP donnée par Vercel (ex: `216.198.79.1`) |
-| ✅ Ajouter | `www` CNAME → la cible donnée par Vercel (ex: `xxxx.vercel-dns-017.com.`) |
-| 🚫 Ne pas toucher | NS, MX, SPF (emails et fonctionnement du domaine) |
+| ❌ Supprimer | tout ce qui existe sur `www` (A + TXT parking) — un CNAME doit être SEUL sur son nom |
+| ✅ Ajouter | `@` A → l'IP donnée par Vercel |
+| ✅ Ajouter | `www` CNAME → la cible donnée par Vercel |
+| 🚫 Ne pas toucher | NS, MX, SPF (sinon tu casses les emails du client !) |
 
-**Rappels :**
-- Un CNAME doit être SEUL sur son nom → supprimer TOUT ce qui existe sur `www` d'abord
-- Il ne doit rester qu'UN seul enregistrement A sur `@`
-- Champ sous-domaine vide = racine du domaine (ne pas mettre `@` chez OVH)
-- Si le formulaire OVH bloque → lien "Mode d'édition avancé" en haut à droite
+**Astuces OVH :** champ sous-domaine vide = racine (ne pas mettre `@`) ·
+si le formulaire bloque → "Mode d'édition avancé" en haut à droite ·
+vérifier l'« Aperçu de l'enregistrement » avant d'ajouter.
 
-4. Propagation : 5 min à quelques heures → bouton **Refresh** dans Vercel jusqu'au ✅
-5. HTTPS : automatique une fois validé
-6. **Mettre à jour `SITE_URL`** avec le vrai domaine → **Redeploy**
+4. Propagation 5 min - quelques heures → bouton **Refresh** dans Vercel jusqu'aux ✅
+5. HTTPS automatique une fois validé
+6. Mettre à jour `SITE_URL` avec le vrai domaine → **Redeploy**
 
 ---
 
-## 4. Google Search Console
+## Phase 4 — Google Search Console (référencement)
 
-1. [search.google.com/search-console](https://search.google.com/search-console) → type **Domaine** → `domaine.fr`
-2. Google donne un code `google-site-verification=...` → Copier
-3. Zone DNS OVH → Ajouter une entrée → **TXT** → sous-domaine vide → coller le code
-   (vérifier l'aperçu : `domaine.fr. IN TXT "google-site-verification=..."`)
-4. Attendre 10-15 min → **Valider** chez Google (recliquable à volonté)
+1. search.google.com/search-console → propriété type **Domaine** → `domaine.fr`
+2. Copier le code `google-site-verification=...`
+3. Zone DNS → ajouter un **TXT** sur la racine (sous-domaine vide) avec ce code
+4. Attendre 10-15 min → **Valider** (recliquable à volonté si ça échoue)
 5. Menu **Sitemaps** → soumettre `sitemap.xml`
-6. Inspecter l'URL d'accueil → **Demander une indexation** (accélère à 24-48h)
-7. Vérifier l'indexation quelques jours après : taper `site:domaine.fr` dans Google
+6. Inspecter l'URL d'accueil → **Demander une indexation**
+7. Contrôle quelques jours plus tard : taper `site:domaine.fr` dans Google
+
+Bonus visibilité locale : créer/optimiser la **fiche Google Business Profile** du client
+(gratuit, indispensable pour un commerce physique).
 
 ---
 
-## 5. Tests finaux en production
+## Phase 5 — Recette finale (tests en production)
 
-- [ ] `https://domaine.fr` s'ouvre avec le cadenas 🔒
-- [ ] `www.domaine.fr` redirige vers le domaine nu
-- [ ] Formulaire de contact : s'envoyer un message test → bien reçu
-- [ ] Si e-commerce : paiement test Stripe avec carte `4242 4242 4242 4242` (date future, CVC 123)
+- [ ] `https://domaine.fr` s'ouvre avec le cadenas, `www` redirige vers le domaine nu
+- [ ] Formulaire de contact : envoyer un message test → le CLIENT le reçoit bien
+- [ ] Paiement (si e-commerce) : test avec la carte Stripe `4242 4242 4242 4242`
 - [ ] Pages légales accessibles depuis le footer
-- [ ] Test mobile réel (pas juste le devtools) : hero, menus, formulaires
-- [ ] Partage du lien sur WhatsApp/LinkedIn → l'aperçu (og:image) s'affiche
-- [ ] Lighthouse (devtools Chrome → onglet Lighthouse) : viser 90+ en SEO et Accessibilité
+- [ ] Test sur un vrai téléphone : navigation, formulaires, vitesse
+- [ ] Partager le lien sur WhatsApp → l'aperçu (image + titre) s'affiche correctement
+- [ ] Lighthouse (Chrome devtools) : viser 90+ en SEO et Accessibilité
 
 ---
 
-## 6. Livraison au client
+## Phase 6 — Livraison et clôture
 
-- [ ] Transférer la propriété ou inviter le client sur Vercel (Settings → Members)
-- [ ] Lui remettre : accès domaine, identifiants des services (EmailJS, Stripe...)
-- [ ] Lui montrer ses statistiques (analytics embarqué ou Vercel Analytics)
-- [ ] Facture 😎 (SIRET obligatoire dessus)
+- [ ] Passer Stripe du mode test au mode live (clés `sk_live_`) si paiement réel
+- [ ] Inviter le client sur le projet Vercel (Settings → Members) ou transférer la propriété
+- [ ] Remettre au client un document récap : URLs, accès, qui possède quoi
+- [ ] Lui montrer comment consulter ses statistiques et son panel admin
+- [ ] Proposer un contrat de maintenance (mises à jour, sauvegardes, support) → revenu récurrent
+- [ ] Facturer (SIRET obligatoire sur la facture) et demander un avis Google / témoignage
 
 ---
 
-## Cartes de test Stripe (mode test uniquement)
+## Aide-mémoire
 
-| Carte | Résultat |
-|---|---|
-| `4242 4242 4242 4242` | Paiement réussi |
-| `4000 0000 0000 9995` | Fonds insuffisants |
-| `4000 0025 0000 3155` | 3D Secure demandé |
+**Cartes de test Stripe :** `4242 4242 4242 4242` = succès ·
+`4000 0000 0000 9995` = fonds insuffisants · `4000 0025 0000 3155` = 3D Secure
+
+**Commandes :** `npm run validate` · `npm run build` · `npm run preview`
+
+**Liens :** vercel.com · search.google.com/search-console ·
+myaccount.google.com/apppasswords · dashboard.stripe.com
