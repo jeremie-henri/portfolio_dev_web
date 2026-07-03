@@ -57,13 +57,18 @@ export default async function handler(req, res) {
         quantity: Number(item.qty),
       }))
 
+      // Normalise SITE_URL : ajoute https:// si absent, retire le / final
+      // (Stripe exige un schéma explicite sur success_url/cancel_url)
+      const rawSite = (process.env.SITE_URL || 'http://localhost:5173').replace(/\/+$/, '')
+      const siteUrl = /^https?:\/\//i.test(rawSite) ? rawSite : `https://${rawSite}`
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         mode: 'payment',
         customer_email: customerEmail || undefined,
         line_items: lineItems,
-        success_url: `${process.env.SITE_URL || 'http://localhost:5173'}/demos/ecommerce.html?order=success&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url:  `${process.env.SITE_URL || 'http://localhost:5173'}/demos/ecommerce.html?order=cancelled`,
+        success_url: `${siteUrl}/demos/ecommerce.html?order=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url:  `${siteUrl}/demos/ecommerce.html?order=cancelled`,
         shipping_address_collection: { allowed_countries: ['FR', 'BE', 'CH', 'LU'] },
         metadata: { source: 'demo-maison-provence' },
       })
