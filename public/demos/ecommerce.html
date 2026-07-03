@@ -739,8 +739,19 @@ async function checkout(){
     const res=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'create-checkout',items,customerEmail:email})})
     const data=await res.json()
-    if(data.url){window.location.href=data.url;return} // → Stripe Checkout
-  }catch(e){console.warn('API Stripe non disponible, mode démo')}
+    if(data.url){
+      // → Redirection vers Stripe Checkout (assign() est plus fiable que href
+      //   face aux bloqueurs de redirection type Brave Shields)
+      window.location.assign(data.url)
+      return
+    }
+    // L'API a répondu mais sans URL : erreur réelle (pas de bascule démo silencieuse)
+    if(res.status!==404){
+      if(btn){btn.disabled=false;btn.textContent='Payer en ligne — Sécurisé 🔒'}
+      showToast(data.error||'Le paiement est momentanément indisponible.')
+      return
+    }
+  }catch(e){console.warn('API paiement injoignable, bascule en mode démo')}
 
   // ─── Mode démo (sans clés Stripe) ───────────────────────────────────────
   if(btn){btn.disabled=false;btn.textContent='Payer en ligne — Sécurisé 🔒'}
