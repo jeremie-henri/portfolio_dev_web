@@ -1,4 +1,5 @@
 // api/booking.js — Prise de RDV salon (démo)
+import Stripe from 'stripe'
 import { getTransporter, emailTemplate, escapeHtml, checkRateLimit } from './_mailer.js'
 
 export default async function handler(req, res) {
@@ -8,7 +9,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  if (!checkRateLimit(req, { max: 5, windowMs: 60_000 })) {
+  if (!checkRateLimit(req, { max: 8, windowMs: 60_000 })) {
     return res.status(429).json({ error: 'Trop de requêtes. Réessayez dans une minute.' })
   }
 
@@ -20,6 +21,40 @@ export default async function handler(req, res) {
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
     return res.status(400).json({ error: 'Email invalide' })
+  }
+
+  // ─── ACTION : Créer une session Stripe pour l'acompte (20%) ───────────────
+  if (body.action === 'create-checkout') {
+    const total = Number(body.price)
+    if (!Number.isFinite(total) || total < 1 || total > 10000) {
+      return res.status(400).json({ error: 'Montant invalide' })
+    }
+    const deposit = Math.round(total * 0.2 * 100) // acompte 20% en centimes
+    try {
+      const rawSite = (process.env.SITE_URL || 'http://localhost:5173').replace(/\/+$/, '')
+      const siteUrl = /^https?:\/\//i.test(rawSite) ? rawSite : `https://${rawSite}`
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'payment',
+        customer_email: body.email,
+        line_items: [{
+          price_data: {
+            currency: 'eur',
+            product_data: { name: `Acompte — ${String(body.service).slice(0, 100)}` },
+            unit_amount: deposit,
+          },
+          quantity: 1,
+        }],
+        success_url: `${siteUrl}/demos/rdv.html?booking=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${siteUrl}/demos/rdv.html?booking=cancelled`,
+        metadata: { source: 'demo-salon-eclat' },
+      })
+      return res.status(200).json({ url: session.url })
+    } catch (err) {
+      console.error('Booking Stripe error:', err)
+      return res.status(500).json({ error: 'Erreur lors de la création du paiement.' })
+    }
   }
 
   // Échappement HTML de toutes les données utilisateur (anti-injection email)

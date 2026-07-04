@@ -740,6 +740,8 @@ async function checkout(){
       body:JSON.stringify({action:'create-checkout',items,customerEmail:email})})
     const data=await res.json()
     if(data.url){
+      // Sauvegarde la commande pour envoyer les emails au retour de Stripe
+      try{sessionStorage.setItem('mp_pending_order',JSON.stringify({items,email,total:subtotal.toFixed(2)+' €'}))}catch(_){}
       // → Redirection vers Stripe Checkout (assign() est plus fiable que href
       //   face aux bloqueurs de redirection type Brave Shields)
       window.location.assign(data.url)
@@ -779,6 +781,15 @@ async function checkout(){
   const params=new URLSearchParams(location.search)
   if(params.get('order')==='success'){
     const sessionId=params.get('session_id')||''
+    // Le paiement a réussi : envoie les emails de confirmation (commande sauvegardée avant Stripe)
+    try{
+      const pending=JSON.parse(sessionStorage.getItem('mp_pending_order')||'null')
+      if(pending){
+        fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({action:'confirm',sessionId,email:pending.email,items:pending.items,total:pending.total})}).catch(()=>{})
+        sessionStorage.removeItem('mp_pending_order')
+      }
+    }catch(_){}
     setTimeout(()=>{
       openCart()
       document.getElementById('cart-sidebar').innerHTML=`

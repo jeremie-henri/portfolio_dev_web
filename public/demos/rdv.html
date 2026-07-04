@@ -762,6 +762,23 @@ async function submitBooking(e){
   const fd=new FormData(e.target)
   const body={...Object.fromEntries(fd.entries()),service:s.nom,duration:String(s.dur),price:String(s.prix),date:`${selDate} ${MONTHS[curDate.getMonth()]} ${curDate.getFullYear()}`,time:selSlot}
   try{
+    // 1) Tente le paiement de l'acompte via Stripe
+    try{
+      const res=await fetch('/api/booking',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({...body,action:'create-checkout'})})
+      const ct=res.headers.get('content-type')||''
+      if(ct.includes('application/json')){
+        const data=await res.json()
+        if(data.url){
+          // Sauvegarde le RDV pour envoyer les emails au retour de Stripe
+          try{sessionStorage.setItem('se_pending_rdv',JSON.stringify(body))}catch(_){}
+          window.location.assign(data.url)
+          return
+        }
+      }
+    }catch(_){}
+
+    // 2) Mode démo (sans clés Stripe) : envoie les emails directement
     let ref=null
     try{
       const res=await fetch('/api/booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
@@ -772,7 +789,6 @@ async function submitBooking(e){
       }
     }catch(_){}
     if(!ref)ref='RDV-'+Math.random().toString(36).slice(2,5).toUpperCase()+Math.floor(Math.random()*100)
-    const data={ref}
     const suc=document.getElementById('bk-success')
     suc.style.display='block'
     suc.innerHTML=`✅ <strong>RDV confirmé !</strong> Réf. <strong>${ref}</strong><br>${s.nom} le ${body.date} à ${selSlot}<br>Email envoyé · Acompte de ${Math.round(s.prix*.2)} € sera prélevé.`
@@ -781,6 +797,34 @@ async function submitBooking(e){
   }catch(er){showError(er.message||'Erreur. Réessayez ou appelez le 01 42 00 00 00.')}
   finally{btn.textContent='✅ Confirmer et payer l\'acompte';btn.disabled=false}
 }
+
+// Retour de Stripe après paiement de l'acompte
+;(function handleBookingReturn(){
+  const params=new URLSearchParams(location.search)
+  if(params.get('booking')==='success'){
+    let body=null
+    try{body=JSON.parse(sessionStorage.getItem('se_pending_rdv')||'null')}catch(_){}
+    if(body){
+      // Envoie les emails de confirmation (l'acompte a été payé)
+      fetch('/api/booking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(function(){})
+      sessionStorage.removeItem('se_pending_rdv')
+    }
+    window.addEventListener('DOMContentLoaded',function(){
+      const suc=document.getElementById('bk-success')
+      if(!suc)return
+      suc.style.display='block'
+      suc.innerHTML=`✅ <strong>Acompte payé — RDV confirmé !</strong><br>${body?body.service+' le '+body.date+' à '+body.time+'<br>':''}Un email de confirmation vous a été envoyé.`
+      suc.scrollIntoView({behavior:'smooth',block:'center'})
+      history.replaceState({},'',location.pathname)
+    })
+  }
+  if(params.get('booking')==='cancelled'){
+    window.addEventListener('DOMContentLoaded',function(){
+      showError('Paiement annulé — votre RDV n\'a pas été réservé.')
+      history.replaceState({},'',location.pathname)
+    })
+  }
+})()
 function showError(m){const el=document.getElementById('bk-error');el.style.display='block';el.textContent='❌ '+m;el.scrollIntoView({behavior:'smooth',block:'center'})}
 function hideAlerts(){document.getElementById('bk-success').style.display='none';document.getElementById('bk-error').style.display='none'}
 
