@@ -5,7 +5,7 @@ import { FiMenu, FiX, FiZap } from 'react-icons/fi'
 const LINKS = [
   { label: 'Services', href: '#services' },
   { label: 'À propos', href: '#about' },
-  { label: 'Compétences', href: '#skills' },
+  { label: 'Blog', href: '/blog/' },
   { label: 'Contact', href: '#contact' },
 ]
 
