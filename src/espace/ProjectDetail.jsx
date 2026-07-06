@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAuth } from './AuthContext'
 import { STATUTS } from './supabase'
 import { supabase } from './supabase'
+import SignaturePad from './SignaturePad'
 import {
   fetchProjet,
   fetchEtapes,
@@ -41,6 +42,7 @@ export default function ProjectDetail({ projetId, onBack }) {
   const [messages, setMessages] = useState([])
   const [fichiers, setFichiers] = useState([])
   const [factures, setFactures] = useState([])
+  const [signing, setSigning] = useState(null)
   const [msg, setMsg] = useState('')
   const [busy, setBusy] = useState(false)
   const chatRef = useRef(null)
@@ -72,11 +74,10 @@ export default function ProjectDetail({ projetId, onBack }) {
     setFactures(await fetchFactures(projetId))
   }
 
-  const handleSigner = async (facture) => {
-    const nom = prompt('Signez en tapant votre nom complet (valeur d’un « bon pour accord ») :')
-    if (!nom || !nom.trim()) return
+  const confirmSignature = async (nom, img) => {
     try {
-      await signerDocument(facture.id, nom.trim())
+      await signerDocument(signing.id, nom, img)
+      setSigning(null)
       setFactures(await fetchFactures(projetId))
     } catch (err) {
       alert('Signature impossible : ' + err.message)
@@ -258,10 +259,15 @@ export default function ProjectDetail({ projetId, onBack }) {
                   {icone} {f.numero} — {f.libelle}
                   <span style={{ color: 'var(--muted)', marginLeft: 8 }}>{ttc(f)} € TTC</span>
                   {f.signe_le && (
-                    <span style={{ display: 'block', fontSize: 11, color: '#22c55e', marginTop: 2 }}>
-                      ✓ Signé par {f.signe_par} le{' '}
-                      {new Date(f.signe_le).toLocaleDateString('fr-FR')}
-                    </span>
+                    <>
+                      <span style={{ display: 'block', fontSize: 11, color: '#22c55e', marginTop: 2 }}>
+                        ✓ Signé par {f.signe_par} le{' '}
+                        {new Date(f.signe_le).toLocaleDateString('fr-FR')}
+                      </span>
+                      {f.signature_img && (
+                        <img src={f.signature_img} alt="Signature" className="esp-sign-preview" />
+                      )}
+                    </>
                   )}
                 </span>
 
@@ -275,7 +281,7 @@ export default function ProjectDetail({ projetId, onBack }) {
                       À signer
                     </span>
                   ) : (
-                    <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => handleSigner(f)}>
+                    <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => setSigning(f)}>
                       Signer (bon pour accord)
                     </button>
                   )
@@ -333,6 +339,10 @@ export default function ProjectDetail({ projetId, onBack }) {
           </button>
         </form>
       </div>
+
+      {signing && (
+        <SignaturePad doc={signing} onCancel={() => setSigning(null)} onConfirm={confirmSignature} />
+      )}
     </div>
   )
 }

@@ -135,16 +135,17 @@ create policy "fichiers_admin_write" on fichiers for all
   using (is_admin()) with check (is_admin());
 
 -- ═══ SIGNATURE ÉLECTRONIQUE (devis « bon pour accord ») ══════════════
-alter table factures add column if not exists type       text not null default 'facture'; -- devis | facture
-alter table factures add column if not exists signe_par  text;
-alter table factures add column if not exists signe_le   timestamptz;
+alter table factures add column if not exists type          text not null default 'facture'; -- devis | facture
+alter table factures add column if not exists signe_par     text;
+alter table factures add column if not exists signe_le       timestamptz;
+alter table factures add column if not exists signature_img  text;  -- tracé (PNG base64)
 
 -- Le client signe SON document via cette fonction (il ne peut PAS toucher au montant).
-create or replace function signer_document(doc_id uuid, nom text)
+create or replace function signer_document(doc_id uuid, nom text, img text default null)
 returns void as $$
 begin
   update factures f
-     set signe_par = nom, signe_le = now()
+     set signe_par = nom, signe_le = now(), signature_img = img
    from projets p
   where f.id = doc_id
     and f.projet_id = p.id
