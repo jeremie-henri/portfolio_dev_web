@@ -1,0 +1,374 @@
+/* ── Espace client/admin — thème aligné sur le portfolio ── */
+.esp {
+  --bg: #000;
+  --card: #0d0d0d;
+  --card2: #111;
+  --accent: #7c6af7;
+  --a2: #9f91fa;
+  --text: #fff;
+  --muted: rgba(255, 255, 255, 0.6);
+  --border: rgba(255, 255, 255, 0.1);
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.esp * {
+  box-sizing: border-box;
+}
+.esp a {
+  color: var(--a2);
+  text-decoration: none;
+}
+
+/* Login */
+.esp-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.esp-login-box {
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem;
+}
+.esp-login-box h1 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 0.25rem;
+}
+.esp-sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 2rem;
+}
+.esp-field {
+  margin-bottom: 0.85rem;
+}
+.esp-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+.esp-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.esp-input:focus {
+  border-color: rgba(124, 106, 247, 0.6);
+}
+.esp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 12px;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.esp-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.esp-btn-accent {
+  background: var(--accent);
+  color: #fff;
+}
+.esp-btn-sm {
+  width: auto;
+  padding: 7px 14px;
+  font-size: 13px;
+}
+.esp-btn-ghost {
+  width: auto;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.esp-link-btn {
+  background: none;
+  border: none;
+  color: var(--a2);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 1rem;
+  font-family: inherit;
+}
+.esp-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  font-size: 13px;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+.esp-ok {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+  font-size: 13px;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Layout appli */
+.esp-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+.esp-brand {
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.esp-brand span {
+  color: var(--muted);
+}
+.esp-top-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 13px;
+  color: var(--muted);
+}
+.esp-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2rem);
+}
+.esp-h {
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.4rem;
+}
+.esp-hsub {
+  color: var(--muted);
+  margin: 0 0 2rem;
+  font-size: 14px;
+}
+
+/* Cartes projet */
+.esp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
+}
+.esp-card-link {
+  display: block;
+  color: inherit;
+  cursor: pointer;
+}
+.esp-card-link:hover {
+  border-color: rgba(124, 106, 247, 0.4);
+  transform: translateY(-2px);
+}
+.esp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.esp-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+.esp-card p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+.esp-badge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+/* Barre d'avancement */
+.esp-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.9rem;
+}
+.esp-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--a2));
+  transition: width 0.5s;
+}
+.esp-pct {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* Timeline étapes */
+.esp-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.esp-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.esp-step:last-child {
+  border-bottom: none;
+}
+.esp-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+.esp-dot.done {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: #000;
+}
+.esp-step.done span {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+/* Messagerie */
+.esp-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+.esp-msg {
+  max-width: 78%;
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.esp-msg.me {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #fff;
+}
+.esp-msg.them {
+  align-self: flex-start;
+  background: var(--card2);
+  border: 1px solid var(--border);
+}
+.esp-msg-time {
+  display: block;
+  font-size: 10px;
+  opacity: 0.6;
+  margin-top: 3px;
+}
+.esp-chat-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+/* Sections détail */
+.esp-section {
+  margin-top: 2rem;
+}
+.esp-section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--a2);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.esp-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  font-size: 14px;
+}
+.esp-empty {
+  color: var(--muted);
+  font-size: 14px;
+  padding: 1.5rem;
+  text-align: center;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+}
+.esp-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.esp-notice {
+  background: rgba(124, 106, 247, 0.08);
+  border: 1px solid rgba(124, 106, 247, 0.25);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.esp-notice strong {
+  color: var(--text);
+}

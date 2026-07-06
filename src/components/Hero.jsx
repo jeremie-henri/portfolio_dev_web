@@ -54,6 +54,8 @@ function Typewriter() {
 
 export default function Hero() {
   const ref = useRef(null)
+  // Mois courant, mis à jour automatiquement (ex. « juillet »)
+  const moisCourant = new Date().toLocaleDateString('fr-FR', { month: 'long' })
   const { scrollY } = useScroll()
   const vh = typeof window !== 'undefined' ? window.innerHeight : 800
   // Orbs parallax
@@ -162,7 +164,7 @@ export default function Hero() {
               flexShrink: 0,
             }}
           />
-          2 créneaux disponibles en juin — Réservez maintenant
+          2 créneaux disponibles en {moisCourant} — Réservez maintenant
         </span>
       </div>
 
