@@ -7,6 +7,15 @@ import App from './App.jsx'
 // Espace client/admin chargé en différé : n'alourdit pas le portfolio
 const EspaceApp = lazy(() => import('./espace/EspaceApp.jsx'))
 
+// Un lien d'authentification Supabase (invitation, reset) peut atterrir sur la
+// racine avec le token dans le hash : on le renvoie vers /espace qui le consomme.
+if (
+  window.location.hash.includes('access_token') &&
+  !window.location.pathname.startsWith('/espace')
+) {
+  window.location.replace('/espace' + window.location.search + window.location.hash)
+}
+
 // Forcer le scroll à 0 avant le rendu React pour que Framer Motion
 // lise scrollY=0 dès l'initialisation, évitant le flash sombre au refresh
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'

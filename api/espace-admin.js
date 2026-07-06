@@ -28,6 +28,11 @@ export default async function handler(req, res) {
 
   const { action } = req.body || {}
 
+  // URL de redirection absolue vers l'espace (https ajouté si absent)
+  const rawSite = (process.env.SITE_URL || '').replace(/\/+$/, '')
+  const site = rawSite && !/^https?:\/\//i.test(rawSite) ? `https://${rawSite}` : rawSite
+  const redirectTo = `${site || 'https://jeremiehenri.fr'}/espace`
+
   try {
     // 2a) Inviter un nouveau client (Supabase envoie un email d'invitation)
     if (action === 'invite-client') {
@@ -36,7 +41,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Email invalide' })
       }
       const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
-        redirectTo: `${process.env.SITE_URL || ''}/espace`,
+        redirectTo,
       })
       if (error && !/already/i.test(error.message)) throw error
       // si l'utilisateur existe déjà, on le retrouve
@@ -58,7 +63,7 @@ export default async function handler(req, res) {
       let client = list.data.users.find((u) => u.email === clientEmail)
       if (!client) {
         const inv = await admin.auth.admin.inviteUserByEmail(clientEmail, {
-          redirectTo: `${process.env.SITE_URL || ''}/espace`,
+          redirectTo,
         })
         client = inv.data?.user
       }
