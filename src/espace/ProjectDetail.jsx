@@ -9,6 +9,7 @@ import {
   fetchFichiers,
   fetchFactures,
   createFacture,
+  signerDocument,
   toggleEtape,
   sendMessage,
   uploadFichier,
@@ -52,12 +53,13 @@ export default function ProjectDetail({ projetId, onBack }) {
     setFactures(await fetchFactures(projetId))
   }
 
-  const handleAddFacture = async () => {
-    const libelle = prompt('Libellé de la facture (ex : Acompte 30%) :')
+  const handleAddDoc = async (type) => {
+    const libelle = prompt(`Libellé du ${type} (ex : ${type === 'devis' ? 'Création site vitrine' : 'Acompte 30%'}) :`)
     if (!libelle) return
     const montant = prompt('Montant HT en euros (ex : 450) :')
     if (!montant || isNaN(Number(montant))) return
-    const numero = 'FAC-' + new Date().getFullYear() + '-' + String(factures.length + 1).padStart(3, '0')
+    const prefix = type === 'devis' ? 'DEV' : 'FAC'
+    const numero = `${prefix}-${new Date().getFullYear()}-${String(factures.length + 1).padStart(3, '0')}`
     await createFacture({
       projet_id: projetId,
       numero,
@@ -65,8 +67,20 @@ export default function ProjectDetail({ projetId, onBack }) {
       montant_ht: Number(montant),
       tva_taux: 20,
       statut: 'en_attente',
+      type,
     })
     setFactures(await fetchFactures(projetId))
+  }
+
+  const handleSigner = async (facture) => {
+    const nom = prompt('Signez en tapant votre nom complet (valeur d’un « bon pour accord ») :')
+    if (!nom || !nom.trim()) return
+    try {
+      await signerDocument(facture.id, nom.trim())
+      setFactures(await fetchFactures(projetId))
+    } catch (err) {
+      alert('Signature impossible : ' + err.message)
+    }
   }
 
   /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
@@ -217,40 +231,70 @@ export default function ProjectDetail({ projetId, onBack }) {
         )}
       </div>
 
-      {/* Factures */}
+      {/* Devis & factures */}
       <div className="esp-section">
         <div className="esp-row" style={{ justifyContent: 'space-between' }}>
-          <div className="esp-section-title">Factures</div>
+          <div className="esp-section-title">Devis & factures</div>
           {isAdmin && (
-            <button className="esp-btn esp-btn-ghost esp-btn-sm" onClick={handleAddFacture}>
-              + Facture
-            </button>
+            <div className="esp-row">
+              <button className="esp-btn esp-btn-ghost esp-btn-sm" onClick={() => handleAddDoc('devis')}>
+                + Devis
+              </button>
+              <button className="esp-btn esp-btn-ghost esp-btn-sm" onClick={() => handleAddDoc('facture')}>
+                + Facture
+              </button>
+            </div>
           )}
         </div>
         {factures.length === 0 ? (
-          <div className="esp-empty">Aucune facture pour l’instant.</div>
+          <div className="esp-empty">Aucun document pour l’instant.</div>
         ) : (
-          factures.map((f) => (
-            <div key={f.id} className="esp-file">
-              <span>
-                🧾 {f.numero} — {f.libelle}
-                <span style={{ color: 'var(--muted)', marginLeft: 8 }}>{ttc(f)} € TTC</span>
-              </span>
-              {f.statut === 'payee' ? (
-                <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
-                  Payée
+          factures.map((f) => {
+            const estDevis = f.type === 'devis'
+            const icone = estDevis ? '📝' : '🧾'
+            return (
+              <div key={f.id} className="esp-file">
+                <span>
+                  {icone} {f.numero} — {f.libelle}
+                  <span style={{ color: 'var(--muted)', marginLeft: 8 }}>{ttc(f)} € TTC</span>
+                  {f.signe_le && (
+                    <span style={{ display: 'block', fontSize: 11, color: '#22c55e', marginTop: 2 }}>
+                      ✓ Signé par {f.signe_par} le{' '}
+                      {new Date(f.signe_le).toLocaleDateString('fr-FR')}
+                    </span>
+                  )}
                 </span>
-              ) : isAdmin ? (
-                <span className="esp-badge" style={{ background: '#eab30822', color: '#eab308' }}>
-                  En attente
-                </span>
-              ) : (
-                <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => payerFacture(f.id)}>
-                  Payer {ttc(f)} €
-                </button>
-              )}
-            </div>
-          ))
+
+                {estDevis ? (
+                  f.signe_le ? (
+                    <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
+                      Signé
+                    </span>
+                  ) : isAdmin ? (
+                    <span className="esp-badge" style={{ background: '#eab30822', color: '#eab308' }}>
+                      À signer
+                    </span>
+                  ) : (
+                    <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => handleSigner(f)}>
+                      Signer (bon pour accord)
+                    </button>
+                  )
+                ) : f.statut === 'payee' ? (
+                  <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
+                    Payée
+                  </span>
+                ) : isAdmin ? (
+                  <span className="esp-badge" style={{ background: '#eab30822', color: '#eab308' }}>
+                    En attente
+                  </span>
+                ) : (
+                  <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => payerFacture(f.id)}>
+                    Payer {ttc(f)} €
+                  </button>
+                )}
+              </div>
+            )
+          })
         )}
       </div>
 

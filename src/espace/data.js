@@ -107,6 +107,12 @@ export async function createFacture(f) {
   if (error) throw error
 }
 
+// Signature électronique d'un devis par le client (bon pour accord)
+export async function signerDocument(docId, nom) {
+  const { error } = await supabase.rpc('signer_document', { doc_id: docId, nom })
+  if (error) throw error
+}
+
 // ── Profil ──
 export async function fetchProfil(userId) {
   const { data, error } = await supabase.from('profils').select('*').eq('id', userId).maybeSingle()
