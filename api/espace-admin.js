@@ -59,15 +59,17 @@ export default async function handler(req, res) {
       if (!clientEmail || !titre) return res.status(400).json({ error: 'Champs requis manquants' })
 
       // Trouver l'id du client (ou l'inviter s'il n'existe pas)
-      const list = await admin.auth.admin.listUsers()
+      const list = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 })
       let client = list.data.users.find((u) => u.email === clientEmail)
       if (!client) {
-        const inv = await admin.auth.admin.inviteUserByEmail(clientEmail, {
-          redirectTo,
-        })
+        const inv = await admin.auth.admin.inviteUserByEmail(clientEmail, { redirectTo })
+        if (inv.error) {
+          // Erreur d'envoi (souvent SMTP mal configuré) : on la remonte telle quelle
+          return res.status(400).json({ error: `Invitation impossible : ${inv.error.message}` })
+        }
         client = inv.data?.user
       }
-      if (!client) return res.status(400).json({ error: 'Client introuvable' })
+      if (!client) return res.status(400).json({ error: 'Client introuvable après invitation.' })
 
       const { data: projet, error: pErr } = await admin
         .from('projets')
