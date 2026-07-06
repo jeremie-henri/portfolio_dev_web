@@ -8,6 +8,13 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const isConfigured = Boolean(url && anonKey)
 
+// Type de lien d'authentification (invite / recovery) — capturé AVANT que le
+// client Supabase ne consomme et n'efface le hash de l'URL.
+export const authFlowType =
+  typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.hash.slice(1)).get('type')
+    : null
+
 export const supabase = isConfigured ? createClient(url, anonKey) : null
 
 // Libellés de statut de projet partagés

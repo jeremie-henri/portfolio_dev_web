@@ -42,6 +42,10 @@ export default function Footer() {
       <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0, textAlign: 'center' }}>
         &copy; {new Date().getFullYear()} Jérémie Henri · Développeur web indépendant
         <span style={{ display: 'block', marginTop: 4 }}>
+          <a href="/espace" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}>
+            Espace client
+          </a>
+          {' · '}
           <a href="/blog/" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}>
             Blog
           </a>
