@@ -81,44 +81,56 @@ alter table factures enable row level security;
 alter table profils  enable row level security;
 
 -- Factures : lecture selon accès au projet ; écriture admin
+drop policy if exists "factures_select" on factures;
 create policy "factures_select" on factures for select
   using (exists (select 1 from projets p where p.id = projet_id
          and (p.client_id = auth.uid() or is_admin())));
+drop policy if exists "factures_admin_write" on factures;
 create policy "factures_admin_write" on factures for all
   using (is_admin()) with check (is_admin());
 
 -- Profil : chacun gère le sien, l'admin voit tout
+drop policy if exists "profils_select" on profils;
 create policy "profils_select" on profils for select
   using (id = auth.uid() or is_admin());
+drop policy if exists "profils_upsert" on profils;
 create policy "profils_upsert" on profils for all
   using (id = auth.uid()) with check (id = auth.uid());
 
 -- Projets : le client voit les siens, l'admin voit tout
+drop policy if exists "projets_select" on projets;
 create policy "projets_select" on projets for select
   using (client_id = auth.uid() or is_admin());
+drop policy if exists "projets_admin_write" on projets;
 create policy "projets_admin_write" on projets for all
   using (is_admin()) with check (is_admin());
 
 -- Étapes : lecture si le projet appartient au client (ou admin) ; écriture admin
+drop policy if exists "etapes_select" on etapes;
 create policy "etapes_select" on etapes for select
   using (exists (select 1 from projets p where p.id = projet_id
          and (p.client_id = auth.uid() or is_admin())));
+drop policy if exists "etapes_admin_write" on etapes;
 create policy "etapes_admin_write" on etapes for all
   using (is_admin()) with check (is_admin());
 
 -- Messages : lecture selon accès au projet ; le client ET l'admin peuvent écrire
+drop policy if exists "messages_select" on messages;
 create policy "messages_select" on messages for select
   using (exists (select 1 from projets p where p.id = projet_id
          and (p.client_id = auth.uid() or is_admin())));
+drop policy if exists "messages_insert" on messages;
 create policy "messages_insert" on messages for insert
   with check (auteur_id = auth.uid() and exists (
          select 1 from projets p where p.id = projet_id
          and (p.client_id = auth.uid() or is_admin())));
 
 -- Fichiers : lecture selon accès au projet ; écriture admin
+drop policy if exists "fichiers_select" on fichiers;
 create policy "fichiers_select" on fichiers for select
   using (exists (select 1 from projets p where p.id = projet_id
          and (p.client_id = auth.uid() or is_admin())));
+drop policy if exists "fichiers_admin_write" on fichiers;
 create policy "fichiers_admin_write" on fichiers for all
   using (is_admin()) with check (is_admin());
 
@@ -127,10 +139,12 @@ create policy "fichiers_admin_write" on fichiers for all
 insert into storage.buckets (id, name, public) values ('livrables', 'livrables', false)
   on conflict (id) do nothing;
 
+drop policy if exists "livrables_read" on storage.objects;
 create policy "livrables_read" on storage.objects for select
   using (bucket_id = 'livrables' and (is_admin() or exists (
     select 1 from fichiers f join projets p on p.id = f.projet_id
     where f.chemin = name and p.client_id = auth.uid())));
+drop policy if exists "livrables_admin_write" on storage.objects;
 create policy "livrables_admin_write" on storage.objects for all
   using (bucket_id = 'livrables' and is_admin())
   with check (bucket_id = 'livrables' and is_admin());
