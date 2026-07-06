@@ -164,6 +164,44 @@
   font-size: 13px;
   color: var(--muted);
 }
+.esp-tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+.esp-tab {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.esp-tab:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+.esp-tab.active {
+  color: var(--text);
+  background: rgba(124, 106, 247, 0.15);
+}
+@media (max-width: 600px) {
+  .esp-email {
+    display: none;
+  }
+  .esp-tabs {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  .esp-top {
+    flex-wrap: wrap;
+  }
+}
 .esp-wrap {
   max-width: 960px;
   margin: 0 auto;

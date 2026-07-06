@@ -33,7 +33,7 @@ const SKILLS = [
 ]
 
 const TOOLS = [
-  { icon: `${CDN}/github/github-original.svg`, name: 'GitHub' },
+  { icon: `${CDN}/github/github-original.svg`, name: 'GitHub', invert: true },
   { icon: `${CDN}/vitejs/vitejs-original.svg`, name: 'Vite' },
   { icon: `${CDN}/docker/docker-original.svg`, name: 'Docker' },
   { icon: `${CDN}/postman/postman-original.svg`, name: 'Postman' },
@@ -219,7 +219,11 @@ export default function Skills() {
                   alt={t.name}
                   width={18}
                   height={18}
-                  style={{ objectFit: 'contain', flexShrink: 0 }}
+                  style={{
+                    objectFit: 'contain',
+                    flexShrink: 0,
+                    filter: t.invert ? 'invert(1)' : 'none',
+                  }}
                 />{' '}
                 {t.name}
               </motion.span>

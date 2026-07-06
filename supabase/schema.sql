@@ -50,11 +50,48 @@ create table if not exists fichiers (
   created_at  timestamptz not null default now()
 );
 
+-- ── FACTURES ─────────────────────────────────────────────────────────
+create table if not exists factures (
+  id          uuid primary key default gen_random_uuid(),
+  projet_id   uuid not null references projets(id) on delete cascade,
+  numero      text not null,               -- ex. FAC-2026-001
+  libelle     text not null,
+  montant_ht  numeric(10,2) not null,      -- en euros
+  tva_taux    numeric(4,2) not null default 20,
+  statut      text not null default 'en_attente',  -- en_attente | payee
+  echeance    date,
+  created_at  timestamptz not null default now()
+);
+
+-- ── PROFIL client (nom, entreprise, téléphone) ───────────────────────
+create table if not exists profils (
+  id          uuid primary key references auth.users(id) on delete cascade,
+  nom         text,
+  entreprise  text,
+  telephone   text,
+  updated_at  timestamptz not null default now()
+);
+
 -- ═══ ROW LEVEL SECURITY ══════════════════════════════════════════════
 alter table projets  enable row level security;
 alter table etapes   enable row level security;
 alter table messages enable row level security;
 alter table fichiers enable row level security;
+alter table factures enable row level security;
+alter table profils  enable row level security;
+
+-- Factures : lecture selon accès au projet ; écriture admin
+create policy "factures_select" on factures for select
+  using (exists (select 1 from projets p where p.id = projet_id
+         and (p.client_id = auth.uid() or is_admin())));
+create policy "factures_admin_write" on factures for all
+  using (is_admin()) with check (is_admin());
+
+-- Profil : chacun gère le sien, l'admin voit tout
+create policy "profils_select" on profils for select
+  using (id = auth.uid() or is_admin());
+create policy "profils_upsert" on profils for all
+  using (id = auth.uid()) with check (id = auth.uid());
 
 -- Projets : le client voit les siens, l'admin voit tout
 create policy "projets_select" on projets for select

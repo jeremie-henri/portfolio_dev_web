@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from './AuthContext'
 import { STATUTS } from './supabase'
+import { supabase } from './supabase'
 import {
   fetchProjet,
   fetchEtapes,
   fetchMessages,
   fetchFichiers,
+  fetchFactures,
+  createFacture,
   toggleEtape,
   sendMessage,
   uploadFichier,
@@ -14,12 +17,29 @@ import {
   addEtape,
 } from './data'
 
+function ttc(f) {
+  return (Number(f.montant_ht) * (1 + Number(f.tva_taux) / 100)).toFixed(2)
+}
+
+async function payerFacture(factureId) {
+  const { data } = await supabase.auth.getSession()
+  const res = await fetch('/api/espace-facture', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${data.session?.access_token}` },
+    body: JSON.stringify({ action: 'create-checkout', factureId }),
+  })
+  const out = await res.json()
+  if (out.url) window.location.assign(out.url)
+  else alert(out.error || 'Paiement indisponible.')
+}
+
 export default function ProjectDetail({ projetId, onBack }) {
   const { user, isAdmin } = useAuth()
   const [projet, setProjet] = useState(null)
   const [etapes, setEtapes] = useState([])
   const [messages, setMessages] = useState([])
   const [fichiers, setFichiers] = useState([])
+  const [factures, setFactures] = useState([])
   const [msg, setMsg] = useState('')
   const [busy, setBusy] = useState(false)
   const chatRef = useRef(null)
@@ -29,6 +49,24 @@ export default function ProjectDetail({ projetId, onBack }) {
     setEtapes(await fetchEtapes(projetId))
     setMessages(await fetchMessages(projetId))
     setFichiers(await fetchFichiers(projetId))
+    setFactures(await fetchFactures(projetId))
+  }
+
+  const handleAddFacture = async () => {
+    const libelle = prompt('Libellé de la facture (ex : Acompte 30%) :')
+    if (!libelle) return
+    const montant = prompt('Montant HT en euros (ex : 450) :')
+    if (!montant || isNaN(Number(montant))) return
+    const numero = 'FAC-' + new Date().getFullYear() + '-' + String(factures.length + 1).padStart(3, '0')
+    await createFacture({
+      projet_id: projetId,
+      numero,
+      libelle,
+      montant_ht: Number(montant),
+      tva_taux: 20,
+      statut: 'en_attente',
+    })
+    setFactures(await fetchFactures(projetId))
   }
 
   /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
@@ -174,6 +212,43 @@ export default function ProjectDetail({ projetId, onBack }) {
               <button className="esp-btn esp-btn-ghost esp-btn-sm" onClick={() => handleDownload(f.chemin)}>
                 Télécharger
               </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Factures */}
+      <div className="esp-section">
+        <div className="esp-row" style={{ justifyContent: 'space-between' }}>
+          <div className="esp-section-title">Factures</div>
+          {isAdmin && (
+            <button className="esp-btn esp-btn-ghost esp-btn-sm" onClick={handleAddFacture}>
+              + Facture
+            </button>
+          )}
+        </div>
+        {factures.length === 0 ? (
+          <div className="esp-empty">Aucune facture pour l’instant.</div>
+        ) : (
+          factures.map((f) => (
+            <div key={f.id} className="esp-file">
+              <span>
+                🧾 {f.numero} — {f.libelle}
+                <span style={{ color: 'var(--muted)', marginLeft: 8 }}>{ttc(f)} € TTC</span>
+              </span>
+              {f.statut === 'payee' ? (
+                <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
+                  Payée
+                </span>
+              ) : isAdmin ? (
+                <span className="esp-badge" style={{ background: '#eab30822', color: '#eab308' }}>
+                  En attente
+                </span>
+              ) : (
+                <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => payerFacture(f.id)}>
+                  Payer {ttc(f)} €
+                </button>
+              )}
             </div>
           ))
         )}

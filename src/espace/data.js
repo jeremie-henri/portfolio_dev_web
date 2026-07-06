@@ -92,3 +92,32 @@ export async function downloadUrl(chemin) {
   if (error) throw error
   return data.signedUrl
 }
+
+// ── Factures ──
+export async function fetchFactures(projetId) {
+  let q = supabase.from('factures').select('*').order('created_at', { ascending: false })
+  if (projetId) q = q.eq('projet_id', projetId)
+  const { data, error } = await q
+  if (error) throw error
+  return data
+}
+
+export async function createFacture(f) {
+  const { error } = await supabase.from('factures').insert(f)
+  if (error) throw error
+}
+
+// ── Profil ──
+export async function fetchProfil(userId) {
+  const { data, error } = await supabase.from('profils').select('*').eq('id', userId).maybeSingle()
+  if (error) throw error
+  return data
+}
+
+export async function saveProfil(userId, patch) {
+  const { error } = await supabase
+    .from('profils')
+    .upsert({ id: userId, ...patch, updated_at: new Date().toISOString() })
+  if (error) throw error
+}
+
