@@ -184,31 +184,7 @@ export default function Hero() {
         }}
       >
         {/* Titre machine à écrire */}
-        <motion.h1
-          style={{
-            fontFamily: "'Inter',sans-serif",
-            fontWeight: 800,
-            lineHeight: 1.12,
-            fontSize: 'clamp(1.4rem,3.8vw,3.6rem)',
-            letterSpacing: '-0.03em',
-            marginBottom: '1.5rem',
-            paddingBottom: '0.12em',
-            whiteSpace: 'normal',
-            textAlign: 'center',
-            wordBreak: 'break-word',
-            width: '100%',
-            maxWidth: '100%',
-            /* Hauteur fixe de 2 lignes : le contenu en dessous ne bouge jamais pendant la frappe */
-            height: '2.5em',
-            overflow: 'hidden',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            alignContent: 'center',
-            padding: '0 clamp(1rem,5vw,3rem)',
-          }}
-        >
+        <motion.h1 className="hero-title">
           <Typewriter />
         </motion.h1>
 
@@ -223,11 +199,11 @@ export default function Hero() {
             marginBottom: '3rem',
           }}
         >
-          <span style={{ whiteSpace: 'nowrap', display: 'block' }}>
+          <span className="hero-sub-line">
             Sites vitrines, Applications web, E-commerce — livrés en{' '}
             <span style={{ color: '#ffffff', fontWeight: 500 }}>72h à 14 jours</span>.
           </span>
-          <span style={{ whiteSpace: 'nowrap', display: 'block' }}>
+          <span className="hero-sub-line">
             Double expertise{' '}
             <span style={{ color: '#ffffff', fontWeight: 500 }}>
               informatique &amp; terrain industriel
