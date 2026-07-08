@@ -62,16 +62,20 @@ export default function ProjectDetail({ projetId, onBack }) {
     if (!montant || isNaN(Number(montant))) return
     const prefix = type === 'devis' ? 'DEV' : 'FAC'
     const numero = `${prefix}-${new Date().getFullYear()}-${String(factures.length + 1).padStart(3, '0')}`
-    await createFacture({
-      projet_id: projetId,
-      numero,
-      libelle,
-      montant_ht: Number(montant),
-      tva_taux: 20,
-      statut: 'en_attente',
-      type,
-    })
-    setFactures(await fetchFactures(projetId))
+    try {
+      await createFacture({
+        projet_id: projetId,
+        numero,
+        libelle,
+        montant_ht: Number(montant),
+        tva_taux: 20,
+        statut: 'en_attente',
+        type,
+      })
+      setFactures(await fetchFactures(projetId))
+    } catch (err) {
+      alert(`Création impossible : ${err.message}\n\n(Vérifie que le schéma SQL est à jour dans Supabase.)`)
+    }
   }
 
   const confirmSignature = async (nom, img) => {
