@@ -49,6 +49,7 @@ export default function TrustBar() {
           {ITEMS.map(item => (
             <motion.div
               key={item.label}
+              className="blur-card"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -63,8 +64,6 @@ export default function TrustBar() {
                 alignItems: 'center',
                 gap: 10,
                 background: item.highlight ? 'rgba(34,197,94,0.07)' : 'rgba(20,20,34,0.6)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
                 border: item.highlight
                   ? '1px solid rgba(34,197,94,0.3)'
                   : '1px solid rgba(165,146,255,0.15)',

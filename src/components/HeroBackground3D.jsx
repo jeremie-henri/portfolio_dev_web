@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
-const PARTICLE_COUNT = 120
-const CONNECTION_DISTANCE = 140
+// Paramètres adaptés à la puissance de l'appareil : sur mobile, moins de
+// particules (le coût des connexions est en n²) et résolution plafonnée.
+const IS_MOBILE = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches
+const PARTICLE_COUNT = IS_MOBILE ? 55 : 120
+const CONNECTION_DISTANCE = IS_MOBILE ? 120 : 140
 const DEPTH = 300
 
 export default function HeroBackground3D() {
@@ -16,8 +19,8 @@ export default function HeroBackground3D() {
     const W = el.clientWidth
     const H = el.clientHeight
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    const renderer = new THREE.WebGLRenderer({ antialias: !IS_MOBILE, alpha: true })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, IS_MOBILE ? 1.3 : 2))
     renderer.setSize(W, H)
     renderer.setClearColor(0x000000, 1)
     el.appendChild(renderer.domElement)
@@ -93,10 +96,35 @@ export default function HeroBackground3D() {
     }
     window.addEventListener('resize', onResize)
 
+    // ─── Pause automatique quand le fond est masqué ou l'onglet caché ──
+    // Le hero est sticky : il reste "dans" le viewport même recouvert par la
+    // feuille de contenu. On se base donc sur le scroll : au-delà de ~50% de
+    // l'écran, son opacité est déjà à 0 (cf. bgOpacity dans Hero.jsx).
+    let visible = true
+    let animId = null
+    const checkVisible = () => {
+      const nowVisible = window.scrollY < window.innerHeight * 0.5
+      if (nowVisible && !visible && animId === null) {
+        visible = true
+        animate()
+      } else {
+        visible = nowVisible
+      }
+    }
+    window.addEventListener('scroll', checkVisible, { passive: true })
+    const onVisibility = () => {
+      if (!document.hidden && visible && animId === null) animate()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
     // ─── Animation ────────────────────────────────────────────────
-    let animId
     const animate = () => {
+      if (!visible || document.hidden) {
+        animId = null // le rAF s'arrête ; l'observer le relancera
+        return
+      }
       animId = requestAnimationFrame(animate)
+      window.__h3dFrames = (window.__h3dFrames || 0) + 1
 
       // Smooth mouse follow
       mouse.x += (mouse.tx - mouse.x) * 0.04
@@ -150,7 +178,9 @@ export default function HeroBackground3D() {
     animate()
 
     return () => {
-      cancelAnimationFrame(animId)
+      if (animId !== null) cancelAnimationFrame(animId)
+      window.removeEventListener('scroll', checkVisible)
+      document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('touchmove', onTouch)
       window.removeEventListener('resize', onResize)
