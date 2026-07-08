@@ -47,11 +47,14 @@ nav{background:var(--card);border-bottom:2px solid var(--border);padding:0.9rem 
 
 /* HERO */
 .above-fold{display:flex;flex-direction:column;min-height:480px}
-.hero{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:0;overflow:hidden}
-.hero-left{background:linear-gradient(160deg,#1c3828 0%,#0d2016 55%,#1c2d20 100%);padding:2.5rem 3.5rem 2.5rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;overflow:hidden}
+.hero{flex:1 1 auto;min-height:0;position:relative;overflow:hidden}
+/* Voile en dégradé : assure la lisibilité du texte sur les photos, sans aplat opaque */
+.hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(13,32,22,.88) 0%,rgba(13,32,22,.55) 45%,rgba(13,32,22,.15) 100%)}
+.hero-left{background:transparent;padding:2.5rem 3.5rem 2.5rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;z-index:2;overflow:hidden;max-width:640px;height:100%}
 .hero-left::after{content:'';position:absolute;bottom:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:60px solid rgba(116,212,161,.04);pointer-events:none}
 .hero-left::before{content:'';position:absolute;top:-40px;left:-40px;width:200px;height:200px;border-radius:50%;border:40px solid rgba(116,212,161,.03);pointer-events:none}
-.hero-right{position:relative;overflow:hidden}
+/* Diaporama en fond pleine largeur, derrière le voile et le contenu */
+.hero-right{position:absolute;inset:0;z-index:0;overflow:hidden}
 .hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(13,32,22,.5) 0%,transparent 50%);pointer-events:none;z-index:1}
 /* Slideshow */
 .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease-in-out}
@@ -219,10 +222,11 @@ footer strong{color:var(--accent)}
 .admin-btn{display:flex;width:fit-content;margin:1.5rem auto 2.5rem;background:rgba(0,0,0,0.85);color:#fff;padding:9px 18px;font-size:11px;font-family:inherit;font-weight:600;border-radius:8px;text-decoration:none;align-items:center;gap:6px;border:1px solid rgba(255,255,255,0.1);letter-spacing:.05em}
 
 @media(max-width:900px){
-  .hero,.qv-modal{grid-template-columns:1fr}
-  .hero-right{display:none}
+  .qv-modal{grid-template-columns:1fr}
   .qv-img{min-height:220px}
-  .hero-left{padding:3rem 1.5rem}
+  /* Sur mobile, le diaporama reste en fond ; voile renforcé pour la lisibilité */
+  .hero::before{background:linear-gradient(180deg,rgba(13,32,22,.82) 0%,rgba(13,32,22,.6) 100%)}
+  .hero-left{padding:3rem 1.5rem;max-width:none}
   .nav-links,.trust-bar{display:none}
   nav{padding:1rem 1.25rem}
   .section{padding:2.5rem 1.25rem}
