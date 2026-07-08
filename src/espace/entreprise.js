@@ -4,7 +4,7 @@ export const ENTREPRISE = {
   nom: 'Jérémie Henri',
   formeJuridique: 'Entrepreneur individuel (EI)',
   activite: 'Développeur web indépendant',
-  adresse: '[Adresse à compléter]', // ex. « 12 rue du Port, 83430 Saint-Mandrier-sur-Mer »
+  adresse: '8 avenue Marc Baron, 83430 Saint-Mandrier-sur-Mer',
   ville: 'Saint-Mandrier-sur-Mer',
   siren: '107 342 875',
   email: 'jeremiehenri99@gmail.com',
