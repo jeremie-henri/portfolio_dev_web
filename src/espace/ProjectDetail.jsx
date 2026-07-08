@@ -3,6 +3,8 @@ import { useAuth } from './AuthContext'
 import { STATUTS } from './supabase'
 import { supabase } from './supabase'
 import SignaturePad from './SignaturePad'
+import { imprimerDocument } from './DocumentPrint'
+import { fetchProfil } from './data'
 import {
   fetchProjet,
   fetchEtapes,
@@ -68,7 +70,7 @@ export default function ProjectDetail({ projetId, onBack }) {
         numero,
         libelle,
         montant_ht: Number(montant),
-        tva_taux: 20,
+        tva_taux: 0, // micro-entreprise : franchise en base de TVA (art. 293 B du CGI)
         statut: 'en_attente',
         type,
       })
@@ -76,6 +78,16 @@ export default function ProjectDetail({ projetId, onBack }) {
     } catch (err) {
       alert(`Création impossible : ${err.message}\n\n(Vérifie que le schéma SQL est à jour dans Supabase.)`)
     }
+  }
+
+  const handlePrint = async (f) => {
+    let profil = null
+    try {
+      profil = await fetchProfil(projet.client_id)
+    } catch {
+      /* profil non rempli : le document sortira avec l'email seul */
+    }
+    imprimerDocument(f, projet, profil, isAdmin ? null : user.email)
   }
 
   const confirmSignature = async (nom, img) => {
@@ -275,33 +287,42 @@ export default function ProjectDetail({ projetId, onBack }) {
                   )}
                 </span>
 
-                {estDevis ? (
-                  f.signe_le ? (
+                <span className="esp-row" style={{ gap: 8, flexShrink: 0 }}>
+                  <button
+                    className="esp-btn esp-btn-ghost esp-btn-sm"
+                    title="Télécharger en PDF"
+                    onClick={() => handlePrint(f)}
+                  >
+                    🖨 PDF
+                  </button>
+                  {estDevis ? (
+                    f.signe_le ? (
+                      <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
+                        Signé
+                      </span>
+                    ) : isAdmin ? (
+                      <span className="esp-badge" style={{ background: '#eab30822', color: '#eab308' }}>
+                        À signer
+                      </span>
+                    ) : (
+                      <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => setSigning(f)}>
+                        Signer (bon pour accord)
+                      </button>
+                    )
+                  ) : f.statut === 'payee' ? (
                     <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
-                      Signé
+                      Payée
                     </span>
                   ) : isAdmin ? (
                     <span className="esp-badge" style={{ background: '#eab30822', color: '#eab308' }}>
-                      À signer
+                      En attente
                     </span>
                   ) : (
-                    <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => setSigning(f)}>
-                      Signer (bon pour accord)
+                    <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => payerFacture(f.id)}>
+                      Payer {ttc(f)} €
                     </button>
-                  )
-                ) : f.statut === 'payee' ? (
-                  <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
-                    Payée
-                  </span>
-                ) : isAdmin ? (
-                  <span className="esp-badge" style={{ background: '#eab30822', color: '#eab308' }}>
-                    En attente
-                  </span>
-                ) : (
-                  <button className="esp-btn esp-btn-accent esp-btn-sm" onClick={() => payerFacture(f.id)}>
-                    Payer {ttc(f)} €
-                  </button>
-                )}
+                  )}
+                </span>
               </div>
             )
           })
