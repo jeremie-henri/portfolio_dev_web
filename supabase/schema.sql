@@ -155,7 +155,7 @@ begin
     raise exception 'Document introuvable ou déjà signé';
   end if;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = public, pg_temp;
 
 -- ═══ STORAGE ═════════════════════════════════════════════════════════
 -- Crée un bucket privé "livrables" dans Supabase → Storage, puis ces règles :
