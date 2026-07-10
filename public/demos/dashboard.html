@@ -180,7 +180,7 @@ select option{background:var(--card)!important;color:var(--text)!important}
     <div class="sblogo">ClientSpace</div>
     <div class="ns">Principal</div>
     <button class="ni active" onclick="nav('dashboard',this)">📊 Tableau de bord</button>
-    <button class="ni" onclick="nav('commandes',this)">📦 Commandes <span class="nb" id="bdg-cmd">2</span></button>
+    <button class="ni" onclick="nav('projets',this)">📂 Mes projets <span class="nb" id="bdg-cmd">2</span></button>
     <button class="ni" onclick="nav('factures',this)">🧾 Factures <span class="nb red" id="bdg-fac">1</span></button>
     <button class="ni" onclick="nav('messages',this)">💬 Messages <span class="nb" id="bdg-msg">3</span></button>
     <div class="ns">Compte</div>
@@ -220,13 +220,23 @@ select option{background:var(--card)!important;color:var(--text)!important}
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='cs_v4'
+const KEY='cs_v5'
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||initDB()}catch{return initDB()}}
 function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
 function initDB(){return{
   loggedIn:false,
   user:{name:'Jérémie Henri',email:'demo@client.fr',phone:'07 67 13 80 71',company:'JH Development',address:'8 avenue Marc Baron, 83430 St Mandrier',avatar:'JH'},
   settings:{notifications:true,emailAlerts:true,newsletter:false},
+  projets:[
+    {id:'P-001',titre:'Site vitrine restaurant',desc:'Site complet : menu, galerie, réservation en ligne.',statut:'en cours',
+     etapes:[{t:'Cahier des charges',ok:true},{t:'Maquette design',ok:true},{t:'Développement',ok:true},{t:'Recette & corrections',ok:false},{t:'Mise en ligne',ok:false}],
+     fichiers:['maquette-v2.pdf','charte-graphique.pdf'],
+     devis:{id:'DEV-2026-001',libelle:'Création site vitrine restaurant',montant:650,signe:null}},
+    {id:'P-002',titre:'Application prise de RDV',desc:'App booking : calendrier, confirmation email, panel admin.',statut:'planifié',
+     etapes:[{t:'Cahier des charges',ok:true},{t:'Maquette design',ok:false},{t:'Développement',ok:false},{t:'Recette & corrections',ok:false},{t:'Mise en ligne',ok:false}],
+     fichiers:['specifications.pdf'],
+     devis:{id:'DEV-2026-002',libelle:'Développement application de réservation',montant:1200,signe:null}},
+  ],
   commandes:[
     {id:'CMD-001',service:'Site vitrine restaurant',montant:650,statut:'livré',date:'2026-03-15',desc:'Site complet : menu, galerie, réservation en ligne.',fichiers:['maquette.pdf','contrat.pdf']},
     {id:'CMD-002',service:'Application prise de RDV',montant:1200,statut:'en cours',date:'2026-04-20',desc:'App booking avec calendrier, confirmation email, admin.',fichiers:['specs.pdf']},
@@ -289,7 +299,7 @@ function init(){
 }
 
 function updateBadges(){
-  document.getElementById('bdg-cmd').textContent=DB.commandes.filter(c=>c.statut==='en cours'||c.statut==='planifié').length
+  document.getElementById('bdg-cmd').textContent=DB.projets.filter(p=>p.devis&&!p.devis.signe).length||DB.projets.length
   document.getElementById('bdg-fac').textContent=DB.factures.filter(f=>f.statut==='en attente').length
   document.getElementById('bdg-msg').textContent=DB.messages.filter(m=>m.unread).length
   const un=DB.notifications.filter(n=>!n.read).length
@@ -300,23 +310,24 @@ function updateBadges(){
 function nav(page,el){
   document.querySelectorAll('.ni').forEach(b=>b.classList.remove('active'))
   if(el)el.classList.add('active')
+  if(page!=='projets')curProjet=null
   curPage=page;renderPage(page)
 }
 
-const TITLES={dashboard:'Tableau de bord',commandes:'Mes commandes',factures:'Mes factures',messages:'Messages',profil:'Mon profil',parametres:'Paramètres',support:'Support',notifications:'Notifications'}
-const BTNS={commandes:'+ Nouvelle demande',profil:'Sauvegarder',parametres:'Sauvegarder',support:'+ Nouveau ticket',notifications:'Tout lire'}
+const TITLES={dashboard:'Tableau de bord',projets:'Mes projets',factures:'Mes factures',messages:'Messages',profil:'Mon profil',parametres:'Paramètres',support:'Support',notifications:'Notifications'}
+const BTNS={profil:'Sauvegarder',parametres:'Sauvegarder',support:'+ Nouveau ticket',notifications:'Tout lire'}
 
 function renderPage(p){
   document.getElementById('page-title').textContent=TITLES[p]||p
   const btn=document.getElementById('tbbtn')
   btn.textContent=BTNS[p]||''
   btn.style.display=BTNS[p]?'inline-flex':'none'
-  const pages={dashboard:rDash,commandes:rCmds,factures:rFacs,messages:rMsgs,profil:rProfil,parametres:rParams,support:rSupport,notifications:rNotifs}
+  const pages={dashboard:rDash,projets:rProjets,factures:rFacs,messages:rMsgs,profil:rProfil,parametres:rParams,support:rSupport,notifications:rNotifs}
   if(pages[p])pages[p]()
 }
 
 function topbarAction(){
-  ({commandes:openNewOrder,profil:saveProfil,parametres:saveParams,support:openTicket,notifications:markAllRead})[curPage]?.()
+  ({profil:saveProfil,parametres:saveParams,support:openTicket,notifications:markAllRead})[curPage]?.()
 }
 
 // ── DASHBOARD ────────────────────
@@ -327,7 +338,7 @@ function rDash(){
     <div class="kgrid">
       <div class="kpi"><div class="kl">Total payé</div><div class="kv" style="color:var(--a2)">${ca.toLocaleString('fr-FR')} €</div><div class="ks up">↑ Factures réglées</div></div>
       <div class="kpi"><div class="kl">En attente</div><div class="kv" style="color:var(--yellow)">${pend.toLocaleString('fr-FR')} €</div><div class="ks dn">⚠ À régler</div></div>
-      <div class="kpi"><div class="kl">Commandes</div><div class="kv">${DB.commandes.length}</div><div class="ks">${DB.commandes.filter(c=>c.statut==='en cours').length} en cours</div></div>
+      <div class="kpi"><div class="kl">Projets</div><div class="kv">${DB.projets.length}</div><div class="ks">${DB.projets.filter(p=>p.statut==='en cours').length} en cours</div></div>
       <div class="kpi"><div class="kl">Messages</div><div class="kv" style="color:var(--accent)">${DB.messages.filter(m=>m.unread).length}</div><div class="ks">Non lus</div></div>
     </div>
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1.5rem">
@@ -348,13 +359,15 @@ function rDash(){
       </div>
     </div>
     <div class="tcard">
-      <div class="thead2"><span class="ttitle">Dernières commandes</span><button class="btn btno btnsm" onclick="nav('commandes',null)">Voir tout →</button></div>
-      <table><thead><tr><th>Réf.</th><th>Service</th><th>Date</th><th>Montant</th><th>Statut</th></tr></thead>
-      <tbody>${DB.commandes.slice(-4).reverse().map(c=>`<tr style="cursor:pointer" onclick="nav('commandes',null)">
-        <td style="color:var(--accent);font-weight:700">${c.id}</td><td>${c.service}</td><td style="color:var(--muted)">${c.date}</td>
-        <td style="font-weight:600">${c.montant.toLocaleString('fr-FR')} €</td>
-        <td><span class="badge ${c.statut==='livré'?'bg':c.statut==='en cours'?'bb':'by'}">${c.statut}</span></td>
-      </tr>`).join('')}</tbody></table>
+      <div class="thead2"><span class="ttitle">Mes projets en cours</span><button class="btn btno btnsm" onclick="nav('projets',null)">Voir tout →</button></div>
+      <div style="padding:1.25rem">${DB.projets.map(p=>{const av=avancement(p);return `
+        <div style="cursor:pointer;padding:.75rem 0;border-bottom:1px solid var(--border)" onclick="openProjet('${p.id}')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-weight:600">${p.titre}</span>
+            <span style="font-size:12px;color:var(--muted)">${av}%${p.devis&&!p.devis.signe?' · <span style="color:var(--yellow)">devis à signer</span>':''}</span>
+          </div>
+          <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden"><div style="height:100%;width:${av}%;background:linear-gradient(90deg,var(--accent),var(--a2))"></div></div>
+        </div>`}).join('')}</div>
     </div>`
   renderChart('7j')
 }
@@ -377,14 +390,71 @@ function switchTab(el,key){
 }
 
 // ── COMMANDES ────────────────────
-function rCmds(){
-  document.getElementById('pg').innerHTML=`
-    <div class="tcard">
-      <div class="thead2"><span class="ttitle">Mes commandes (${DB.commandes.length})</span>
-        <input class="sinp" placeholder="🔍 Rechercher..." oninput="filterCmds(this.value)">
+// ── PROJETS (suivi + timeline + signature devis) ──
+let curProjet=null
+function avancement(p){return Math.round(p.etapes.filter(e=>e.ok).length/p.etapes.length*100)}
+function statutColor(s){return {'en cours':'var(--accent)','planifié':'var(--yellow)','livré':'var(--green)'}[s]||'var(--muted)'}
+
+function rProjets(){
+  if(curProjet){return rProjetDetail(curProjet)}
+  document.getElementById('pg').innerHTML=DB.projets.map(p=>{
+    const av=avancement(p)
+    return `<div class="ccard" style="cursor:pointer;margin-bottom:1rem" onclick="openProjet('${p.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.75rem">
+        <div><div style="font-weight:700;font-size:1.05rem">${p.titre}</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:2px">${p.desc}</div></div>
+        <span class="badge" style="background:${statutColor(p.statut)}22;color:${statutColor(p.statut)};white-space:nowrap">${p.statut}</span>
       </div>
-      <table><thead><tr><th>Réf.</th><th>Service</th><th>Date</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead>
-      <tbody id="cmds-tbody">${renderCmdRows(DB.commandes)}</tbody></table>
+      <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${av}%;background:linear-gradient(90deg,var(--accent),var(--a2))"></div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px">${av}% réalisé${p.devis&&!p.devis.signe?' · <span style="color:var(--yellow)">devis à signer</span>':''}</div>
+    </div>`
+  }).join('')
+}
+
+function openProjet(id){curProjet=id;renderPage('projets')}
+function backProjets(){curProjet=null;renderPage('projets')}
+
+function rProjetDetail(id){
+  const p=DB.projets.find(x=>x.id===id);if(!p)return
+  const av=avancement(p)
+  const d=p.devis
+  const devisHtml=d?`
+    <div class="ccard" style="margin-bottom:1rem">
+      <div style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--a2);font-weight:600;margin-bottom:.75rem">Devis</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+        <div>📝 <strong>${d.id}</strong> — ${d.libelle}<br><span style="color:var(--muted);font-size:13px">${d.montant.toLocaleString('fr-FR')} € · TVA non applicable (art. 293 B du CGI)</span></div>
+        ${d.signe
+          ?`<span class="badge" style="background:var(--green)22;color:var(--green)">✓ Signé par ${d.signe.nom}</span>`
+          :`<button class="btn btnp btnsm" onclick="openSignature('${p.id}')">Signer (bon pour accord)</button>`}
+      </div>
+      ${d.signe&&d.signe.img?`<img src="${d.signe.img}" alt="Signature" style="height:54px;background:#fff;border-radius:4px;padding:2px 6px;margin-top:10px">`:''}
+    </div>`:''
+  document.getElementById('pg').innerHTML=`
+    <button class="btn btno btnsm" onclick="backProjets()" style="margin-bottom:1rem">← Retour</button>
+    <div class="ccard" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.75rem">
+        <div><div style="font-weight:700;font-size:1.2rem">${p.titre}</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:2px">${p.desc}</div></div>
+        <span class="badge" style="background:${statutColor(p.statut)}22;color:${statutColor(p.statut)};white-space:nowrap">${p.statut}</span>
+      </div>
+      <div style="height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${av}%;background:linear-gradient(90deg,var(--accent),var(--a2))"></div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px">${av}% réalisé</div>
+    </div>
+    <div class="ccard" style="margin-bottom:1rem">
+      <div style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--a2);font-weight:600;margin-bottom:1rem">Avancement du projet</div>
+      ${p.etapes.map(e=>`<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;${e.ok?'background:var(--green);color:#000':'border:2px solid var(--border)'}">${e.ok?'✓':''}</span>
+        <span style="${e.ok?'color:var(--muted);text-decoration:line-through':''}">${e.t}</span>
+      </div>`).join('')}
+    </div>
+    ${devisHtml}
+    <div class="ccard">
+      <div style="font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--a2);font-weight:600;margin-bottom:.75rem">Livrables</div>
+      ${p.fichiers.length?p.fichiers.map(f=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px">📎 ${f}<button class="btn btno btnsm" onclick="toast('Téléchargement de ${f}...','info')">Télécharger</button></div>`).join(''):'<div style="color:var(--muted);font-size:14px">Aucun fichier pour l’instant.</div>'}
     </div>`
 }
 function renderCmdRows(list){return list.map(c=>`<tr>
@@ -751,6 +821,55 @@ function markAllRead(){DB.notifications.forEach(n=>n.read=true);save(DB);updateB
 
 // ── UTILS ────────────────────────
 function openModal(){document.getElementById('modal').style.display='flex'}
+// ── Signature de devis (canvas tactile) ──
+let signCtx=null,signing=false,signVide=true,signProjetId=null
+function openSignature(projetId){
+  signProjetId=projetId
+  const p=DB.projets.find(x=>x.id===projetId)
+  document.getElementById('mtitle').textContent='Signer le devis — '+p.devis.id
+  document.getElementById('mbody').innerHTML=`
+    <label class="flabel">Votre nom complet</label>
+    <input id="sign-nom" class="finp" placeholder="Marie Dupont" style="margin-bottom:12px">
+    <label class="flabel">Votre signature (tracez ci-dessous)</label>
+    <canvas id="sign-canvas" style="width:100%;height:170px;background:#fff;border-radius:8px;border:1px solid var(--border);touch-action:none;cursor:crosshair;display:block"></canvas>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <button class="btn btno btnsm" onclick="clearSign()">Effacer</button>
+      <span style="font-size:11px;color:var(--muted)">Bon pour accord — valeur d'engagement</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btno" style="flex:1" onclick="closeModal()">Annuler</button>
+      <button class="btn btnp" style="flex:2" onclick="validerSignature()">Valider ma signature</button>
+    </div>`
+  document.getElementById('modal').style.display='flex'
+  setTimeout(initSignCanvas,50)
+}
+function initSignCanvas(){
+  const c=document.getElementById('sign-canvas');if(!c)return
+  const r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1
+  c.width=r.width*dpr;c.height=r.height*dpr
+  signCtx=c.getContext('2d');signCtx.scale(dpr,dpr)
+  signCtx.lineWidth=2.2;signCtx.lineCap='round';signCtx.lineJoin='round';signCtx.strokeStyle='#111'
+  signVide=true
+  const pos=e=>{const b=c.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-b.left,y:t.clientY-b.top}}
+  const start=e=>{e.preventDefault();signing=true;const{x,y}=pos(e);signCtx.beginPath();signCtx.moveTo(x,y)}
+  const move=e=>{if(!signing)return;e.preventDefault();const{x,y}=pos(e);signCtx.lineTo(x,y);signCtx.stroke();signVide=false}
+  const end=()=>{signing=false}
+  c.onmousedown=start;c.onmousemove=move;c.onmouseup=end;c.onmouseleave=end
+  c.ontouchstart=start;c.ontouchmove=move;c.ontouchend=end
+}
+function clearSign(){const c=document.getElementById('sign-canvas');if(c&&signCtx){signCtx.clearRect(0,0,c.width,c.height);signVide=true}}
+function validerSignature(){
+  const nom=document.getElementById('sign-nom').value.trim()
+  if(!nom){toast('Saisissez votre nom','error');return}
+  if(signVide){toast('Tracez votre signature','error');return}
+  const src=document.getElementById('sign-canvas')
+  const out=document.createElement('canvas');out.width=src.width;out.height=src.height
+  const oc=out.getContext('2d');oc.fillStyle='#fff';oc.fillRect(0,0,out.width,out.height);oc.drawImage(src,0,0)
+  const p=DB.projets.find(x=>x.id===signProjetId)
+  p.devis.signe={nom,img:out.toDataURL('image/png'),date:new Date().toLocaleDateString('fr-FR')}
+  save();closeModal();renderPage('projets');toast('Devis signé ! Merci pour votre accord.','success')
+}
+
 function closeModal(){document.getElementById('modal').style.display='none'}
 function closeModalOut(e){if(e.target===document.getElementById('modal'))closeModal()}
 function toast(msg,type='success'){
