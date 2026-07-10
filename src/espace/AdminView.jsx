@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { STATUTS, supabase } from './supabase'
-import { fetchProjets, updateProjet } from './data'
+import { fetchProjets, updateProjet, deleteProjet } from './data'
 
 export default function AdminView({ onOpen }) {
   const [projets, setProjets] = useState(null)
@@ -51,6 +51,21 @@ export default function AdminView({ onOpen }) {
   const changeStatut = async (p, statut) => {
     await updateProjet(p.id, { statut })
     load()
+  }
+
+  const supprimer = async (p) => {
+    if (
+      !window.confirm(
+        `Supprimer définitivement le projet « ${p.titre} » ?\n\nCela efface aussi ses étapes, messages, fichiers et factures. Cette action est irréversible.`
+      )
+    )
+      return
+    try {
+      await deleteProjet(p.id)
+      load()
+    } catch (err) {
+      setMsg('❌ Suppression impossible : ' + err.message)
+    }
   }
 
   if (projets === null) return <div className="esp-wrap">Chargement…</div>
@@ -158,8 +173,20 @@ export default function AdminView({ onOpen }) {
               <div className="esp-bar">
                 <div className="esp-bar-fill" style={{ width: `${p.avancement}%` }} />
               </div>
-              <div className="esp-pct">
-                {p.avancement}% · <span onClick={() => onOpen(p.id)} style={{ cursor: 'pointer', color: 'var(--a2)' }}>gérer →</span>
+              <div className="esp-row" style={{ justifyContent: 'space-between' }}>
+                <div className="esp-pct">
+                  {p.avancement}% ·{' '}
+                  <span onClick={() => onOpen(p.id)} style={{ cursor: 'pointer', color: 'var(--a2)' }}>
+                    gérer →
+                  </span>
+                </div>
+                <button
+                  className="esp-btn esp-btn-ghost esp-btn-sm"
+                  style={{ color: '#f87171', borderColor: 'rgba(248,113,113,0.3)' }}
+                  onClick={() => supprimer(p)}
+                >
+                  Supprimer
+                </button>
               </div>
             </div>
           )

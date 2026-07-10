@@ -21,10 +21,12 @@ export function imprimerDocument(doc, projet, clientProfil, clientEmail) {
   const eur = (n) => n.toFixed(2).replace('.', ',') + ' €'
   const dateDoc = new Date(doc.created_at).toLocaleDateString('fr-FR')
 
-  const clientNom = clientProfil?.nom || clientEmail || 'Client'
+  // Coordonnées de facturation : priorité aux champs saisis par l'admin sur le
+  // projet, puis au profil rempli par le client, puis à l'email seul.
   const clientLignes = [
-    clientProfil?.entreprise,
-    clientNom,
+    projet?.client_nom || clientProfil?.entreprise || clientProfil?.nom || clientEmail || 'Client',
+    projet?.client_adresse,
+    !projet?.client_nom ? clientProfil?.entreprise : null,
     clientEmail,
     clientProfil?.telephone,
   ].filter(Boolean)

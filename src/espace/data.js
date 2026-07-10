@@ -22,6 +22,12 @@ export async function createProjet(p) {
   return data
 }
 
+export async function deleteProjet(id) {
+  // Les étapes, messages, fichiers et factures liés sont supprimés en cascade (ON DELETE CASCADE)
+  const { error } = await supabase.from('projets').delete().eq('id', id)
+  if (error) throw error
+}
+
 export async function updateProjet(id, patch) {
   const { error } = await supabase.from('projets').update(patch).eq('id', id)
   if (error) throw error

@@ -128,6 +128,14 @@ export default function ProjectDetail({ projetId, onBack }) {
     }
   }
 
+  const saveCoords = async () => {
+    await updateProjet(projetId, {
+      client_nom: projet.client_nom || null,
+      client_adresse: projet.client_adresse || null,
+    })
+    setProjet(await fetchProjet(projetId))
+  }
+
   const handleToggle = async (etape) => {
     if (!isAdmin) return
     await toggleEtape(etape.id, !etape.fait)
@@ -247,6 +255,36 @@ export default function ProjectDetail({ projetId, onBack }) {
           ))
         )}
       </div>
+
+      {/* Coordonnées de facturation (admin) — apparaissent sur les devis/factures PDF */}
+      {isAdmin && (
+        <div className="esp-section">
+          <div className="esp-section-title">Coordonnées de facturation du client</div>
+          <div className="esp-row" style={{ gap: 8, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 180px' }}>
+              <label className="esp-label">Nom / Raison sociale</label>
+              <input
+                className="esp-input"
+                value={projet.client_nom || ''}
+                onChange={(e) => setProjet({ ...projet, client_nom: e.target.value })}
+                placeholder="Restaurant Le Jardin"
+              />
+            </div>
+            <div style={{ flex: '2 1 260px' }}>
+              <label className="esp-label">Adresse</label>
+              <input
+                className="esp-input"
+                value={projet.client_adresse || ''}
+                onChange={(e) => setProjet({ ...projet, client_adresse: e.target.value })}
+                placeholder="12 rue du Port, 83000 Toulon"
+              />
+            </div>
+            <button className="esp-btn esp-btn-ghost esp-btn-sm" onClick={saveCoords}>
+              Enregistrer
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Devis & factures */}
       <div className="esp-section">

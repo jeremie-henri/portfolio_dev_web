@@ -134,6 +134,10 @@ drop policy if exists "fichiers_admin_write" on fichiers;
 create policy "fichiers_admin_write" on fichiers for all
   using (is_admin()) with check (is_admin());
 
+-- ═══ COORDONNÉES DE FACTURATION DU CLIENT (renseignées par l'admin) ═══
+alter table projets add column if not exists client_nom     text;
+alter table projets add column if not exists client_adresse text;
+
 -- ═══ SIGNATURE ÉLECTRONIQUE (devis « bon pour accord ») ══════════════
 alter table factures add column if not exists type          text not null default 'facture'; -- devis | facture
 alter table factures add column if not exists signe_par     text;
