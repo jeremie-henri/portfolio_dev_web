@@ -161,6 +161,13 @@ begin
 end;
 $$ language plpgsql security definer set search_path = public, pg_temp;
 
+-- SECURITY DEFINER est VOULU : le client n'a aucun droit d'écriture sur factures
+-- (RLS admin-only). Cette fonction est la seule porte contrôlée pour signer, et
+-- elle vérifie en interne p.client_id = auth.uid(). On restreint son exécution
+-- aux seuls utilisateurs connectés (pas les visiteurs anonymes).
+revoke execute on function public.signer_document(uuid, text, text) from public, anon;
+grant  execute on function public.signer_document(uuid, text, text) to authenticated;
+
 -- ═══ STORAGE ═════════════════════════════════════════════════════════
 -- Crée un bucket privé "livrables" dans Supabase → Storage, puis ces règles :
 insert into storage.buckets (id, name, public) values ('livrables', 'livrables', false)
