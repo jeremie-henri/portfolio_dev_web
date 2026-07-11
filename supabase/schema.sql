@@ -7,7 +7,7 @@
 -- ── Qui est admin ? (mets TON email ici) ─────────────────────────────
 create or replace function is_admin() returns boolean as $$
   select auth.jwt() ->> 'email' = 'jeremiehenri99@gmail.com';
-$$ language sql stable;
+$$ language sql stable set search_path = public, pg_temp;
 
 -- ── PROJETS ──────────────────────────────────────────────────────────
 create table if not exists projets (
