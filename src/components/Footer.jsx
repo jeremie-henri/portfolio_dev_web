@@ -63,6 +63,10 @@ export default function Footer() {
           >
             Confidentialité
           </a>
+          {' · '}
+          <a href="/cgv.html" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'underline' }}>
+            CGV
+          </a>
         </span>
       </p>
 

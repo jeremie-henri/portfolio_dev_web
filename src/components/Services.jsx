@@ -126,6 +126,58 @@ const PROCESS = [
   },
 ]
 
+const PACKS = [
+  {
+    nom: 'Essentiel',
+    ideal: 'Artisans, TPE, indépendants',
+    prix: '350 €',
+    prixNote: 'à partir de',
+    desc: 'Un site vitrine élégant pour exister sur le web et être trouvé sur Google.',
+    inclus: [
+      'Jusqu’à 5 pages sur mesure',
+      'Design responsive (mobile inclus)',
+      'Référencement SEO local',
+      'Formulaire de contact',
+      'Statistiques RGPD sans cookies',
+      'Livraison en 5 à 7 jours',
+    ],
+    cta: 'Idéal pour se lancer',
+  },
+  {
+    nom: 'Business',
+    ideal: 'Commerces, salons, e-commerce',
+    prix: '800 €',
+    prixNote: 'à partir de',
+    desc: 'Un outil qui travaille pour vous : réservation en ligne ou boutique, paiements sécurisés.',
+    inclus: [
+      'Tout le pack Essentiel',
+      'Réservation en ligne OU boutique',
+      'Paiement sécurisé Stripe',
+      'Panel admin de gestion',
+      'Emails automatiques (confirmations)',
+      'Formation à la prise en main',
+    ],
+    populaire: true,
+    cta: 'Le plus demandé',
+  },
+  {
+    nom: 'Sur-mesure',
+    ideal: 'PME, agences, projets ambitieux',
+    prix: 'Sur devis',
+    prixNote: 'à partir de 1 200 €',
+    desc: 'Une application complète pensée pour votre métier : espace client, suivi, automatisations.',
+    inclus: [
+      'Tout le pack Business',
+      'Espace client sécurisé',
+      'Signature électronique des devis',
+      'Suivi de projet en temps réel',
+      'Fonctionnalités sur mesure',
+      'Maintenance & support prioritaire',
+    ],
+    cta: 'Parlons de votre projet',
+  },
+]
+
 const N = SERVICES.length
 const GAP = 16
 // Triple copy : [copy0][copy1=home][copy2]
@@ -681,6 +733,183 @@ export default function Services() {
                 >
                   {p.desc}
                 </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Packs / offres */}
+        <motion.div
+          variants={itemVariants}
+          style={{ marginTop: '5rem', padding: '0 clamp(1.5rem,4vw,3rem)' }}
+        >
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: '#7c6af7',
+              marginBottom: '0.75rem',
+            }}
+          >
+            Mes offres
+          </p>
+          <h3
+            style={{
+              fontFamily: "'Inter',sans-serif",
+              fontSize: 'clamp(1.4rem,2.5vw,1.8rem)',
+              fontWeight: 700,
+              color: '#f5f5f5',
+              marginBottom: '0.5rem',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Trois formules, un prix clair
+          </h3>
+          <p
+            style={{
+              color: 'rgba(255,255,255,0.6)',
+              fontSize: 14,
+              marginBottom: '2rem',
+              maxWidth: 560,
+            }}
+          >
+            Chaque projet reste unique : ces packs donnent un point de départ, le devis final s’adapte
+            à vos besoins. Acompte de 30 % à la commande, TVA non applicable (art. 293 B du CGI).
+          </p>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))',
+              gap: 16,
+              alignItems: 'stretch',
+            }}
+          >
+            {PACKS.map((pack, i) => (
+              <motion.div
+                key={pack.nom}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                whileHover={{
+                  y: -6,
+                  boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
+                }}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  background: pack.populaire ? 'rgba(124,106,247,0.08)' : '#111111',
+                  border: pack.populaire
+                    ? '1px solid rgba(124,106,247,0.5)'
+                    : '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: 16,
+                  padding: '1.5rem',
+                  position: 'relative',
+                }}
+              >
+                {pack.populaire && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: -11,
+                      left: '1.5rem',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: '#fff',
+                      background: '#7c6af7',
+                      padding: '3px 12px',
+                      borderRadius: 100,
+                      letterSpacing: '0.03em',
+                    }}
+                  >
+                    Le plus demandé
+                  </span>
+                )}
+                <h4
+                  style={{
+                    color: '#f5f5f5',
+                    fontSize: 18,
+                    fontWeight: 700,
+                    marginBottom: 4,
+                  }}
+                >
+                  {pack.nom}
+                </h4>
+                <p
+                  style={{
+                    color: 'rgba(255,255,255,0.5)',
+                    fontSize: 12,
+                    marginBottom: 14,
+                  }}
+                >
+                  {pack.ideal}
+                </p>
+                <div style={{ marginBottom: 14 }}>
+                  <span style={{ color: '#fff', fontSize: 28, fontWeight: 800 }}>{pack.prix}</span>
+                  <span
+                    style={{
+                      color: 'rgba(255,255,255,0.5)',
+                      fontSize: 12,
+                      marginLeft: 6,
+                    }}
+                  >
+                    {pack.prixNote}
+                  </span>
+                </div>
+                <p
+                  style={{
+                    color: 'rgba(255,255,255,0.7)',
+                    fontSize: 13,
+                    lineHeight: 1.6,
+                    marginBottom: 16,
+                  }}
+                >
+                  {pack.desc}
+                </p>
+                <ul style={{ listStyle: 'none', margin: 0, padding: 0, flex: 1 }}>
+                  {pack.inclus.map((item) => (
+                    <li
+                      key={item}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 8,
+                        color: 'rgba(255,255,255,0.8)',
+                        fontSize: 13,
+                        marginBottom: 8,
+                      }}
+                    >
+                      <FiCheck
+                        style={{ color: '#7c6af7', flexShrink: 0, marginTop: 3 }}
+                        size={14}
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#contact"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    marginTop: 18,
+                    padding: '11px 16px',
+                    borderRadius: 10,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    background: pack.populaire ? '#7c6af7' : 'rgba(255,255,255,0.06)',
+                    color: '#fff',
+                    border: pack.populaire ? 'none' : '1px solid rgba(255,255,255,0.12)',
+                  }}
+                >
+                  {pack.cta}
+                  <FiArrowRight size={15} />
+                </a>
               </motion.div>
             ))}
           </div>
