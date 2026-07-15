@@ -169,18 +169,20 @@ h4 {
   width: 100%;
   max-width: 100%;
   word-break: break-word;
-  /* min-height réserve la place (limite le décalage pendant la frappe) sans rogner les lettres */
-  min-height: 2.5em;
+  /* min-height réserve la place de 2 lignes (évite le saut pendant la frappe) ;
+     le titre est ancré EN BAS de cette zone → collé au sous-titre, le vide
+     éventuel (phrase courte) passe au-dessus et reste invisible. */
+  min-height: 2.4em;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   flex-wrap: wrap;
-  align-content: center;
+  align-content: flex-end;
 }
 @media (max-width: 600px) {
   .hero-title {
     letter-spacing: -0.01em;
-    min-height: 3.4em;
+    min-height: 2.6em;
   }
 }
 

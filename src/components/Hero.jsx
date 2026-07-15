@@ -79,7 +79,8 @@ export default function Hero() {
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        padding: 'clamp(6rem,10vw,8rem) clamp(1.5rem,8vw,5rem) 4rem',
+        /* Padding vertical symétrique : le bloc central est vraiment au centre de l'écran */
+        padding: 'clamp(7rem,11vh,8.5rem) clamp(1.5rem,8vw,5rem)',
         overflow: 'hidden',
       }}
     >

@@ -131,6 +131,7 @@ select option{background:white!important;color:var(--text)!important}
   <button class="nav-item" onclick="showPage('stats',this)"><span>📈</span> Statistiques</button>
   <div class="nav-section">Gestion</div>
   <button class="nav-item" onclick="showPage('equipe',this)"><span>👩</span> Équipe</button>
+  <button class="nav-item" onclick="showPage('planning',this)"><span>🗓️</span> Planning équipe</button>
   <button class="nav-item" onclick="showPage('services',this)"><span>✂️</span> Prestations</button>
   <button class="nav-item" onclick="showPage('horaires',this)"><span>🕐</span> Horaires</button>
   <div class="sidebar-footer">
@@ -159,7 +160,7 @@ select option{background:white!important;color:var(--text)!important}
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='se_admin_v2'
+const KEY='se_admin_v3'
 function load(){try{return JSON.parse(sessionStorage.getItem(KEY))||initData()}catch{return initData()}}
 function save(d){sessionStorage.setItem(KEY,JSON.stringify(d))}
 // Échappe le HTML des données utilisateur avant insertion via innerHTML (anti-XSS)
@@ -174,9 +175,15 @@ function initData(){
       {id:'RDV-004',client:'Emma Robert',email:'emma@email.com',phone:'06 45 67 89',service:'Soin profond',duration:30,prix:35,date:'2026-06-12',time:'11:00',praticienne:'Camille P.',statut:'confirmé',notes:'Cheveux secs'},
     ],
     equipe:[
-      {id:1,nom:'Sophie Martin',role:'Coloriste',specialites:'Balayage, couleur, mèches',experience:'8 ans',disponible:true},
-      {id:2,nom:'Lucie Bernard',role:'Coiffeuse',specialites:'Coupes tendance, brushing',experience:'5 ans',disponible:true},
-      {id:3,nom:'Camille Petit',role:'Styliste',specialites:'Coiffures de mariage, soirée',experience:'6 ans',disponible:true},
+      {id:1,nom:'Sophie Martin',role:'Coloriste',specialites:'Balayage, couleur, mèches',experience:'8 ans',disponible:true,
+       horaires:{lun:'9h-18h',mar:'9h-18h',mer:'9h-18h',jeu:'9h-18h',ven:'9h-18h',sam:'9h-17h',dim:'Repos'},
+       conges:[{debut:'2026-07-20',fin:'2026-08-03',motif:'Congés été'}]},
+      {id:2,nom:'Lucie Bernard',role:'Coiffeuse',specialites:'Coupes tendance, brushing',experience:'5 ans',disponible:true,
+       horaires:{lun:'Repos',mar:'10h-19h',mer:'10h-19h',jeu:'10h-19h',ven:'10h-19h',sam:'9h-18h',dim:'Repos'},
+       conges:[]},
+      {id:3,nom:'Camille Petit',role:'Styliste',specialites:'Coiffures de mariage, soirée',experience:'6 ans',disponible:true,
+       horaires:{lun:'Repos',mar:'Repos',mer:'9h-18h',jeu:'9h-18h',ven:'9h-20h',sam:'8h-18h',dim:'Repos'},
+       conges:[{debut:'2026-07-14',fin:'2026-07-14',motif:'Formation'}]},
       {id:4,nom:'Emma Rousseau',role:'Esthéticienne',specialites:'Soins visage, traitements',experience:'4 ans',disponible:false},
     ],
     services:[
@@ -231,13 +238,13 @@ function topbarAction(){
   else openAddRdv()
 }
 function renderPage(p){
-  const t={dashboard:'Vue d\'ensemble',agenda:'Agenda semaine',rdv:'Rendez-vous',equipe:'Mon équipe',services:'Prestations',horaires:'Horaires d\'ouverture',stats:'Statistiques du site'}
+  const t={dashboard:'Vue d\'ensemble',agenda:'Agenda semaine',rdv:'Rendez-vous',equipe:'Mon équipe',planning:'Planning de l\'équipe',services:'Prestations',horaires:'Horaires d\'ouverture',stats:'Statistiques du site'}
   const a={rdv:'+ Nouveau RDV',agenda:'+ Nouveau RDV',equipe:'+ Ajouter membre',services:'+ Nouveau service',horaires:'Sauvegarder'}
   document.getElementById('page-title').textContent=t[p]||p
   const btn=document.getElementById('topbar-action')
   btn.textContent=a[p]||'+ Nouveau RDV'
   btn.style.display=p==='stats'?'none':'inline-flex'
-  const pages={dashboard:renderDashboard,agenda:renderAgenda,rdv:renderRdv,equipe:renderEquipe,services:renderServices,horaires:renderHoraires,stats:renderStats}
+  const pages={dashboard:renderDashboard,agenda:renderAgenda,rdv:renderRdv,equipe:renderEquipe,planning:renderPlanning,services:renderServices,horaires:renderHoraires,stats:renderStats}
   if(pages[p])pages[p]()
 }
 
@@ -432,6 +439,83 @@ function renderEquipe(){
 }
 function toggleDispo(id,v){const e=DB.equipe.find(e=>e.id===id);if(e){e.disponible=v;save(DB);toast('Mise à jour','success')}}
 function deleteMembre(id){if(!confirm('Supprimer ce membre ?'))return;DB.equipe=DB.equipe.filter(e=>e.id!==id);save(DB);renderEquipe();toast('Membre supprimé','success')}
+
+// ── PLANNING DE L'ÉQUIPE ──────────────────────────────────
+const JOURS=[['lun','Lun'],['mar','Mar'],['mer','Mer'],['jeu','Jeu'],['ven','Ven'],['sam','Sam'],['dim','Dim']]
+function estRepos(v){return !v||/repos/i.test(v)}
+function fmtDate(d){return new Date(d+'T00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})}
+
+function renderPlanning(){
+  const membres=DB.equipe
+  document.getElementById('page-content').innerHTML=`
+    <div style="background:white;border:1px solid var(--border);border-radius:16px;padding:1.25rem;overflow-x:auto;margin-bottom:1.5rem">
+      <div style="font-family:'Playfair Display',serif;font-weight:700;margin-bottom:1rem">Planning hebdomadaire</div>
+      <table style="width:100%;border-collapse:collapse;min-width:640px">
+        <thead><tr>
+          <th style="text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Employé</th>
+          ${JOURS.map(([,l])=>`<th style="padding:8px 6px;font-size:11px;text-transform:uppercase;color:var(--muted)">${l}</th>`).join('')}
+        </tr></thead>
+        <tbody>
+          ${membres.map(e=>`<tr>
+            <td style="padding:10px;border-top:1px solid var(--border)">
+              <div style="font-weight:600;font-size:13px">${e.nom}</div>
+              <div style="font-size:11px;color:var(--accent)">${e.role}</div>
+            </td>
+            ${JOURS.map(([k])=>{const v=e.horaires?.[k]||'Repos';const off=estRepos(v);return `
+              <td onclick="editHoraire(${e.id},'${k}')" title="Cliquer pour modifier" style="padding:8px 6px;border-top:1px solid var(--border);border-left:1px solid var(--border);text-align:center;font-size:12px;cursor:pointer;${off?'color:var(--muted);background:#faf7f2':'font-weight:600;color:var(--accent)'}">${off?'—':v}</td>`}).join('')}
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px">💡 Cliquez sur une case pour modifier l'horaire du jour.</div>
+    </div>
+
+    <div style="background:white;border:1px solid var(--border);border-radius:16px;padding:1.25rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div style="font-family:'Playfair Display',serif;font-weight:700">Congés & absences</div>
+      </div>
+      ${membres.map(e=>`
+        <div style="padding:0.75rem 0;border-top:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+            <span style="font-weight:600;font-size:13px">${e.nom}</span>
+            <button class="btn btn-sm btn-outline" onclick="ajouterConge(${e.id})">+ Ajouter un congé</button>
+          </div>
+          <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">
+            ${(e.conges||[]).length? e.conges.map((c,i)=>`
+              <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(217,119,6,.1);color:#b45309;font-size:12px;padding:4px 10px;border-radius:100px">
+                ${fmtDate(c.debut)}${c.fin&&c.fin!==c.debut?' → '+fmtDate(c.fin):''} · ${c.motif||'Congé'}
+                <span onclick="supprConge(${e.id},${i})" style="cursor:pointer;font-weight:700">✕</span>
+              </span>`).join('')
+            : '<span style="font-size:12px;color:var(--muted)">Aucun congé prévu</span>'}
+          </div>
+        </div>`).join('')}
+    </div>`
+}
+
+function editHoraire(id,jour){
+  const e=DB.equipe.find(e=>e.id===id);if(!e)return
+  if(!e.horaires)e.horaires={}
+  const actuel=e.horaires[jour]||'Repos'
+  const v=prompt(`Horaire de ${e.nom} — ${JOURS.find(j=>j[0]===jour)[1]}\n(ex : 9h-18h, ou « Repos »)`,actuel)
+  if(v===null)return
+  e.horaires[jour]=v.trim()||'Repos'
+  save(DB);renderPlanning();toast('Horaire mis à jour','success')
+}
+
+function ajouterConge(id){
+  const e=DB.equipe.find(e=>e.id===id);if(!e)return
+  const debut=prompt('Date de début du congé (AAAA-MM-JJ) :');if(!debut)return
+  const fin=prompt('Date de fin (AAAA-MM-JJ) — laissez vide si une seule journée :',debut)||debut
+  const motif=prompt('Motif (ex : Congés été, Formation, Maladie) :','Congés')||'Congés'
+  if(!e.conges)e.conges=[]
+  e.conges.push({debut,fin,motif})
+  e.conges.sort((a,b)=>a.debut.localeCompare(b.debut))
+  save(DB);renderPlanning();toast('Congé ajouté','success')
+}
+
+function supprConge(id,i){
+  const e=DB.equipe.find(e=>e.id===id);if(!e)return
+  e.conges.splice(i,1);save(DB);renderPlanning();toast('Congé supprimé','success')
+}
 function openAddMembre(){openMembreModal(null)}
 function openEditMembre(id){openMembreModal(DB.equipe.find(e=>e.id===id))}
 function openMembreModal(e){
