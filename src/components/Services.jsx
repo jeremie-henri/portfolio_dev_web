@@ -777,6 +777,9 @@ export default function Services() {
           >
             Chaque projet reste unique : ces packs donnent un point de départ, le devis final s’adapte
             à vos besoins. Acompte de 30 % à la commande, TVA non applicable (art. 293 B du CGI).
+            <br />
+            Pas encore de logo ni de charte graphique ? La création de votre identité visuelle est
+            proposée en option, facturée à part sur devis.
           </p>
           <div
             style={{
