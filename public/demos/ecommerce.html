@@ -15,8 +15,9 @@
 {"@context":"https://schema.org","@type":"OnlineStore","name":"Maison Provence","description":"Boutique en ligne de produits artisanaux provençaux : huiles d'olive, miels, épices et coffrets cadeaux.","url":"https://jeremiehenri.fr/demos/ecommerce.html","address":{"@type":"PostalAddress","addressRegion":"Provence","addressCountry":"FR"},"hasOfferCatalog":{"@type":"OfferCatalog","name":"Produits artisanaux","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Product","name":"Huile d'olive extra vierge AOP","description":"Pressée à froid, récolte 2025"},"price":"18.90","priceCurrency":"EUR"},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Miel de lavande AOP","description":"Fleurs de lavande fine de Haute-Provence"},"price":"12.50","priceCurrency":"EUR"}]}}
 </script>
 <link rel="icon" type="image/svg+xml" href="/photos/ecommerce-logo.svg">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:'Hulk Slab';src:url('/fonts/HulkSlab.woff2') format('woff2'),url('/fonts/HulkSlab.otf') format('opentype');font-weight:400 800;font-display:swap}
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f4ede0;--card:#faf3e3;--accent:#2d6a4f;--accent2:#c8dfd0;--text:#1a0f00;--muted:#6b5840;--border:#cec4b0;--warm:#c1440e;--red:#c0392b;--gold:#8b6d14}
 html{scroll-behavior:smooth;background:#f4ede0}
@@ -34,7 +35,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;lin
 .stamp{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;
   width:150px;height:150px;border-radius:50%;border:3px solid currentColor;
   color:var(--warm);text-transform:uppercase;text-align:center;pointer-events:none;
-  font-family:'Playfair Display',Georgia,serif;font-weight:700;letter-spacing:.06em;
+  font-family:'Hulk Slab',Georgia,serif;font-weight:700;letter-spacing:.06em;
   opacity:.62;mix-blend-mode:multiply;transform:rotate(-12deg);
   box-shadow:inset 0 0 0 3.5px transparent;filter:contrast(1.05)}
 .stamp::before{content:'';position:absolute;inset:7px;border-radius:50%;border:1.5px solid currentColor;opacity:.55}
@@ -65,7 +66,7 @@ nav{background:var(--card);border-bottom:2px solid var(--border);padding:0.9rem 
 nav>.logo{justify-self:start}
 nav>.nav-links{justify-self:center}
 nav>.nav-right{justify-self:end}
-.logo{display:flex;align-items:center;gap:9px;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.4rem;color:var(--text);font-style:italic;letter-spacing:.01em}
+.logo{display:flex;align-items:center;gap:9px;font-family:'Hulk Slab',Georgia,serif;font-weight:700;font-size:1.4rem;color:var(--text);letter-spacing:.01em}
 .logo-mark{flex-shrink:0;color:var(--accent)}
 .logo span{color:var(--accent);font-style:normal;font-weight:800}
 .nav-links{display:flex;gap:2.25rem}
@@ -96,13 +97,13 @@ nav>.nav-right{justify-self:end}
 .hero-slide img{width:100%;height:100%;object-fit:cover;object-position:center;filter:sepia(.1)saturate(.95)brightness(.85)}
 .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2rem}
 .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(116,212,161,.1);border:1px solid rgba(116,212,161,.22);color:#74d4a1;font-size:10px;font-weight:600;padding:4px 12px;border-radius:3px;letter-spacing:.06em;text-transform:uppercase}
-.hero h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.4rem,4vw,3.7rem);font-weight:700;line-height:1.08;margin-bottom:1.25rem;color:#f4ede0}
-.hero h1 em{color:#74d4a1;font-style:italic}
+.hero h1{font-family:'Hulk Slab',Georgia,serif;font-size:clamp(2.4rem,4vw,3.7rem);font-weight:700;line-height:1.08;margin-bottom:1.25rem;color:#f4ede0}
+.hero h1 em{color:#74d4a1;font-style:normal}
 .hero p{color:rgba(244,237,224,.6);font-weight:300;max-width:400px;margin-bottom:2rem;line-height:1.85;font-size:15px}
 .hero-cta{display:inline-flex;align-items:center;gap:8px;width:fit-content;background:#74d4a1;color:#0d2016;padding:13px 28px;border:none;border-radius:5px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.03em;transition:all .2s}
 .hero-cta:hover{background:#52b788;transform:translateX(4px)}
 .hero-stats{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(244,237,224,.1)}
-.hero-stat strong{font-family:'Playfair Display',Georgia,serif;font-size:1.7rem;font-weight:700;color:#74d4a1;display:block;line-height:1}
+.hero-stat strong{font-family:'Hulk Slab',Georgia,serif;font-size:1.7rem;font-weight:700;color:#74d4a1;display:block;line-height:1}
 .hero-stat span{font-size:10px;color:rgba(244,237,224,.45);text-transform:uppercase;letter-spacing:.1em}
 
 /* TRUST BAR */
@@ -113,7 +114,7 @@ nav>.nav-right{justify-self:end}
 /* SECTION */
 .section{padding:4.5rem 2rem;max-width:1200px;margin:0 auto}
 .sec-eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
-.sec-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:700;margin-bottom:.75rem;letter-spacing:-.01em;color:var(--text)}
+.sec-title{font-family:'Hulk Slab',Georgia,serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:700;margin-bottom:.75rem;letter-spacing:-.01em;color:var(--text)}
 .sec-desc{color:var(--muted);font-weight:300;max-width:500px;margin-bottom:2.5rem;font-size:15px;line-height:1.75}
 .divider{max-width:1200px;margin:0 auto;border:none;border-top:2px solid var(--border)}
 
@@ -145,10 +146,10 @@ nav>.nav-right{justify-self:end}
 .badge-stock{background:rgba(192,57,43,.9);color:white}
 .product-body{padding:1rem 1.1rem;border-top:1.5px solid var(--border)}
 .product-cat{font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:5px;font-weight:600}
-.product-name{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1rem;margin-bottom:4px;color:var(--text);line-height:1.2}
+.product-name{font-family:'Hulk Slab',Georgia,serif;font-weight:700;font-size:1rem;margin-bottom:4px;color:var(--text);line-height:1.2}
 .product-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px}
 .product-footer{display:flex;align-items:center;justify-content:space-between}
-.product-price{font-family:'Playfair Display',Georgia,serif;font-size:1.05rem;font-weight:700;color:var(--text)}
+.product-price{font-family:'Hulk Slab',Georgia,serif;font-size:1.05rem;font-weight:700;color:var(--text)}
 .product-old-price{font-size:11px;color:var(--muted);text-decoration:line-through;margin-right:4px;font-weight:400;font-family:'DM Sans',sans-serif}
 .add-btn{background:var(--accent);color:white;border:none;width:34px;height:34px;border-radius:4px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;font-weight:700;transition:background .2s}
 .add-btn:hover{background:#1d4a31}
@@ -168,14 +169,14 @@ nav>.nav-right{justify-self:end}
 .bundle-item{display:flex;align-items:center;gap:5px;font-size:12px;background:var(--bg);padding:5px 10px;border-radius:3px;border:1px solid var(--border);color:var(--muted)}
 .bundle-price-row{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:1rem;border-top:1.5px solid var(--border)}
 .bundle-old{font-size:13px;color:var(--muted);text-decoration:line-through}
-.bundle-new{font-family:'Playfair Display',Georgia,serif;font-size:1.4rem;font-weight:700;color:var(--accent)}
+.bundle-new{font-family:'Hulk Slab',Georgia,serif;font-size:1.4rem;font-weight:700;color:var(--accent)}
 .bundle-saving{font-size:11px;color:var(--warm);font-weight:700;background:rgba(193,68,14,.1);padding:2px 8px;border-radius:3px;letter-spacing:.03em}
 
 /* REVIEWS */
 .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
 .review-card{background:var(--card);border:1.5px solid var(--border);border-radius:7px;padding:1.25rem}
 .review-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.review-avatar{width:38px;height:38px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--accent);flex-shrink:0}
+.review-avatar{width:38px;height:38px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-family:'Hulk Slab',serif;font-size:14px;font-weight:700;color:var(--accent);flex-shrink:0}
 .review-text{font-size:13px;color:var(--text);font-style:italic;margin-bottom:8px;line-height:1.6}
 .review-product{font-size:11px;color:var(--muted)}
 
@@ -183,7 +184,7 @@ nav>.nav-right{justify-self:end}
 .wishlist-panel{position:fixed;top:0;right:-380px;width:360px;height:100vh;background:var(--card);z-index:300;transition:right .35s cubic-bezier(.4,0,.2,1);box-shadow:-4px 0 20px rgba(0,0,0,.12);display:flex;flex-direction:column}
 .wishlist-panel.open{right:0}
 .panel-header{padding:1.25rem 1.5rem;border-bottom:2px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.panel-header h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1rem;color:var(--text)}
+.panel-header h3{font-family:'Hulk Slab',Georgia,serif;font-weight:700;font-size:1rem;color:var(--text)}
 .close-panel{background:none;border:1.5px solid var(--border);width:30px;height:30px;border-radius:4px;cursor:pointer;font-size:16px}
 .panel-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:10px}
 .wish-item{display:flex;gap:10px;align-items:center}
@@ -194,7 +195,7 @@ nav>.nav-right{justify-self:end}
 .cart-sidebar{position:fixed;top:0;right:-420px;width:400px;height:100vh;background:var(--card);box-shadow:-4px 0 24px rgba(0,0,0,.12);z-index:200;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
 .cart-sidebar.open{right:0}
 .cart-header{padding:1.25rem 1.5rem;border-bottom:2px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.cart-header h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.05rem;color:var(--text)}
+.cart-header h3{font-family:'Hulk Slab',Georgia,serif;font-weight:700;font-size:1.05rem;color:var(--text)}
 .cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:10px}
 .cart-item{display:flex;gap:12px;align-items:center;padding:10px;background:var(--bg);border-radius:5px;border:1px solid var(--border)}
 .cart-thumb{width:48px;height:48px;border-radius:4px;object-fit:cover;flex-shrink:0;font-size:1.5rem;display:flex;align-items:center;justify-content:center;background:var(--accent2)}
@@ -219,10 +220,10 @@ nav>.nav-right{justify-self:end}
 .qv-img img{width:100%;height:100%;object-fit:cover;min-height:300px;filter:sepia(.08)}
 .qv-body{padding:2rem;display:flex;flex-direction:column;gap:12px;position:relative}
 .qv-close{position:absolute;top:1rem;right:1rem;background:var(--bg);border:1.5px solid var(--border);width:30px;height:30px;border-radius:4px;cursor:pointer;font-size:15px}
-.qv-title{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.25rem;margin-top:1.5rem;color:var(--text)}
+.qv-title{font-family:'Hulk Slab',Georgia,serif;font-weight:700;font-size:1.25rem;margin-top:1.5rem;color:var(--text)}
 .qv-stars{display:flex;align-items:center;gap:6px;color:#c9a84c}
 .qv-desc{font-size:13px;color:var(--muted);line-height:1.65}
-.qv-price{font-family:'Playfair Display',Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--accent)}
+.qv-price{font-family:'Hulk Slab',Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--accent)}
 .qv-tags{display:flex;flex-wrap:wrap;gap:6px}
 .qv-tag{font-size:11px;padding:3px 9px;border-radius:3px;background:var(--accent2);color:var(--accent);font-weight:600;letter-spacing:.03em}
 .qty-row{display:flex;align-items:center;gap:12px;margin-top:auto}
@@ -242,8 +243,8 @@ nav>.nav-right{justify-self:end}
 
 /* NEWSLETTER */
 .newsletter{background:linear-gradient(155deg,#1c3828,#0d2016);color:#f4ede0;padding:4.5rem 2rem;text-align:center}
-.newsletter h2{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:.5rem}
-.newsletter h2 em{color:#74d4a1;font-style:italic}
+.newsletter h2{font-family:'Hulk Slab',Georgia,serif;font-weight:700;font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:.5rem}
+.newsletter h2 em{color:#74d4a1;font-style:normal}
 .newsletter p{color:rgba(244,237,224,.5);margin-bottom:1.75rem;font-size:14px}
 .newsletter-form{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .newsletter-input{padding:12px 18px;border-radius:5px;border:none;font-family:inherit;font-size:14px;width:280px;outline:none;background:#f4ede0;color:var(--text)}
@@ -400,7 +401,7 @@ select option{background:var(--card)!important;color:var(--text)!important}
   <div class="sec-eyebrow">Ils ont adoré</div>
   <div class="sec-title">Avis clients vérifiés</div>
   <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
-    <div style="font-family:'Playfair Display',Georgia,serif;font-size:3rem;font-weight:700;color:var(--text)">4.9</div>
+    <div style="font-family:'Hulk Slab',Georgia,serif;font-size:3rem;font-weight:700;color:var(--text)">4.9</div>
     <div><div style="color:#c9a84c;font-size:18px">★★★★★</div><div style="font-size:13px;color:var(--muted)">Basé sur 247 avis</div></div>
     <div style="margin-left:auto;display:flex;flex-direction:column;gap:3px;width:180px">
       <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="color:var(--muted);width:10px">5</span><div style="flex:1;height:5px;background:var(--border);border-radius:2px"><div style="width:78%;height:100%;background:#c9a84c;border-radius:2px"></div></div><span style="color:var(--muted);width:24px">78%</span></div>
@@ -808,7 +809,7 @@ async function checkout(){
   document.getElementById('cart-sidebar').innerHTML=`
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;text-align:center;gap:1rem">
       <div style="width:64px;height:64px;background:rgba(16,185,129,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem">✓</div>
-      <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.25rem;color:var(--text)">Commande confirmée !</h3>
+      <h3 style="font-family:'Hulk Slab',Georgia,serif;font-weight:700;font-size:1.25rem;color:var(--text)">Commande confirmée !</h3>
       <p style="font-size:13px;color:var(--muted)">Total : <strong style="color:var(--accent)">${subtotal.toFixed(2)} €</strong></p>
       <p style="font-size:12px;color:var(--muted)">Confirmation envoyée à <strong style="color:var(--text)">${email}</strong></p>
       <div style="font-size:12px;color:var(--muted);background:var(--bg);padding:12px 16px;border-radius:8px;border:1px solid var(--border);line-height:1.8;width:100%;text-align:left">
@@ -839,7 +840,7 @@ async function checkout(){
       document.getElementById('cart-sidebar').innerHTML=`
         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2rem;text-align:center;gap:1rem">
           <div style="width:64px;height:64px;background:rgba(16,185,129,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem">✓</div>
-          <h3 style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1.3rem;color:var(--text)">Paiement réussi !</h3>
+          <h3 style="font-family:'Hulk Slab',Georgia,serif;font-weight:700;font-size:1.3rem;color:var(--text)">Paiement réussi !</h3>
           <p style="font-size:13px;color:var(--muted)">Merci pour votre commande.<br>Un email de confirmation vous a été envoyé.</p>
           <p style="font-size:11px;color:var(--muted);opacity:.6">Ref. Stripe : ${sessionId.slice(0,20)}...</p>
           <button onclick="finishOrder()" style="padding:10px 24px;background:var(--accent);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-weight:600;width:100%">Continuer mes achats</button>
