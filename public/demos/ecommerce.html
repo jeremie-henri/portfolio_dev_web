@@ -85,7 +85,7 @@ nav>.nav-right{justify-self:end}
 .hero{flex:1 1 auto;min-height:0;position:relative;overflow:hidden}
 /* Voile en dégradé : assure la lisibilité du texte sur les photos, sans aplat opaque */
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(13,32,22,.88) 0%,rgba(13,32,22,.72) 50%,rgba(13,32,22,.6) 100%)}
-.hero-left{background:transparent;padding:2.5rem 3.5rem 2.5rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;z-index:2;overflow:hidden;max-width:640px;height:100%}
+.hero-left{background:transparent;padding:2.5rem clamp(2rem,5vw,4.5rem);display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2;overflow:hidden;max-width:680px;height:100%}
 /* Diaporama en fond pleine largeur, derrière le voile et le contenu */
 .hero-right{position:absolute;inset:0;z-index:0;overflow:hidden}
 .hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(13,32,22,.5) 0%,transparent 50%);pointer-events:none;z-index:1}
