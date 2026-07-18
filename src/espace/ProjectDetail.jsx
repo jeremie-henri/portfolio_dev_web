@@ -80,6 +80,26 @@ export default function ProjectDetail({ projetId, onBack }) {
     }
   }
 
+  // Projet terminé : transforme un devis signé en facture (mêmes libellé et montant)
+  const facturerDevis = async (devis) => {
+    if (!confirm(`Créer la facture correspondant au devis ${devis.numero} (${devis.libelle} — ${devis.montant_ht} € HT) ?`)) return
+    const numero = `FAC-${new Date().getFullYear()}-${String(factures.length + 1).padStart(3, '0')}`
+    try {
+      await createFacture({
+        projet_id: projetId,
+        numero,
+        libelle: devis.libelle,
+        montant_ht: Number(devis.montant_ht),
+        tva_taux: 0, // micro-entreprise : franchise en base de TVA (art. 293 B du CGI)
+        statut: 'en_attente',
+        type: 'facture',
+      })
+      setFactures(await fetchFactures(projetId))
+    } catch (err) {
+      alert(`Création impossible : ${err.message}`)
+    }
+  }
+
   const handlePrint = async (f) => {
     let profil = null
     try {
@@ -335,9 +355,23 @@ export default function ProjectDetail({ projetId, onBack }) {
                   </button>
                   {estDevis ? (
                     f.signe_le ? (
-                      <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
-                        Signé
-                      </span>
+                      <>
+                        <span className="esp-badge" style={{ background: '#22c55e22', color: '#22c55e' }}>
+                          Signé
+                        </span>
+                        {isAdmin &&
+                          !factures.some(
+                            (x) => x.type !== 'devis' && x.libelle === f.libelle
+                          ) && (
+                            <button
+                              className="esp-btn esp-btn-accent esp-btn-sm"
+                              title="Projet terminé : créer la facture reprenant ce devis"
+                              onClick={() => facturerDevis(f)}
+                            >
+                              → Facturer
+                            </button>
+                          )}
+                      </>
                     ) : isAdmin ? (
                       <span className="esp-badge" style={{ background: '#eab30822', color: '#eab308' }}>
                         À signer
