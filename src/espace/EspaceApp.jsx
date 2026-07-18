@@ -47,7 +47,6 @@ function Shell() {
   )
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     confirmerPaiementFacture().then((paid) => paid && setTab('accueil'))
   }, [])
 

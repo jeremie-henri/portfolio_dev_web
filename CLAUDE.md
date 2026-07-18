@@ -29,10 +29,11 @@ Single-page React 19 application with no client-side routing — navigation uses
 - `@types` → `src/types/`
 
 **Component layout** (rendered top-to-bottom in `App.jsx`):
-1. `CursorAndProgress` — custom cursor + scroll progress bar (disabled on mobile)
+1. `ScrollProgress` — scroll progress bar
 2. `Navbar` — sticky header with anchor links
-3. `Hero`, `Services`, `About`, `Skills`, `Contact`, `Footer`
-4. `Projects`, `ROICalculator`, `Testimonials` — currently commented out in `App.jsx`
+3. `Hero` (with `HeroBackground3D`), `Services`, `TrustBar`, `About`, `Skills`, `Contact` (from `sections/Contact.tsx`), `Footer`
+
+**Client area:** `/espace/*` (lazy-loaded `src/espace/EspaceApp.jsx` via react-router in `main.jsx`) — Supabase auth, projets, devis/factures, signature, paiement Stripe.
 
 **Mixed JSX/TSX codebase:** Most components are `.jsx`; newer/stricter components (e.g., `sections/Contact.tsx`) use `.tsx`. TypeScript strict mode is off.
 
