@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f4ede0;--card:#fffdf6;--accent:#2d6a4f;--accent2:#c8dfd0;--text:#1a0f00;--muted:#6b5840;--border:#cec4b0;--warm:#c1440e;--red:#c0392b;--gold:#8b6d14}
+:root{--bg:#f4ede0;--card:#faf3e3;--accent:#2d6a4f;--accent2:#c8dfd0;--text:#1a0f00;--muted:#6b5840;--border:#cec4b0;--warm:#c1440e;--red:#c0392b;--gold:#8b6d14}
 html{scroll-behavior:smooth;background:#f4ede0}
 /* Texture papier kraft : grain fibreux subtil superposé au fond crème */
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden;position:relative;
@@ -275,9 +275,11 @@ footer strong{color:var(--accent)}
   .newsletter-input{width:100%;max-width:100%}
   .products-grid{grid-template-columns:repeat(2,1fr);gap:12px}
 }
-/* Grain papier appliqué aux surfaces claires (façon carton/kraft) */
-nav,.product-card,.bundle-card,.review-card,.cart-sidebar,.wishlist-panel,.qv-modal,footer,.filter-btn{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)' opacity='0.04'/%3E%3C/svg%3E")}
+/* Grain papier kraft appliqué aux surfaces claires : fibres visibles + léger voilage crème */
+nav,.product-card,.bundle-card,.review-card,.cart-sidebar,.wishlist-panel,.qv-modal,footer,.filter-btn,.product-body{
+  background-image:
+    linear-gradient(120deg,rgba(139,109,20,.035),rgba(255,255,255,0) 55%,rgba(45,106,79,.03)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)' opacity='0.13'/%3E%3C/svg%3E")}
 select{background:var(--card)!important;color:var(--text)!important;color-scheme:light;border:1.5px solid var(--border)!important;border-radius:5px}
 select option{background:var(--card)!important;color:var(--text)!important}
 </style>
@@ -332,9 +334,9 @@ select option{background:var(--card)!important;color:var(--text)!important}
       </div>
     </div>
     <div class="stamp stamp--green" style="top:2.5rem;right:2.5rem;color:#74d4a1;opacity:.8;mix-blend-mode:normal;z-index:3" aria-hidden="true">
-      <span class="stamp-top">Récolte</span>
+      <span class="stamp-top">Artisanal</span>
       <span class="stamp-big">FAIT<br>MAIN</span>
-      <span class="stamp-star">★ PROVENCE ★</span>
+      <span class="stamp-star">★ EN PROVENCE ★</span>
     </div>
     <div class="hero-right" id="hero-slideshow">
       <div class="hero-slide active"><img src="../photos/hero.webp" alt="Produits artisanaux de Provence"></div>
