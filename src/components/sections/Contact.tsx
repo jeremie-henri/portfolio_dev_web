@@ -114,7 +114,7 @@ export default function Contact() {
             fontWeight: 700,
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
-            color: '#aaaaaa',
+            color: '#7c6af7',
             marginBottom: '0.75rem',
           }}
         >

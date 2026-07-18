@@ -56,7 +56,7 @@ export default function About() {
             fontWeight: 600,
             letterSpacing: '0.12em',
             textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.65)',
+            color: '#7c6af7',
             marginBottom: '0.75rem',
           }}
         >
