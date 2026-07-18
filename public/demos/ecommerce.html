@@ -20,7 +20,39 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#f4ede0;--card:#fffdf6;--accent:#2d6a4f;--accent2:#c8dfd0;--text:#1a0f00;--muted:#6b5840;--border:#cec4b0;--warm:#c1440e;--red:#c0392b;--gold:#8b6d14}
 html{scroll-behavior:smooth;background:#f4ede0}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden}
+/* Texture papier kraft : grain fibreux subtil superposé au fond crème */
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden;position:relative;
+  background-image:
+    radial-gradient(circle at 18% 22%,rgba(139,109,20,.05),transparent 42%),
+    radial-gradient(circle at 82% 68%,rgba(45,106,79,.045),transparent 46%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  background-attachment:fixed,fixed,scroll}
+/* Le grain fibreux se pose aussi sur les surfaces "papier" (cartes, panneaux) */
+.paper-grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)' opacity='0.04'/%3E%3C/svg%3E")}
+
+/* ─── TAMPONS ENCRÉS (cachets "fait main") ───────────────────── */
+.stamp{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:96px;height:96px;border-radius:50%;border:2.5px solid currentColor;
+  color:var(--warm);text-transform:uppercase;text-align:center;pointer-events:none;
+  font-family:'Playfair Display',Georgia,serif;font-weight:700;letter-spacing:.06em;
+  opacity:.62;mix-blend-mode:multiply;transform:rotate(-12deg);
+  box-shadow:inset 0 0 0 3.5px transparent;filter:contrast(1.05)}
+.stamp::before{content:'';position:absolute;inset:5px;border-radius:50%;border:1px solid currentColor;opacity:.55}
+/* Encre irrégulière : léger masquage granuleux pour l'effet "tampon usé" */
+.stamp::after{content:'';position:absolute;inset:-2px;border-radius:50%;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+  mix-blend-mode:screen;opacity:.5;pointer-events:none}
+.stamp-top{font-size:8px;line-height:1.15;opacity:.85}
+.stamp-big{font-size:15px;line-height:1;margin:2px 0}
+.stamp-star{font-size:9px;letter-spacing:.15em}
+.stamp--green{color:var(--accent)}
+.stamp--gold{color:var(--gold)}
+/* Tampon d'angle sur les cartes produit */
+.product-stamp{position:absolute;top:8px;right:8px;width:62px;height:62px;z-index:3;
+  border-width:2px;opacity:.5;transform:rotate(9deg)}
+.product-stamp .stamp-top{font-size:6px}
+.product-stamp .stamp-big{font-size:9px}
+.product-stamp .stamp-star{font-size:6px}
 
 /* SHIPPING BAR */
 #shipping-bar{background:#1a0f00;color:#f4ede0;text-align:center;padding:9px 1rem;font-size:12px;font-weight:500;position:relative;z-index:50;letter-spacing:.03em}
@@ -243,6 +275,9 @@ footer strong{color:var(--accent)}
   .newsletter-input{width:100%;max-width:100%}
   .products-grid{grid-template-columns:repeat(2,1fr);gap:12px}
 }
+/* Grain papier appliqué aux surfaces claires (façon carton/kraft) */
+nav,.product-card,.bundle-card,.review-card,.cart-sidebar,.wishlist-panel,.qv-modal,footer,.filter-btn{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)' opacity='0.04'/%3E%3C/svg%3E")}
 select{background:var(--card)!important;color:var(--text)!important;color-scheme:light;border:1.5px solid var(--border)!important;border-radius:5px}
 select option{background:var(--card)!important;color:var(--text)!important}
 </style>
@@ -295,6 +330,11 @@ select option{background:var(--card)!important;color:var(--text)!important}
         <div class="hero-stat"><strong>40+</strong><span>Producteurs</span></div>
         <div class="hero-stat"><strong>4.9★</strong><span>Note moyenne</span></div>
       </div>
+    </div>
+    <div class="stamp stamp--green" style="top:2.5rem;right:2.5rem;color:#74d4a1;opacity:.8;mix-blend-mode:normal;z-index:3" aria-hidden="true">
+      <span class="stamp-top">Récolte</span>
+      <span class="stamp-big">FAIT<br>MAIN</span>
+      <span class="stamp-star">★ PROVENCE ★</span>
     </div>
     <div class="hero-right" id="hero-slideshow">
       <div class="hero-slide active"><img src="../photos/hero.webp" alt="Produits artisanaux de Provence"></div>
@@ -533,6 +573,7 @@ function renderProducts(filter='tous'){
           ${p.badge==='new'||p.isNew?'<span class="product-badge badge-new">Nouveau</span>':''}
           ${p.stock>0&&p.stock<=5?'<span class="product-badge badge-stock">Dernières pièces</span>':''}
         </div>
+        ${p.tags.includes('AOP')?'<div class="stamp product-stamp stamp--gold" aria-hidden="true"><span class="stamp-top">Certifié</span><span class="stamp-big">AOP</span><span class="stamp-star">★★★</span></div>':p.badge==='bio'?'<div class="stamp product-stamp stamp--green" aria-hidden="true"><span class="stamp-top">Agri.</span><span class="stamp-big">BIO</span><span class="stamp-star">★ AB ★</span></div>':''}
         <div class="product-overlay">
           <button class="overlay-btn wish${inWish?' active':''}" onclick="toggleWish(${p.id},event)" title="${inWish?'Retirer des favoris':'Ajouter aux favoris'}">${inWish?'❤️':'🤍'}</button>
           <button class="overlay-btn primary" onclick="openQV(${p.id},event)">👁️ Voir le détail</button>
