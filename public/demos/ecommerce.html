@@ -84,10 +84,8 @@ nav>.nav-right{justify-self:end}
 .above-fold{display:flex;flex-direction:column;min-height:480px}
 .hero{flex:1 1 auto;min-height:0;position:relative;overflow:hidden}
 /* Voile en dégradé : assure la lisibilité du texte sur les photos, sans aplat opaque */
-.hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(13,32,22,.88) 0%,rgba(13,32,22,.55) 45%,rgba(13,32,22,.15) 100%)}
+.hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(13,32,22,.88) 0%,rgba(13,32,22,.72) 50%,rgba(13,32,22,.6) 100%)}
 .hero-left{background:transparent;padding:2.5rem 3.5rem 2.5rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;z-index:2;overflow:hidden;max-width:640px;height:100%}
-.hero-left::after{content:'';position:absolute;bottom:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:60px solid rgba(116,212,161,.04);pointer-events:none}
-.hero-left::before{content:'';position:absolute;top:-40px;left:-40px;width:200px;height:200px;border-radius:50%;border:40px solid rgba(116,212,161,.03);pointer-events:none}
 /* Diaporama en fond pleine largeur, derrière le voile et le contenu */
 .hero-right{position:absolute;inset:0;z-index:0;overflow:hidden}
 .hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(13,32,22,.5) 0%,transparent 50%);pointer-events:none;z-index:1}
