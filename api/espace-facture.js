@@ -42,6 +42,9 @@ export default async function handler(req, res) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
     if (action === 'create-checkout') {
+      if (facture.type === 'devis') {
+        return res.status(400).json({ error: 'Un devis ne peut pas être payé — seule une facture est payable' })
+      }
       if (facture.statut === 'payee') return res.status(400).json({ error: 'Facture déjà payée' })
       const ttc = Math.round(Number(facture.montant_ht) * (1 + Number(facture.tva_taux) / 100) * 100)
       const session = await stripe.checkout.sessions.create({

@@ -17,9 +17,12 @@ export default function Dashboard({ onOpen }) {
   if (!data) return <div className="esp-wrap">Chargement…</div>
 
   const enCours = data.projets.filter((p) => p.statut === 'en_cours').length
-  const aPayer = data.factures.filter((f) => f.statut !== 'payee')
+  // Un devis n'engage pas de paiement : seules les factures comptent dans "À régler"
+  const factures = data.factures.filter((f) => f.type !== 'devis')
+  const devisASigner = data.factures.filter((f) => f.type === 'devis' && !f.signe_le)
+  const aPayer = factures.filter((f) => f.statut !== 'payee')
   const totalAPayer = aPayer.reduce((s, f) => s + ttc(f), 0)
-  const totalPaye = data.factures.filter((f) => f.statut === 'payee').reduce((s, f) => s + ttc(f), 0)
+  const totalPaye = factures.filter((f) => f.statut === 'payee').reduce((s, f) => s + ttc(f), 0)
 
   const kpis = [
     { label: 'Projets en cours', value: enCours, color: 'var(--accent)' },
@@ -50,6 +53,27 @@ export default function Dashboard({ onOpen }) {
           </div>
         ))}
       </div>
+
+      {devisASigner.length > 0 && (
+        <div className="esp-section">
+          <div className="esp-section-title">Devis en attente de signature</div>
+          {devisASigner.map((f) => (
+            <div
+              key={f.id}
+              className="esp-file esp-card-link"
+              onClick={() => onOpen(f.projet_id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <span>
+                📝 {f.numero} — {f.libelle}
+              </span>
+              <span className="esp-badge" style={{ background: 'var(--accent)22', color: 'var(--accent)' }}>
+                {ttc(f).toFixed(2)} € — à signer →
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {aPayer.length > 0 && (
         <div className="esp-section">
